@@ -6,8 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ShelterPetTelegramBotApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ShelterPetTelegramBotApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(ShelterPetTelegramBotApplication.class, args);
+
+	}
 
 }
