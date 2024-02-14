@@ -318,7 +318,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * Метод {@code createOnlyTwoButton(Long chatId, String text, String firstButton, String callbackData)} <br>
-     * Является шаблоном для создания <b>ОДНОЙ</b> кнопки
+     * Является шаблоном для создания <b>Двух</b> кнопок
      *
      * @param chatId             <i> является идентификатором пользователя (его id в telegram) </i>
      * @param text               <i> является текстом для отправки пользователю </i>
