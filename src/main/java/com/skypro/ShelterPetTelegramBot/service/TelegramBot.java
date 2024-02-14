@@ -1,29 +1,444 @@
 package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
+import com.skypro.ShelterPetTelegramBot.model.User;
+import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.skypro.ShelterPetTelegramBot.utils.Answers.*;
+import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
+import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
+import static com.skypro.ShelterPetTelegramBot.utils.Descriptions.*;
+
+/**
+ * Класс {@link TelegramBot} является главным сервисным классом,
+ * в котором происходит создание бота и обработка всех входящих {@code update}
+ */
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfiguration configuration;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public TelegramBot(BotConfiguration configuration) {
         super(configuration.getToken());
         this.configuration = configuration;
-    }
-
-    @Override
-    public void onUpdateReceived(Update update) {
-
+        createMainMenu();
     }
 
     @Override
     public String getBotUsername() {
         return configuration.getName();
+    }
+
+    @Override
+    public void onUpdateReceived(Update update) {
+
+        if (update.hasMessage() && update.getMessage().hasText()) {
+
+            Long chatId = update.getMessage().getChatId();
+            String userFirstName = update.getMessage().getChat().getFirstName();
+            String text = update.getMessage().getText();
+
+            if (userRepository.findById(chatId).isEmpty()) {
+
+                getReactionsForUnregisteredUsers(chatId, text, userFirstName);
+
+            } else {
+
+                getReactionsForRegisteredUsers(chatId, text, userFirstName);
+            }
+
+        } else if (update.hasCallbackQuery()) {
+
+            Long chatId = update.getCallbackQuery().getMessage().getChatId();
+            String callbackData = update.getCallbackQuery().getData();
+
+            getReactionsForKeyBoardButtons(chatId, callbackData);
+        }
+    }
+
+    /**
+     * Метод {@code getReactionsForUnregisteredUsers(Long chatId, String text, String userFirstName)} <br>
+     * Возвращает реакции на команды для <b>НЕЗАРЕГИСТРИРОВАННЫХ пользователей</b>
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text          <i> является текстом для отправки пользователю </i>
+     * @param userFirstName <i> является именем пользователя </i>
+     */
+    private void getReactionsForUnregisteredUsers(Long chatId, String text, String userFirstName) {
+        String answer;
+
+        switch (text) {
+
+            case START:
+                answer = REACTION_TO_FIRST_COMMAND_START(userFirstName);
+                createButtonsForRegistration(chatId, answer);
+                break;
+
+            case HELP:
+                answer = REACTION_TO_COMMAND_HELP(userFirstName);
+                reactionToCommand(chatId, answer);
+                break;
+
+            case SETTINGS:
+                answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
+                createKeyBoardForUnregisteredUsers(chatId, answer);
+                break;
+
+            case REGISTRATION:
+                answer = REACTION_TO_SUCCESSFUL_REGISTRATION(userFirstName);
+                createButtonGetInfoAboutShelter(chatId, answer);
+                saveNewUserToDB(chatId, userFirstName);
+                break;
+
+            default:
+                answer = DEFAULT_REACTION(userFirstName);
+                reactionToCommand(chatId, answer);
+                break;
+        }
+    }
+
+    /**
+     * Метод {@code getReactionsForRegisteredUsers(Long chatId, String text, String userFirstName)} <br>
+     * Возвращает реакции на команды для <b>ЗАРЕГИСТРИРОВАННЫХ пользователей</b>
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text          <i> является текстом для отправки пользователю </i>
+     * @param userFirstName <i> является именем пользователя </i>
+     */
+    public void getReactionsForRegisteredUsers(Long chatId, String text, String userFirstName) {
+        String answer;
+
+        switch (text) {
+
+            case START:
+                answer = REACTION_TO_COMMAND_START(userFirstName);
+                createButtonGetInfoAboutShelter(chatId, answer);
+                break;
+
+            case HELP:
+                answer = REACTION_TO_COMMAND_HELP(userFirstName);
+                createButtonCallVolunteer(chatId, answer);
+                break;
+
+            case SETTINGS:
+                answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
+                createKeyBoardForRegisteredUsers(chatId, answer);
+                break;
+
+            default:
+                answer = DEFAULT_REACTION(userFirstName);
+                createButtonCallVolunteer(chatId, answer);
+                break;
+        }
+    }
+
+    /**
+     * Метод {@code getReactionsForKeyBoardButtons(Long chatId, String callbackData)} <br>
+     * Возвращает реакции на нажатие кнопок пользователями
+     *
+     * @param chatId       <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param callbackData <i> является данными для идентификации нажатой кнопки </i>
+     */
+    public void getReactionsForKeyBoardButtons(Long chatId, String callbackData) {
+        String answer;
+
+        switch (callbackData) {
+
+            case YES_BUTTON:
+                answer = AGREEMENT_REGISTRATION;
+                reactionToCommand(chatId, answer);
+                break;
+
+            case NO_BUTTON:
+                answer = DISAGREEMENT_REGISTRATION;
+                reactionToCommand(chatId, answer);
+                break;
+        }
+    }
+
+    /**
+     * Метод {@code createKeyBoardForUnregisteredUsers(Long chatId, String text)} <br>
+     * Создает интерактивную клавиатуру для выбора команд для <b>НЕЗАРЕГИСТРИРОВАННЫХ пользователей</b>
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void createKeyBoardForUnregisteredUsers(Long chatId, String text) {
+        SendMessage message = sendMessage(chatId, text);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(START);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(HELP);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(SETTINGS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REGISTRATION);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+        executeMessage(message);
+    }
+
+    /**
+     * Метод {@code createKeyBoardForRegisteredUsers(Long chatId, String text)} <br>
+     * Создает интерактивную клавиатуру для выбора команд для <b>ЗАРЕГИСТРИРОВАННЫХ пользователей</b>
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void createKeyBoardForRegisteredUsers(Long chatId, String text) {
+        SendMessage message = sendMessage(chatId, text);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(INFO_ABOUT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_PROCESS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REPORT_ABOUT_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CALL_VOLUNTEER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+        executeMessage(message);
+    }
+
+    /**
+     * Метод {@code createButtonsForRegistration(Long chatId, String text)} <br>
+     * Создает кнопки выбора под сообщением для дальнейшей регистрации нового пользователя
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void createButtonsForRegistration(Long chatId, String text) {
+        createOnlyTwoButton(chatId, text, "Да", YES_BUTTON, "Нет", NO_BUTTON);
+    }
+
+    /**
+     * Метод {@code createButtonGetInfoAboutShelter(Long chatId, String text)} <br>
+     * Создает кнопку для получения информации о приюте
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void createButtonGetInfoAboutShelter(Long chatId, String text) {
+        createOnlyOneButton(chatId, text, INFO_ABOUT_SHELTER, INFO_ABOUT_SHELTER_BUTTON);
+    }
+
+    /**
+     * Метод {@code createButtonCallVolunteer(Long chatId, String text)} <br>
+     * Создает кнопку для вызова волонтера
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void createButtonCallVolunteer(Long chatId, String text) {
+        createOnlyOneButton(chatId, text, CALL_VOLUNTEER, CALL_VOLUNTEER_BUTTON);
+    }
+
+    /**
+     * Метод {@code createOnlyOneButton(Long chatId, String text, String nameButton, String callbackData)} <br>
+     * Является шаблоном для создания <b>ОДНОЙ</b> кнопки
+     *
+     * @param chatId       <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text         <i> является текстом для отправки пользователю </i>
+     * @param nameButton   <i> является наименованием кнопки </i>
+     * @param callbackData <i> является данными для идентификации нажатой кнопки </i>
+     */
+    private void createOnlyOneButton(Long chatId, String text, String nameButton, String callbackData) {
+        SendMessage message = sendMessage(chatId, text);
+
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
+
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        var button = new InlineKeyboardButton();
+
+        button.setText(nameButton);
+        button.setCallbackData(callbackData);
+
+        row.add(button);
+
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+        executeMessage(message);
+    }
+
+    /**
+     * Метод {@code createOnlyTwoButton(Long chatId, String text, String firstButton, String callbackData)} <br>
+     * Является шаблоном для создания <b>ОДНОЙ</b> кнопки
+     *
+     * @param chatId             <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text               <i> является текстом для отправки пользователю </i>
+     * @param nameFirstButton    <i> является наименованием первой кнопки </i>
+     * @param firstCallbackData  <i> является данными для идентификации нажатой первой кнопки </i>
+     * @param nameSecondButton   <i> является наименованием второй кнопки </i>
+     * @param secondCallbackData <i> является данными для идентификации нажатой второй кнопки </i>
+     */
+    private void createOnlyTwoButton(Long chatId, String text,
+                                     String nameFirstButton,
+                                     String firstCallbackData,
+                                     String nameSecondButton,
+                                     String secondCallbackData) {
+
+        SendMessage message = sendMessage(chatId, text);
+
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
+
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        var firstButton = new InlineKeyboardButton();
+        var secondButton = new InlineKeyboardButton();
+
+        firstButton.setText(nameFirstButton);
+        firstButton.setCallbackData(firstCallbackData);
+
+        secondButton.setText(nameSecondButton);
+        secondButton.setCallbackData(secondCallbackData);
+
+        row.add(firstButton);
+        row.add(secondButton);
+
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+        executeMessage(message);
+    }
+
+    /**
+     * Метод {@code saveNewUserToDB(Long chatId, String userFirstName)} <br>
+     * Сохраняет нового пользователя {@link User} в БД
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param userFirstName <i> является именем пользователя </i>
+     */
+    private void saveNewUserToDB(Long chatId, String userFirstName) {
+        User user = new User();
+
+        user.setChatId(chatId);
+        user.setFirstName(userFirstName);
+        user.setRegisterAt(new Timestamp(System.currentTimeMillis()));
+
+        userRepository.save(user);
+    }
+
+    /**
+     * Метод {@code createMainMenu()} <br>
+     * Создает меню с основными командами: <br>
+     * <b>/start</b> <br>
+     * <b>/help</b> <br>
+     * <b>/settings</b> <br>
+     */
+    private void createMainMenu() {
+        List<BotCommand> listOfCommands = new ArrayList<>();
+
+        listOfCommands.add(new BotCommand(START, DESCRIPTION_START));
+        listOfCommands.add(new BotCommand(HELP, DESCRIPTION_HELP));
+        listOfCommands.add(new BotCommand(SETTINGS, DESCRIPTION_SETTINGS));
+
+        try {
+            this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
+        } catch (TelegramApiException e) {
+            log.error("ERROR: setting bot`s command list {}", e.getMessage());
+        }
+    }
+
+    /**
+     * Метод {@code reactionToCommand(Long chatId, String text)} <br>
+     * Является ответной реакцией в виде текстового сообщения на действие пользователя
+     * и объединяет методы: <br>
+     * {@code  sendMessage(Long chatId, String text))} <br>
+     * {@code  executeMessage(SendMessage message)}
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void reactionToCommand(Long chatId, String text) {
+        SendMessage message = sendMessage(chatId, text);
+        executeMessage(message);
+    }
+
+    /**
+     * Метод {@code sendMessage(Long chatId, String text)} <br>
+     * Создает и возвращает новый {@link SendMessage}
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private SendMessage sendMessage(Long chatId, String text) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(text);
+        return message;
+    }
+
+    /**
+     * Метод {@code executeMessage(SendMessage message)} <br>
+     * Отправляет {@link SendMessage} пользователю
+     *
+     * @param message <i> является отправляемым message </i>
+     */
+    private void executeMessage(SendMessage message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("ERROR: {}", e.getMessage());
+        }
     }
 }
