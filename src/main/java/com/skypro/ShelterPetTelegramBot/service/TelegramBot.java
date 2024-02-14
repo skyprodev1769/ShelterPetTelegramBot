@@ -175,6 +175,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                 answer = DISAGREEMENT_REGISTRATION;
                 reactionToCommand(chatId, answer);
                 break;
+
+            case CALL_VOLUNTEER_BUTTON:
+                answer = REACTION_TO_CALL_VOLUNTEER;
+                reactionToCommand(chatId, answer);
+                break;
         }
     }
 

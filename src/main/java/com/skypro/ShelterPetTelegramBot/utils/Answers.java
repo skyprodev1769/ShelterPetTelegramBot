@@ -7,6 +7,13 @@ public class Answers {
     public static final String DISAGREEMENT_REGISTRATION = "Вы можете зарегистрироваться в любой удобный для Вас момент, " +
             "вызвав команду /registration, а пока Вам доступен ограниченный функционал.";
 
+    public static final String REACTION_TO_CALL_VOLUNTEER = """
+            Воспользуйтесь следующими номерами для связи с нашими волонтерами:
+            
+            + 7 (495) 777-77-77
+            + 7 (495) 888-88-88
+            + 7 (495) 999-99-99""";
+
     public static String REACTION_TO_FIRST_COMMAND_START(String userFirstName) {
         return String.format("""
                 Добро пожаловать, %s!
@@ -34,13 +41,11 @@ public class Answers {
     }
 
     public static String REACTION_TO_COMMAND_SETTINGS(String userFirstname) {
-        return String.format("""
-                %s, пожалуйста, выберите команду из клавиатуры ниже.""", userFirstname);
+        return String.format("%s, пожалуйста, выберите команду из клавиатуры ниже.", userFirstname);
     }
 
     public static String DEFAULT_REACTION(String userFirstName) {
-        return String.format("""
-                %s, пожалуйста, выберите команду из списка меню.""", userFirstName);
+        return String.format("%s, пожалуйста, выберите команду из списка меню.", userFirstName);
     }
 
     public static String REACTION_TO_SUCCESSFUL_REGISTRATION(String userFirstName) {
