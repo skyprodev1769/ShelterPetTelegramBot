@@ -25,7 +25,6 @@ import java.util.List;
 import static com.skypro.ShelterPetTelegramBot.utils.Answers.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
-import static com.skypro.ShelterPetTelegramBot.utils.Commands.DETAILED_INFO;
 import static com.skypro.ShelterPetTelegramBot.utils.Descriptions.*;
 
 /**
@@ -109,8 +108,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case REGISTRATION:
                 answer = REACTION_TO_SUCCESSFUL_REGISTRATION(userFirstName);
-                createButtonInfoAboutShelter(chatId, answer);
                 saveNewUserToDB(chatId, userFirstName);
+                createButtonInfoAboutShelter(chatId, answer);
                 break;
 
             default:

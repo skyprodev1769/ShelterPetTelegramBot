@@ -27,7 +27,7 @@ public class Buttons {
     КНОПКИ ДЛЯ ПОЛУЧЕНИЯ ОТЧЕТА О ЖИВОТНОМ
      */
 
-    public final static String REPORT_ABOUT_PET_BUTTON = "INFO_PET_BUTTON";
+    public final static String REPORT_ABOUT_PET_BUTTON = "REPORT_ABOUT_PET_BUTTON";
     public final static String DETAILED_INFO_PART_3_BUTTON = "DETAILED_INFO_PART_3_BUTTON";
 
     /*
