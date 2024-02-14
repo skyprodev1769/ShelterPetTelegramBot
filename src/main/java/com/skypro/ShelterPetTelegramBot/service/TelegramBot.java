@@ -25,6 +25,7 @@ import java.util.List;
 import static com.skypro.ShelterPetTelegramBot.utils.Answers.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
+import static com.skypro.ShelterPetTelegramBot.utils.Commands.DETAILED_INFO;
 import static com.skypro.ShelterPetTelegramBot.utils.Descriptions.*;
 
 /**
@@ -108,7 +109,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case REGISTRATION:
                 answer = REACTION_TO_SUCCESSFUL_REGISTRATION(userFirstName);
-                createButtonGetInfoAboutShelter(chatId, answer);
+                createButtonInfoAboutShelter(chatId, answer);
                 saveNewUserToDB(chatId, userFirstName);
                 break;
 
@@ -134,7 +135,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case START:
                 answer = REACTION_TO_COMMAND_START(userFirstName);
-                createButtonGetInfoAboutShelter(chatId, answer);
+                createButtonInfoAboutShelter(chatId, answer);
                 break;
 
             case HELP:
@@ -145,6 +146,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             case SETTINGS:
                 answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
                 createKeyBoardForRegisteredUsers(chatId, answer);
+                break;
+
+            case INFO_ABOUT_SHELTER:
+                answer = REACTION_TO_REQUEST;
+                createButtonInfoAboutProcess(chatId, answer);
                 break;
 
             default:
@@ -174,6 +180,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             case NO_BUTTON:
                 answer = DISAGREEMENT_REGISTRATION;
                 reactionToCommand(chatId, answer);
+                break;
+
+            case INFO_ABOUT_SHELTER_BUTTON:
+                answer = REACTION_TO_REQUEST;
+                createButtonInfoAboutProcess(chatId, answer);
+                break;
+
+            case DETAILED_INFO_PART_1_BUTTON:
+                answer = REACTION_TO_DETAILED_INFO;
+                createKeyBoardForDetailedInfoAboutShelter(chatId, answer);
                 break;
 
             case CALL_VOLUNTEER_BUTTON:
@@ -256,6 +272,46 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
+     * Метод {@code createKeyBoardForDetailedInfoAboutShelter(Long chatId, String text)} <br>
+     * Создает интерактивную клавиатуру для выбора команд для получения подробной информации о приюте
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void createKeyBoardForDetailedInfoAboutShelter(Long chatId, String text) {
+        SendMessage message = sendMessage(chatId, text);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_SECURITY_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECORD_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CALL_VOLUNTEER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+        executeMessage(message);
+    }
+
+    /**
      * Метод {@code createButtonsForRegistration(Long chatId, String text)} <br>
      * Создает кнопки выбора под сообщением для дальнейшей регистрации нового пользователя
      *
@@ -263,23 +319,43 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param text   <i> является текстом для отправки пользователю </i>
      */
     private void createButtonsForRegistration(Long chatId, String text) {
-        createOnlyTwoButton(chatId, text, "Да", YES_BUTTON, "Нет", NO_BUTTON);
+        createOnlyTwoButton(chatId, text,
+                "Да",
+                YES_BUTTON,
+                "Нет",
+                NO_BUTTON);
     }
 
     /**
      * Метод {@code createButtonGetInfoAboutShelter(Long chatId, String text)} <br>
-     * Создает кнопку для получения информации о приюте
+     * Создает кнопку под сообщением для получения информации о приюте
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
      * @param text   <i> является текстом для отправки пользователю </i>
      */
-    private void createButtonGetInfoAboutShelter(Long chatId, String text) {
+    private void createButtonInfoAboutShelter(Long chatId, String text) {
         createOnlyOneButton(chatId, text, INFO_ABOUT_SHELTER, INFO_ABOUT_SHELTER_BUTTON);
     }
 
     /**
+     * Метод {@code createButtonGetInfoAboutShelter(Long chatId, String text)} <br>
+     * Создает кнопки под сообщением для получения информации о процессе получения животного
+     * или получения подробной информации о приюте
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+    private void createButtonInfoAboutProcess(Long chatId, String text) {
+        createOnlyTwoButton(chatId, text,
+                DETAILED_INFO,
+                DETAILED_INFO_PART_1_BUTTON,
+                INFO_ABOUT_PROCESS,
+                INFO_ABOUT_PROCESS_BUTTON);
+    }
+
+    /**
      * Метод {@code createButtonCallVolunteer(Long chatId, String text)} <br>
-     * Создает кнопку для вызова волонтера
+     * Создает кнопку под сообщением для вызова волонтера
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
      * @param text   <i> является текстом для отправки пользователю </i>
