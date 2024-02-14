@@ -8,7 +8,6 @@ public class ShelterPetTelegramBotApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShelterPetTelegramBotApplication.class, args);
-
 	}
 
 }
