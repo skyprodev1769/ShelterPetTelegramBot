@@ -132,6 +132,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         switch (text) {
 
+            /*
+            БАЗОВЫЕ КОМАНДЫ
+             */
+
             case START:
                 answer = REACTION_TO_COMMAND_START(userFirstName);
                 createButtonInfoAboutShelter(chatId, answer);
@@ -147,10 +151,47 @@ public class TelegramBot extends TelegramLongPollingBot {
                 createKeyBoardForRegisteredUsers(chatId, answer);
                 break;
 
+            /*
+            КОМАНДЫ ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ
+             */
+
             case INFO_ABOUT_SHELTER:
                 answer = REACTION_TO_REQUEST;
                 createButtonInfoAboutProcess(chatId, answer);
                 break;
+
+            case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS:
+                answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS;
+                reactionToCommand(chatId, answer);
+                break;
+
+            case INFO_ABOUT_SECURITY_CONTACT_DETAILS:
+                answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS;
+                reactionToCommand(chatId, answer);
+                break;
+
+            case INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION:
+                answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION;
+                reactionToCommand(chatId, answer);
+                break;
+
+            case RECORD_CONTACT_DETAILS:
+                answer = REACTION_TO_RECORD_CONTACT_DETAILS;
+                reactionToCommand(chatId, answer);
+                break;
+
+            /*
+            КОМАНДА ВЫЗОВА ВОЛОНТЕРА
+             */
+
+            case CALL_VOLUNTEER:
+                answer = REACTION_TO_CALL_VOLUNTEER;
+                reactionToCommand(chatId, answer);
+                break;
+
+            /*
+            ДЕФОЛТНАЯ КОМАНДА
+             */
 
             default:
                 answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
@@ -171,6 +212,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         switch (callbackData) {
 
+            /*
+            КНОПКИ РЕГИСТРАЦИИ
+             */
+
             case YES_BUTTON:
                 answer = AGREEMENT_REGISTRATION;
                 reactionToCommand(chatId, answer);
@@ -180,6 +225,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 answer = DISAGREEMENT_REGISTRATION;
                 reactionToCommand(chatId, answer);
                 break;
+            /*
+            КНОПКИ ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ
+             */
 
             case INFO_ABOUT_SHELTER_BUTTON:
                 answer = REACTION_TO_REQUEST;
@@ -190,6 +238,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 answer = REACTION_TO_DETAILED_INFO;
                 createKeyBoardForDetailedInfoAboutShelter(chatId, answer);
                 break;
+
+            /*
+            КНОПКА ВЫЗОВА ВОЛОНТЕРА
+             */
 
             case CALL_VOLUNTEER_BUTTON:
                 answer = REACTION_TO_CALL_VOLUNTEER;

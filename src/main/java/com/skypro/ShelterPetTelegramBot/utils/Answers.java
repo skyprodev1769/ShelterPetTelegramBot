@@ -55,7 +55,7 @@ public class Answers {
     }
 
     public static String DEFAULT_REACTION_FOR_REGISTERED_USERS(String userFirstName) {
-        return String.format("%s, пожалуйста, выберите команду из списка меню или воспользуйтесь кнопкой вызова волонтера", userFirstName);
+        return String.format("%s, пожалуйста, выберите команду из списка меню или воспользуйтесь кнопкой вызова волонтера.", userFirstName);
     }
 
     /*
@@ -80,14 +80,51 @@ public class Answers {
 
     public static final String REACTION_TO_DETAILED_INFO = "Выберите, что бы Вы хотели узнать.";
 
-    /*
-    РЕАКЦИЯ НА ВЫЗОВ ВОЛОНТЕРА
-     */
+    public final static String REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS = """
+            Наш приют работает ежедневно с 8:00 до 20:00.
+                        
+            Мы находимся по адресу:
+                        
+            г. Астана, ул. Планерная 1, стр.1.""";
+
+    public final static String REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS = """
+            Для проезда на территорию приюта необходимо оформить пропуск.
+                        
+            Пожалуйста, свяжитесь со службой охраны по номеру телефона:
+                        
+            + 7 (495) 111-11-11""";
+
+    public final static String REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION = """
+            Соблюдайте технику безопасности.
+            На территории приюта ЗАПРЕЩАЕТСЯ:
+                        
+            1. Самостоятельно открывать выгулы и вольеры без разрешения работника приюта.
+                        
+            2. Кормить животных.
+                        
+            3. Оставлять после себя мусор на территории приюта и прилегающей территории.
+                        
+            4. Кричать, размахивать руками, бегать между будками или вольерами, пугать и дразнить животных.""";
+
+    public final static String REACTION_TO_RECORD_CONTACT_DETAILS = """
+            Вы можете оставить свои контактные данные.
+                                
+            Введите Ваши:
+                                
+            ИМЯ
+                                
+            ФАМИЛИЮ
+                                
+            НОМЕР ТЕЛЕФОНА""";
+
+            /*
+            РЕАКЦИЯ НА ВЫЗОВ ВОЛОНТЕРА
+             */
 
     public static final String REACTION_TO_CALL_VOLUNTEER = """
             Воспользуйтесь следующими номерами для связи с нашими волонтерами:
                         
-            + 7 (495) 777-77-77
-            + 7 (495) 888-88-88
-            + 7 (495) 999-99-99""";
+            +7 (495) 777-77-77
+            +7 (495) 888-88-88
+            +7 (495) 999-99-99""";
 }
