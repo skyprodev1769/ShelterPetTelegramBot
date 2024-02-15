@@ -97,7 +97,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
 
             case HELP:
-                answer = REACTION_TO_COMMAND_HELP(userFirstName);
+                answer = REACTION_TO_COMMAND_HELP_FOR_UNREGISTERED_USERS(userFirstName);
                 reactionToCommand(chatId, answer);
                 break;
 
@@ -113,7 +113,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
 
             default:
-                answer = DEFAULT_REACTION(userFirstName);
+                answer = DEFAULT_REACTION_FOR_UNREGISTERED_USERS(userFirstName);
                 reactionToCommand(chatId, answer);
                 break;
         }
@@ -138,7 +138,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
 
             case HELP:
-                answer = REACTION_TO_COMMAND_HELP(userFirstName);
+                answer = REACTION_TO_COMMAND_HELP_FOR_REGISTERED_USERS(userFirstName);
                 createButtonCallVolunteer(chatId, answer);
                 break;
 
@@ -153,7 +153,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
 
             default:
-                answer = DEFAULT_REACTION(userFirstName);
+                answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
                 createButtonCallVolunteer(chatId, answer);
                 break;
         }

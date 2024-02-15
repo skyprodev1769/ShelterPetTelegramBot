@@ -22,7 +22,7 @@ public class Answers {
         return String.format("С возвращением, %s!", userFirstName);
     }
 
-    public static String REACTION_TO_COMMAND_HELP(String userFirstName) {
+    public static String REACTION_TO_COMMAND_HELP_FOR_UNREGISTERED_USERS(String userFirstName) {
         return String.format("""
                 %s, этот телеграм бот предназначен для людей,которые заинтересованы в том, чтобы забрать из приюта домашнее животное.
                                 
@@ -33,12 +33,29 @@ public class Answers {
                 Нажмите /settings, чтобы вывелась клавиатура""", userFirstName);
     }
 
+    public static String REACTION_TO_COMMAND_HELP_FOR_REGISTERED_USERS(String userFirstName) {
+        return String.format("""
+                %s, этот телеграм бот предназначен для людей,которые заинтересованы в том, чтобы забрать из приюта домашнее животное.
+                                
+                Нажмите /start, чтобы вывелось стартовое сообщение
+                                
+                Нажмите /help, чтобы вывелось данное сообщение снова
+                                
+                Нажмите /settings, чтобы вывелась клавиатура
+                                
+                или воспользуйтесь кнопкой вызова волонтера""", userFirstName);
+    }
+
     public static String REACTION_TO_COMMAND_SETTINGS(String userFirstname) {
         return String.format("%s, пожалуйста, выберите команду из клавиатуры ниже.", userFirstname);
     }
 
-    public static String DEFAULT_REACTION(String userFirstName) {
+    public static String DEFAULT_REACTION_FOR_UNREGISTERED_USERS(String userFirstName) {
         return String.format("%s, пожалуйста, выберите команду из списка меню.", userFirstName);
+    }
+
+    public static String DEFAULT_REACTION_FOR_REGISTERED_USERS(String userFirstName) {
+        return String.format("%s, пожалуйста, выберите команду из списка меню или воспользуйтесь кнопкой вызова волонтера", userFirstName);
     }
 
     /*
