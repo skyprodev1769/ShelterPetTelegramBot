@@ -1,7 +1,9 @@
 package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
+import com.skypro.ShelterPetTelegramBot.model.PotentialParent;
 import com.skypro.ShelterPetTelegramBot.model.User;
+import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
 import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PotentialParentRepository parentRepository;
 
     public TelegramBot(BotConfiguration configuration) {
         super(configuration.getToken());
@@ -491,6 +495,16 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         message.setReplyMarkup(keyboard);
         executeMessage(message);
+    }
+
+    private void savePotentialParentToDB(String firstName, String lastName, String phoneNumber) {
+        PotentialParent parent = new PotentialParent();
+
+        parent.setFirstName(firstName);
+        parent.setLastName(lastName);
+        parent.setPhoneNumber(phoneNumber);
+
+        parentRepository.save(parent);
     }
 
     /**
