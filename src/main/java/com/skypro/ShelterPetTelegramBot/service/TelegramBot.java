@@ -23,6 +23,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.skypro.ShelterPetTelegramBot.utils.Answers.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
@@ -43,6 +45,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private UserRepository userRepository;
     @Autowired
     private PotentialParentRepository parentRepository;
+
+    private final static Pattern pattern = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
 
     public TelegramBot(BotConfiguration configuration) {
         super(configuration.getToken());
@@ -69,6 +73,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                 getReactionsForUnregisteredUsers(chatId, text, userFirstName);
 
             } else {
+
+                Matcher matcher = pattern.matcher(text);
+
+                if (parentRepository.findById(chatId).isEmpty() && matcher.matches()) {
+
+                    savePotentialParentToDB(chatId, userFirstName, matcher);
+                    return;
+                }
 
                 getReactionsForRegisteredUsers(chatId, text, userFirstName);
             }
@@ -454,7 +466,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * Метод {@code createOnlyTwoButton(Long chatId, String text, String firstButton, String callbackData)} <br>
-     * Является шаблоном для создания <b>Двух</b> кнопок
+     * Является шаблоном для создания <b>ДВУХ</b> кнопок
      *
      * @param chatId             <i> является идентификатором пользователя (его id в telegram) </i>
      * @param text               <i> является текстом для отправки пользователю </i>
@@ -497,7 +509,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         executeMessage(message);
     }
 
-    private void savePotentialParentToDB(String firstName, String lastName, String phoneNumber) {
+    /**
+     * Метод {@code savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher)} <br>
+     * Сохраняет потенциального усыновителя {@link PotentialParent} в БД
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param userFirstName <i> является именем пользователя </i>
+     * @param matcher       <i> является объектом класса {@link Matcher}</i>
+     */
+    private void savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher) {
+        String firstName = matcher.group(1);
+        String lastName = matcher.group(3);
+        String phoneNumber = matcher.group(5);
+
         PotentialParent parent = new PotentialParent();
 
         parent.setFirstName(firstName);
@@ -505,6 +529,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         parent.setPhoneNumber(phoneNumber);
 
         parentRepository.save(parent);
+
+        String answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
+        createButtonInfoAboutProcess(chatId, answer);
     }
 
     /**
@@ -527,6 +554,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     /**
      * Метод {@code createMainMenu()} <br>
      * Создает меню с основными командами: <br>
+     * <br>
      * <b>/start</b> <br>
      * <b>/help</b> <br>
      * <b>/settings</b> <br>
@@ -549,6 +577,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * Метод {@code reactionToCommand(Long chatId, String text)} <br>
      * Является ответной реакцией в виде текстового сообщения на действие пользователя
      * и объединяет методы: <br>
+     * <br>
      * {@code  sendMessage(Long chatId, String text))} <br>
      * {@code  executeMessage(SendMessage message)}
      *
@@ -562,7 +591,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * Метод {@code sendMessage(Long chatId, String text)} <br>
-     * Создает и возвращает новый {@link SendMessage}
+     * Создает и возвращает новый объект типа {@link SendMessage}
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
      * @param text   <i> является текстом для отправки пользователю </i>
@@ -576,7 +605,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * Метод {@code executeMessage(SendMessage message)} <br>
-     * Отправляет {@link SendMessage} пользователю
+     * Отправляет объект типа {@link SendMessage} пользователю
      *
      * @param message <i> является отправляемым message </i>
      */
