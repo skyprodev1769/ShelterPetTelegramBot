@@ -18,9 +18,10 @@ public class ReactionOnBoardAndButtonAndCommand extends TelegramBot {
 
     private final CreateButtonAndKeyBoard create;
 
-    public ReactionOnBoardAndButtonAndCommand(BotConfiguration configuration, @Lazy ReactionOnBoardAndButtonAndCommand reaction, @Lazy CreateButtonAndKeyBoard create) {
-        super(configuration, reaction);
+    public ReactionOnBoardAndButtonAndCommand(BotConfiguration configuration, @Lazy CreateButtonAndKeyBoard create) {
+        super(configuration);
         this.create = create;
+
     }
 
     /**
@@ -108,7 +109,7 @@ public class ReactionOnBoardAndButtonAndCommand extends TelegramBot {
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS:
                 answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS;
                 reactionToCommand(chatId, answer);
-                sendFoto(chatId, "staticFile/foto/adres.jpg");
+                sendLocation(chatId,51.176370, 71.335756);
                 break;
 
             case INFO_ABOUT_SECURITY_CONTACT_DETAILS:

@@ -14,6 +14,7 @@ import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
+import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -45,7 +46,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfiguration configuration;
     @Lazy
     @Autowired
-    final ReactionOnBoardAndButtonAndCommand reaction;
+    protected ReactionOnBoardAndButtonAndCommand reaction;
 
     @Lazy
     @Autowired
@@ -58,12 +59,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final static Pattern pattern = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
 
-    public TelegramBot(BotConfiguration configuration, ReactionOnBoardAndButtonAndCommand reaction) {
+    public TelegramBot(BotConfiguration configuration) {
         super(configuration.getToken());
         this.configuration = configuration;
-        this.reaction = reaction;
-        this.create = create;
-
 
         createMainMenu();
     }
@@ -253,5 +251,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         InputFile sendFile = new InputFile(file);
         return sendFile;
     }
+
+    void sendLocation (long chatId, Double latitude, Double longitude){
+        SendLocation sendLocation = new SendLocation();
+        sendLocation.setChatId(chatId);
+        sendLocation.setLatitude(latitude);
+        sendLocation.setLongitude(longitude);
+        try{
+            execute(sendLocation);
+        } catch (TelegramApiException e) {
+            log.error("ERROR: {}", e.getMessage());
+        }
+    }
+
 
 }

@@ -21,7 +21,8 @@ public class CreateButtonAndKeyBoard extends TelegramBot {
 
 
     public CreateButtonAndKeyBoard(BotConfiguration configuration, @Lazy ReactionOnBoardAndButtonAndCommand reaction) {
-        super(configuration, reaction);
+        super(configuration);
+        this.reaction=reaction;
 
     }
 
