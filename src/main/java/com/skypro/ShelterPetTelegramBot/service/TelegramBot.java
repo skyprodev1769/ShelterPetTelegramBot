@@ -45,11 +45,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfiguration configuration;
     @Lazy
     @Autowired
-    final ReactionOnBoardAndButton reaction;
+    final ReactionOnBoardAndButtonAndCommand reaction;
 
     @Lazy
     @Autowired
-    protected CreateButtonAndKeyBoard create = null;
+    protected CreateButtonAndKeyBoard create;
 
     @Autowired
     private UserRepository userRepository;
@@ -58,7 +58,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final static Pattern pattern = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
 
-    public TelegramBot(BotConfiguration configuration, ReactionOnBoardAndButton reaction) {
+    public TelegramBot(BotConfiguration configuration, ReactionOnBoardAndButtonAndCommand reaction) {
         super(configuration.getToken());
         this.configuration = configuration;
         this.reaction = reaction;
@@ -126,6 +126,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         userRepository.save(user);
     }
+
     /**
      * Метод {@code savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher)} <br>
      * Сохраняет потенциального усыновителя {@link PotentialParent} в БД
@@ -172,6 +173,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.error("ERROR: setting bot`s command list {}", e.getMessage());
         }
     }
+
     /**
      * Метод {@code sendMessage(Long chatId, String text)} <br>
      * Создает и возвращает новый объект типа {@link SendMessage}
@@ -199,12 +201,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.error("ERROR: {}", e.getMessage());
         }
     }
+
     /**
      * Метод {@code  sendDocument(long chatId,String caption, String documentPath)} <br>
      * отправляет документы пользователю
      *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
-     * @param documentPath   <i> является адресом отправляемого документа  </i>
+     * @param chatId       <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param documentPath <i> является адресом отправляемого документа  </i>
      */
     void sendDocument(long chatId, String caption, String documentPath) {
         SendDocument sendDocument = new SendDocument();
@@ -217,15 +220,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.error("ERROR: {}", e.getMessage());
         }
     }
+
     /**
      * Метод {@code  sendFoto(long chatId,String caption, String fotoPath)} <br>
      * отправляет фотографии пользователю
      *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
-     * @param fotoPath   <i> является адресом отправляемой фотографии  </i>
+     * @param chatId   <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param fotoPath <i> является адресом отправляемой фотографии  </i>
      */
 
-    void sendFoto(long chatId, String fotoPath){
+    void sendFoto(long chatId, String fotoPath) {
         SendPhoto sendfoto = new SendPhoto();
         sendfoto.setChatId(chatId);
         sendfoto.setPhoto(transformsFilePathToInputFile(fotoPath));
@@ -239,12 +243,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     /**
      * Метод {@code  transformsFilePathToInputFile(String path)} <br>
      * преобразовывает ссылку на файл в файл формата InputFile
-     * @SneakyThrows  это аннотация Lombok, которая используется для обработки функций с отмеченными исключениями
      *
-     * @param path   <i> является адресом отправляемого файла  </i>
+     * @param path <i> является адресом отправляемого файла  </i>
+     * @SneakyThrows это аннотация Lombok, которая используется для обработки функций с отмеченными исключениями
      */
     @SneakyThrows
-    private InputFile transformsFilePathToInputFile(String path){
+    private InputFile transformsFilePathToInputFile(String path) {
         File file = ResourceUtils.getFile("classpath:" + path);
         InputFile sendFile = new InputFile(file);
         return sendFile;

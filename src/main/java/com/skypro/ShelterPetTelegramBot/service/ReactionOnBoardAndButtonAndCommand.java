@@ -1,21 +1,10 @@
 package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
-import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
-import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
-import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.io.File;
 
 import static com.skypro.ShelterPetTelegramBot.utils.Answers.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Answers.REACTION_TO_CALL_VOLUNTEER;
@@ -24,12 +13,12 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 
 @Slf4j
 @Component
-public class ReactionOnBoardAndButton extends TelegramBot {
+public class ReactionOnBoardAndButtonAndCommand extends TelegramBot {
 
 
     private final CreateButtonAndKeyBoard create;
 
-    public ReactionOnBoardAndButton(BotConfiguration configuration, @Lazy ReactionOnBoardAndButton reaction, @Lazy CreateButtonAndKeyBoard create) {
+    public ReactionOnBoardAndButtonAndCommand(BotConfiguration configuration, @Lazy ReactionOnBoardAndButtonAndCommand reaction, @Lazy CreateButtonAndKeyBoard create) {
         super(configuration, reaction);
         this.create = create;
     }
@@ -209,6 +198,7 @@ public class ReactionOnBoardAndButton extends TelegramBot {
                 break;
         }
     }
+
     /**
      * Метод {@code reactionToCommand(Long chatId, String text)} <br>
      * Является ответной реакцией в виде текстового сообщения на действие пользователя

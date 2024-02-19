@@ -1,10 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
-import com.skypro.ShelterPetTelegramBot.model.PotentialParent;
-import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
-import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,9 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 
-import static com.skypro.ShelterPetTelegramBot.utils.Answers.REACTION_TO_SUCCESSFUL_RECORD_CONTACT;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.CALL_VOLUNTEER_BUTTON;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
@@ -25,16 +19,11 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 @Component
 public class CreateButtonAndKeyBoard extends TelegramBot {
 
-    @Autowired
-    private PotentialParentRepository parentRepository;
 
-
-    public CreateButtonAndKeyBoard(BotConfiguration configuration, @Lazy ReactionOnBoardAndButton reaction) {
+    public CreateButtonAndKeyBoard(BotConfiguration configuration, @Lazy ReactionOnBoardAndButtonAndCommand reaction) {
         super(configuration, reaction);
 
     }
-
-
 
 
     /**
