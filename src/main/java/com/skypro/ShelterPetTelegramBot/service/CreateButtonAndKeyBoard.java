@@ -24,41 +24,17 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 
 @Component
 public class CreateButtonAndKeyBoard extends TelegramBot {
-    @Lazy
-    private final ReactionOnBoardAndButton reaction;
+
     @Autowired
     private PotentialParentRepository parentRepository;
 
 
-    public CreateButtonAndKeyBoard(BotConfiguration configuration, ReactionOnBoardAndButton reaction, ReactionOnBoardAndButton reaction1) {
+    public CreateButtonAndKeyBoard(BotConfiguration configuration, @Lazy ReactionOnBoardAndButton reaction) {
         super(configuration, reaction);
-        this.reaction = reaction1;
+
     }
 
-    /**
-     * Метод {@code savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher)} <br>
-     * Сохраняет потенциального усыновителя {@link PotentialParent} в БД
-     *
-     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i>
-     * @param userFirstName <i> является именем пользователя </i>
-     * @param matcher       <i> является объектом класса {@link Matcher}</i>
-     */
-    void savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher) {
-        String firstName = matcher.group(1);
-        String lastName = matcher.group(3);
-        String phoneNumber = matcher.group(5);
 
-        PotentialParent parent = new PotentialParent();
-
-        parent.setFirstName(firstName);
-        parent.setLastName(lastName);
-        parent.setPhoneNumber(phoneNumber);
-
-        parentRepository.save(parent);
-
-        String answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
-        createButtonInfoAboutProcess(chatId, answer);
-    }
 
 
     /**
@@ -304,12 +280,4 @@ public class CreateButtonAndKeyBoard extends TelegramBot {
         reaction.executeMessage(message);
     }
 
-    /**
-     * Метод {@code savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher)} <br>
-     * Сохраняет потенциального усыновителя {@link PotentialParent} в БД
-     *
-     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i>
-     * @param userFirstName <i> является именем пользователя </i>
-     * @param matcher       <i> является объектом класса {@link Matcher}</i>
-     */
 }

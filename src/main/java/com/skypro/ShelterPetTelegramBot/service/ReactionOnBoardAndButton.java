@@ -24,7 +24,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 
 @Slf4j
 @Component
-public class ReactionOnBoardAndButton extends TelegramBot{
+public class ReactionOnBoardAndButton extends TelegramBot {
 
 
     private final CreateButtonAndKeyBoard create;
@@ -119,7 +119,7 @@ public class ReactionOnBoardAndButton extends TelegramBot{
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS:
                 answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS;
                 reactionToCommand(chatId, answer);
-                sendFoto(chatId,"staticFile/foto/adres.jpg");
+                sendFoto(chatId, "staticFile/foto/adres.jpg");
                 break;
 
             case INFO_ABOUT_SECURITY_CONTACT_DETAILS:
@@ -130,7 +130,7 @@ public class ReactionOnBoardAndButton extends TelegramBot{
             case INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION:
                 answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION;
                 reactionToCommand(chatId, answer);
-                sendDocument(chatId,"полные правила поведения и техника безопасности на " +
+                sendDocument(chatId, "полные правила поведения и техника безопасности на " +
                                 "территории приюта смотрите в документе",
                         "staticFile/docs/Safety_precautions.txt");
                 break;
@@ -209,86 +209,21 @@ public class ReactionOnBoardAndButton extends TelegramBot{
                 break;
         }
     }
+    /**
+     * Метод {@code reactionToCommand(Long chatId, String text)} <br>
+     * Является ответной реакцией в виде текстового сообщения на действие пользователя
+     * и объединяет методы: <br>
+     * <br>
+     * {@code  sendMessage(Long chatId, String text))} <br>
+     * {@code  executeMessage(SendMessage message)}
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
+     * @param text   <i> является текстом для отправки пользователю </i>
+     */
+
     private void reactionToCommand(Long chatId, String text) {
         SendMessage message = sendMessage(chatId, text);
         executeMessage(message);
     }
 
-    /**
-     * Метод {@code sendMessage(Long chatId, String text)} <br>
-     * Создает и возвращает новый объект типа {@link SendMessage}
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
-     * @param text   <i> является текстом для отправки пользователю </i>
-     */
-    SendMessage sendMessage(Long chatId, String text) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(text);
-        return message;
-    }
-
-    /**
-     * Метод {@code executeMessage(SendMessage message)} <br>
-     * Отправляет объект типа {@link SendMessage} пользователю
-     *
-     * @param message <i> является отправляемым message </i>
-     */
-    void executeMessage(SendMessage message) {
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            log.error("ERROR: {}", e.getMessage());
-        }
-    }
-    /**
-     * Метод {@code  sendDocument(long chatId,String caption, String documentPath)} <br>
-     * отправляет документы пользователю
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
-     * @param documentPath   <i> является адресом отправляемого документа  </i>
-     */
-    private void sendDocument(long chatId,String caption, String documentPath) {
-        SendDocument sendDocument = new SendDocument();
-        sendDocument.setChatId(chatId);
-        sendDocument.setCaption(caption);
-        sendDocument.setDocument(transformsFilePathToInputFile(documentPath));
-        try {
-            execute(sendDocument);
-        } catch (TelegramApiException e) {
-            log.error("ERROR: {}", e.getMessage());
-        }
-    }
-    /**
-     * Метод {@code  sendFoto(long chatId,String caption, String fotoPath)} <br>
-     * отправляет фотографии пользователю
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i>
-     * @param fotoPath   <i> является адресом отправляемой фотографии  </i>
-     */
-
-    private void sendFoto(long chatId, String fotoPath){
-        SendPhoto sendfoto = new SendPhoto();
-        sendfoto.setChatId(chatId);
-        sendfoto.setPhoto(transformsFilePathToInputFile(fotoPath));
-        try {
-            execute(sendfoto);
-        } catch (TelegramApiException e) {
-            log.error("ERROR: {}", e.getMessage());
-        }
-    }
-
-    /**
-     * Метод {@code  transformsFilePathToInputFile(String path)} <br>
-     * преобразовывает ссылку на файл в файл формата InputFile
-     * @SneakyThrows  это аннотация Lombok, которая используется для обработки функций с отмеченными исключениями
-     *
-     * @param path   <i> является адресом отправляемого файла  </i>
-     */
-    @SneakyThrows
-    private InputFile transformsFilePathToInputFile(String path){
-        File file = ResourceUtils.getFile("classpath:" + path);
-        InputFile sendFile = new InputFile(file);
-        return sendFile;
-    }
 }
