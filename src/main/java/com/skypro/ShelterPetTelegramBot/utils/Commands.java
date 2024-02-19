@@ -9,7 +9,14 @@ public class Commands {
     public static final String START = "/start";
     public static final String HELP = "/help";
     public static final String SETTINGS = "/settings";
-    public static final String REGISTRATION = "/registration";
+
+    /*
+    КОМАНДЫ ДЛЯ РЕГИСТРАЦИИ
+     */
+
+    public static final String YES = "Да";
+    public static final String NO = "Нет";
+    public static final String REGISTRATION = "Зарегистрироваться";
 
     /*
     КОМАНДЫ ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ
