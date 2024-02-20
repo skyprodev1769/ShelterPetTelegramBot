@@ -18,15 +18,6 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 @Component
 public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
-    /**
-     * Метод <br> <br>
-     * {@code createKeyBoardForUnregisteredUsers(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает интерактивную клавиатуру для выбора команд для <b> НЕЗАРЕГИСТРИРОВАННЫХ </b> пользователей
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
     public final SendMessage createKeyBoardForUnregisteredUsers(Long chatId, String answer) {
         SendMessage message = new SendMessage();
@@ -57,17 +48,8 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         return message;
     }
 
-    /**
-     * Метод <br> <br>
-     * {@code createKeyBoardForRegisteredUsers(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает интерактивную клавиатуру для выбора команд для <b> ЗАРЕГИСТРИРОВАННЫХ </b> пользователей
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
-    public final SendMessage createKeyBoardForRegisteredUsers(Long chatId, String answer) {
+    public final SendMessage createKeyBoardForChoiceShelter(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -78,15 +60,41 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add(INFO_ABOUT_SHELTER);
+        row.add(DOG_SHELTER);
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(INFO_ABOUT_PROCESS);
+        row.add(CAT_SHELTER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+
+        return message;
+    }
+
+    @Override
+    public final SendMessage createKeyBoardGeneralStepsForDogShelter(Long chatId, String answer) {
+        SendMessage message = new SendMessage();
+
+        message.setChatId(chatId);
+        message.setText(answer);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(INFO_ABOUT_DOG_SHELTER);
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(REPORT_ABOUT_PET);
+        row.add(INFO_ABOUT_PROCESS_FOR_DOG_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REPORT_ABOUT_DOG);
         rows.add(row);
 
         row = new KeyboardRow();
@@ -100,17 +108,8 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         return message;
     }
 
-    /**
-     * Метод <br> <br>
-     * {@code createKeyBoardForDetailedInfoAboutShelter(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает интерактивную клавиатуру для выбора команд для получения подробной информации о приюте
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
-    public final SendMessage createKeyBoardForDetailedInfoAboutShelter(Long chatId, String answer) {
+    public final SendMessage createKeyBoardGeneralStepsForCatShelter(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -121,11 +120,45 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add(INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS);
+        row.add(INFO_ABOUT_CAT_SHELTER);
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(INFO_ABOUT_SECURITY_CONTACT_DETAILS);
+        row.add(INFO_ABOUT_PROCESS_FOR_CAT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REPORT_ABOUT_CAT);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CALL_VOLUNTEER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+
+        return message;
+    }
+
+    @Override
+    public final SendMessage createKeyBoardForDetailedInfoAboutDogShelter(Long chatId, String answer) {
+        SendMessage message = new SendMessage();
+
+        message.setChatId(chatId);
+        message.setText(answer);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER);
         rows.add(row);
 
         row = new KeyboardRow();
@@ -134,6 +167,68 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         row = new KeyboardRow();
         row.add(RECORD_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_PROCESS_FOR_DOG_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REPORT_ABOUT_DOG);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CHANGE_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CALL_VOLUNTEER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+
+        return message;
+    }
+
+    @Override
+    public final SendMessage createKeyBoardForDetailedInfoAboutCatShelter(Long chatId, String answer) {
+        SendMessage message = new SendMessage();
+
+        message.setChatId(chatId);
+        message.setText(answer);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECORD_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_PROCESS_FOR_CAT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REPORT_ABOUT_CAT);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CHANGE_SHELTER);
         rows.add(row);
 
         row = new KeyboardRow();

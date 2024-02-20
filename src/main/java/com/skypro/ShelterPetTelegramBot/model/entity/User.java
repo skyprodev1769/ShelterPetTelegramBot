@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 
 /**
  * Класс {@link User}
- * <p>
  * является сущностью для хранения новых пользователей в БД и имеет 3 поля: <br> <br>
  *
  * <b> {@code Long chatId} </b> <br> <i> является идентификатором пользователя (его id в telegram) </i> <br> <br>

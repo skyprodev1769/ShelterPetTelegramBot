@@ -7,7 +7,6 @@ import lombok.Data;
 
 /**
  * Класс {@link PotentialParent}
- * <p>
  * является сущностью для хранения потенциальных усыновителей в БД и имеет 4 поля: <br> <br>
  *
  * <b> {@code Long chatId} </b> <br> <i> является идентификатором пользователя (его id в telegram) </i> <br> <br>
@@ -15,7 +14,6 @@ import lombok.Data;
  * <b> {@code String lastName} </b> <br> <i> является фамилией усыновителя </i> <br> <br>
  * <b> {@code String phoneNumber} </b> <br> <i> является номером телефона усыновителя </i>
  */
-
 @Data
 @Entity(name = "potential_parent")
 public class PotentialParent {

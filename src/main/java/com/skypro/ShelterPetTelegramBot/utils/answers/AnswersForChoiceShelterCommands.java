@@ -1,7 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.utils.answers;
 
 /**
- * РЕАКЦИИ НА КОМАНДЫ ДЛЯ ВЫБОРА ПРИЮТА
+ * РЕАКЦИИ НА КОМАНДЫ ВЫБОРА ПРИЮТА
  */
 public class AnswersForChoiceShelterCommands {
 

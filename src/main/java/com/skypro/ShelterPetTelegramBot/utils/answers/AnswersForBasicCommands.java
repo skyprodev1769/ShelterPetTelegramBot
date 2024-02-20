@@ -20,7 +20,7 @@ public class AnswersForBasicCommands {
         return String.format("""
                 С возвращением, %s!
                                 
-                Пожалуйста, Выберите приют.""", userFirstName);
+                Пожалуйста, выберите приют.""", userFirstName);
     }
 
     public static String REACTION_TO_COMMAND_HELP_FOR_UNREGISTERED_USERS(String userFirstName) {

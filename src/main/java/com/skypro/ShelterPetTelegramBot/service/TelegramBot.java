@@ -35,14 +35,17 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForBasicComm
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForChoiceShelterCommands.REACTION_TO_CHOICE_CAT_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForChoiceShelterCommands.REACTION_TO_CHOICE_DOG_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForGeneralCommands.*;
-import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForInfoAboutShelterCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRecordContactsCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRegistrationCommands.*;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER;
 
 /**
  * Класс {@link TelegramBot}
- * является главным сервисным классом, в котором происходит создание бота
- * и обработка всех входящих {@code update}
+ * является основным сервисным классом, в котором происходит обработка всех входящих {@code update}
  */
 @Slf4j
 @Component
@@ -59,7 +62,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private PotentialParentRepository parentRepository;
 
-    private final static Pattern pattern = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
+    private final static Pattern PATTERN = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
+    private static Boolean isDogShelter;
 
     public TelegramBot(BotConfiguration configuration) {
         super(configuration.getToken());
@@ -81,40 +85,78 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId;
         String userFirstName;
 
+        // Если приходит сообщение и оно содержит текст
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             chatId = update.getMessage().getChatId();
             userFirstName = update.getMessage().getChat().getFirstName();
             String text = update.getMessage().getText();
 
+            // Если нет записи о пользователе в БД
             if (userRepository.findById(chatId).isEmpty()) {
 
                 getReactionsForUnregisteredUsers(chatId, userFirstName, text);
 
+                // Если есть запись о пользователе в БД
             } else {
 
-                Matcher matcher = pattern.matcher(text);
+                Matcher matcher = PATTERN.matcher(text);
                 String answer;
+                SendMessage message;
 
-                if (parentRepository.findById(chatId).isEmpty() && matcher.matches()) {
+                // Если выбран приют для собак
+                if (isDogShelter) {
 
-                    PotentialParent parent = recordContacts.recordContact(chatId, matcher);
-                    parentRepository.save(parent);
+                    // Если нет записи о потенциальном усыновителе в БД
+                    if (parentRepository.findById(chatId).isEmpty() && matcher.matches()) {
 
-                    answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
-                    reactionToCommand(chatId, answer);
-                    return;
+                        PotentialParent parent = recordContacts.recordContact(chatId, matcher);
+                        parentRepository.save(parent);
 
-                } else if (parentRepository.findById(chatId).isPresent() && matcher.matches()) {
+                        answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
+                        message = keyBoards.createKeyBoardForDetailedInfoAboutDogShelter(chatId, answer);
+                        executeMessage(message);
+                        return;
 
-                    answer = REACTION_TO_REPEAT_RECORD_CONTACT(userFirstName);
-                    reactionToCommand(chatId, answer);
-                    return;
+                        // Если есть запись о потенциальном усыновителе в БД
+                    } else if (parentRepository.findById(chatId).isPresent() && matcher.matches()) {
+
+                        answer = REACTION_TO_REPEAT_RECORD_CONTACT(userFirstName);
+                        message = keyBoards.createKeyBoardForDetailedInfoAboutDogShelter(chatId, answer);
+                        executeMessage(message);
+                        return;
+                    }
+
+                    getReactionsForDogShelter(chatId, userFirstName, text);
+
+                    // Если выбран приют для кошек
+                } else {
+
+                    // Если нет записи о потенциальном усыновителе в БД
+                    if (parentRepository.findById(chatId).isEmpty() && matcher.matches()) {
+
+                        PotentialParent parent = recordContacts.recordContact(chatId, matcher);
+                        parentRepository.save(parent);
+
+                        answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
+                        message = keyBoards.createKeyBoardForDetailedInfoAboutCatShelter(chatId, answer);
+                        executeMessage(message);
+                        return;
+
+                        // Если есть запись о потенциальном усыновителе в БД
+                    } else if (parentRepository.findById(chatId).isPresent() && matcher.matches()) {
+
+                        answer = REACTION_TO_REPEAT_RECORD_CONTACT(userFirstName);
+                        message = keyBoards.createKeyBoardForDetailedInfoAboutCatShelter(chatId, answer);
+                        executeMessage(message);
+                        return;
+                    }
+
+                    getReactionsForCatShelter(chatId, userFirstName, text);
                 }
-
-                getReactionsForRegisteredUsers(chatId, userFirstName, text);
             }
 
+            // Если приходит отклик от нажатия кнопки
         } else if (update.hasCallbackQuery()) {
 
             chatId = update.getCallbackQuery().getMessage().getChatId();
@@ -126,10 +168,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод <br> <br>
-     * {@code getReactionsForUnregisteredUsers(Long chatId, String userFirstName, String text)} <br> <br>
-     * <p>
-     * Возвращает реакции на команды для <b> НЕЗАРЕГИСТРИРОВАННЫХ </b> пользователей
+     * Метод возвращает реакции на команды для <b> НЕЗАРЕГИСТРИРОВАННЫХ </b> пользователей
      *
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param userFirstName <i> является именем пользователя </i> <br>
@@ -167,25 +206,21 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод <br> <br>
-     * {@code getReactionsForRegisteredUsers(Long chatId, String userFirstName, String text)} <br> <br>
-     * <p>
-     * Возвращает реакции на команды для <b> ЗАРЕГИСТРИРОВАННЫХ пользователей </b>
+     * Метод возвращает реакции на команды для <b> ЗАРЕГИСТРИРОВАННЫХ </b> пользователей
+     * и запросов информации о приюте <b> ДЛЯ СОБАК </b>
      *
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param userFirstName <i> является именем пользователя </i> <br>
      * @param text          <i> является полученным текстом от пользователя </i>
      */
-    private void getReactionsForRegisteredUsers(Long chatId, String userFirstName, String text) {
+    private void getReactionsForDogShelter(Long chatId, String userFirstName, String text) {
 
         String answer;
         SendMessage message;
 
         switch (text) {
 
-            /*
-            БАЗОВЫЕ КОМАНДЫ
-             */
+            // БАЗОВЫЕ КОМАНДЫ
 
             case START -> {
                 answer = REACTION_TO_COMMAND_START_FOR_REGISTERED_USERS(userFirstName);
@@ -201,52 +236,74 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case SETTINGS -> {
                 answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
-                message = keyBoards.createKeyBoardForRegisteredUsers(chatId, answer);
+                message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
                 executeMessage(message);
             }
 
-            /*
-            КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ
-             */
+            // КОМАНДЫ ВЫБОРА ПРИЮТА
 
-            case INFO_ABOUT_SHELTER -> {
-                answer = REACTION_TO_REQUEST(userFirstName);
-                message = buttons.createButtonsForGetInfoAboutProcess(chatId, answer);
+            case DOG_SHELTER -> {
+                isDogShelter = true;
+                answer = REACTION_TO_CHOICE_DOG_SHELTER(userFirstName);
+                message = keyBoards.createKeyBoardGeneralStepsForDogShelter(chatId, answer);
                 executeMessage(message);
             }
 
-            case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS -> {
-                answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName);
-                reactionToCommand(chatId, answer);
+            case CAT_SHELTER -> {
+                isDogShelter = false;
+                answer = REACTION_TO_CHOICE_CAT_SHELTER(userFirstName);
+                message = keyBoards.createKeyBoardGeneralStepsForCatShelter(chatId, answer);
+                executeMessage(message);
             }
 
-            case INFO_ABOUT_SECURITY_CONTACT_DETAILS -> {
-                answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS(userFirstName);
-                reactionToCommand(chatId, answer);
-            }
+            // КОМАНДЫ ИНФОРМАЦИИ О ЛЮБОМ ПРИЮТЕ
 
             case INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION -> {
                 answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION(userFirstName);
                 reactionToCommand(chatId, answer);
             }
 
+            // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК
+
+            case INFO_ABOUT_DOG_SHELTER -> {
+                answer = REACTION_TO_REQUEST(userFirstName);
+                message = buttons.createButtonsForGetInfoAboutProcessForDogShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER -> {
+                answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER -> {
+                answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
+
             case RECORD_CONTACT_DETAILS -> {
                 answer = REACTION_TO_RECORD_CONTACT_DETAILS(userFirstName);
                 reactionToCommand(chatId, answer);
             }
 
-            /*
-            КОМАНДА ВЫЗОВА ВОЛОНТЕРА
-             */
+            // КОМАНДА СМЕНЫ ПРИЮТА
+
+            case CHANGE_SHELTER -> {
+                answer = REACTION_TO_CHANGED_SHELTER(userFirstName);
+                message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            // КОМАНДА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER -> {
                 answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
                 reactionToCommand(chatId, answer);
             }
 
-            /*
-            ДЕФОЛТНАЯ КОМАНДА
-             */
+            // ДЕФОЛТНАЯ КОМАНДА
 
             default -> {
                 answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
@@ -257,10 +314,115 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод <br> <br>
-     * {@code getReactionsToClickingButtons(Long chatId, String userFirstName, String callbackData)} <br> <br>
-     * <p>
-     * Возвращает реакции на нажатие кнопок пользователями
+     * Метод возвращает реакции на команды для <b> ЗАРЕГИСТРИРОВАННЫХ </b> пользователей
+     * и запросов информации о приюте <b> ДЛЯ КОШЕК </b>
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i> <br>
+     * @param text          <i> является полученным текстом от пользователя </i>
+     */
+    private void getReactionsForCatShelter(Long chatId, String userFirstName, String text) {
+
+        String answer;
+        SendMessage message;
+
+        switch (text) {
+
+            // БАЗОВЫЕ КОМАНДЫ
+
+            case START -> {
+                answer = REACTION_TO_COMMAND_START_FOR_REGISTERED_USERS(userFirstName);
+                message = buttons.createButtonsForChoiceShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            case HELP -> {
+                answer = REACTION_TO_COMMAND_HELP_FOR_REGISTERED_USERS(userFirstName);
+                message = buttons.createButtonForCallVolunteer(chatId, answer);
+                executeMessage(message);
+            }
+
+            case SETTINGS -> {
+                answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
+                message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            // КОМАНДЫ ВЫБОРА ПРИЮТА
+
+            case DOG_SHELTER -> {
+                isDogShelter = true;
+                answer = REACTION_TO_CHOICE_DOG_SHELTER(userFirstName);
+                message = keyBoards.createKeyBoardGeneralStepsForDogShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            case CAT_SHELTER -> {
+                isDogShelter = false;
+                answer = REACTION_TO_CHOICE_CAT_SHELTER(userFirstName);
+                message = keyBoards.createKeyBoardGeneralStepsForCatShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            // КОМАНДЫ ИНФОРМАЦИИ О ЛЮБОМ ПРИЮТЕ
+
+            case INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION -> {
+                answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК
+
+            case INFO_ABOUT_CAT_SHELTER -> {
+                answer = REACTION_TO_REQUEST(userFirstName);
+                message = buttons.createButtonsForGetInfoAboutProcessForCatShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER -> {
+                answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER -> {
+                answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
+
+            case RECORD_CONTACT_DETAILS -> {
+                answer = REACTION_TO_RECORD_CONTACT_DETAILS(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            // КОМАНДА СМЕНЫ ПРИЮТА
+
+            case CHANGE_SHELTER -> {
+                answer = REACTION_TO_CHANGED_SHELTER(userFirstName);
+                message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            // КОМАНДА ВЫЗОВА ВОЛОНТЕРА
+
+            case CALL_VOLUNTEER -> {
+                answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            // ДЕФОЛТНАЯ КОМАНДА
+
+            default -> {
+                answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
+                message = buttons.createButtonForCallVolunteer(chatId, answer);
+                executeMessage(message);
+            }
+        }
+    }
+
+    /**
+     * Метод возвращает реакции на нажатие кнопок пользователями
      *
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param userFirstName <i> является именем пользователя </i> <br>
@@ -273,9 +435,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         switch (callbackData) {
 
-            /*
-            КНОПКИ РЕГИСТРАЦИИ
-             */
+            // КНОПКИ РЕГИСТРАЦИИ
 
             case YES_BUTTON -> {
                 answer = REACTION_TO_AGREEMENT_REGISTRATION(userFirstName);
@@ -296,38 +456,47 @@ public class TelegramBot extends TelegramLongPollingBot {
                 executeMessage(message);
             }
 
-            /*
-            КНОПКИ ВЫБОРА ПРИЮТА
-             */
+            // КНОПКИ ВЫБОРА ПРИЮТА
 
             case DOG_SHELTER_BUTTON -> {
+                isDogShelter = true;
                 answer = REACTION_TO_CHOICE_DOG_SHELTER(userFirstName);
-                message = buttons.createButtonForGetInfoAboutShelter(chatId, answer);
+                message = keyBoards.createKeyBoardGeneralStepsForDogShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case CAT_SHELTER_BUTTON -> {
+                isDogShelter = false;
                 answer = REACTION_TO_CHOICE_CAT_SHELTER(userFirstName);
-                reactionToCommand(chatId, answer);
+                message = keyBoards.createKeyBoardGeneralStepsForCatShelter(chatId, answer);
+                executeMessage(message);
             }
 
-            /*
-            КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ
-             */
+            // КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК
 
-            case INFO_ABOUT_SHELTER_BUTTON -> {
+            case INFO_DOG_SHELTER_BUTTON -> {
                 answer = REACTION_TO_REQUEST(userFirstName);
-                executeMessage(buttons.createButtonsForGetInfoAboutProcess(chatId, answer));
+                executeMessage(buttons.createButtonsForGetInfoAboutProcessForDogShelter(chatId, answer));
             }
 
-            case DETAILED_INFO_PART_1_BUTTON -> {
+            case DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON -> {
                 answer = REACTION_TO_DETAILED_INFO(userFirstName);
-                executeMessage(keyBoards.createKeyBoardForDetailedInfoAboutShelter(chatId, answer));
+                executeMessage(keyBoards.createKeyBoardForDetailedInfoAboutDogShelter(chatId, answer));
             }
 
-            /*
-            КНОПКА ВЫЗОВА ВОЛОНТЕРА
-             */
+            // КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК
+
+            case INFO_CAT_SHELTER_BUTTON -> {
+                answer = REACTION_TO_REQUEST(userFirstName);
+                executeMessage(buttons.createButtonsForGetInfoAboutProcessForCatShelter(chatId, answer));
+            }
+
+            case DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON -> {
+                answer = REACTION_TO_DETAILED_INFO(userFirstName);
+                executeMessage(keyBoards.createKeyBoardForDetailedInfoAboutCatShelter(chatId, answer));
+            }
+
+            // КНОПКА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER_BUTTON -> {
                 answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
@@ -337,10 +506,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод <br> <br>
-     * {@code saveNewUserToDB(Long chatId, String userFirstName)} <br> <br>
-     * <p>
-     * Сохраняет нового пользователя {@link User} в БД
+     * Метод сохраняет нового пользователя {@link User} в БД
      *
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param userFirstName <i> является именем пользователя </i>
@@ -356,10 +522,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод <br> <br>
-     * {@code createMainMenu()} <br> <br>
-     * <p>
-     * Создает меню с основными командами: <br>
+     * Метод создает меню с основными командами: <br>
      *
      * <b>/start</b> <br>
      * <b>/help</b> <br>
@@ -380,44 +543,20 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод <br> <br>
-     * {@code reactionToCommand(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Является ответной реакцией в виде текстового сообщения на действие пользователя
-     * и объединяет методы: <br> <br>
-     * <p>
-     * {@code  sendMessage(Long chatId, String answer))} <br>
-     * {@code  executeMessage(SendMessage message)}
+     * Метод является ответной реакцией в виде текстового сообщения на действие пользователя
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
     private void reactionToCommand(Long chatId, String answer) {
-        SendMessage message = sendMessage(chatId, answer);
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(answer);
         executeMessage(message);
     }
 
     /**
-     * Метод <br> <br>
-     * {@code sendMessage(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает и возвращает новый объект класса {@link SendMessage}
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
-    private SendMessage sendMessage(Long chatId, String answer) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(answer);
-        return message;
-    }
-
-    /**
-     * Метод <br> <br>
-     * {@code executeMessage(SendMessage message)} <br> <br>
-     * <p>
-     * Отправляет объект класса {@link SendMessage} пользователю
+     * Метод отправляет объект класса {@link SendMessage} пользователю
      *
      * @param message <i> является объектом класса {@link SendMessage} </i>
      */

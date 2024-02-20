@@ -13,14 +13,6 @@ import java.util.regex.Matcher;
 @Component
 public class RecordContactsImpl implements RecordContacts {
 
-    /**
-     * Метод <br> <br>
-     * {@code recordContact(Matcher matcher)} <br> <br>
-     * <p>
-     * Записывает контактные данные потенциального усыновителя {@link PotentialParent}
-     *
-     * @param matcher <i> является объектом класса {@link Matcher}</i>
-     */
     @Override
     public final PotentialParent recordContact(Long chatId, Matcher matcher) {
         String firstName = matcher.group(1);

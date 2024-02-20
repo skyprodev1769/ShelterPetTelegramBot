@@ -19,96 +19,38 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 @Component
 public class CreatingButtonsImpl implements CreatingButtons {
 
-    /**
-     * Метод <br> <br>
-     * {@code createButtonsForRegistration(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает кнопки выбора под сообщением для дальнейшей регистрации нового пользователя
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
     public final SendMessage createButtonsForChoiceRegistration(Long chatId, String answer) {
         return createTwoButtons(chatId, answer, YES, YES_BUTTON, NO, NO_BUTTON);
     }
 
-    /**
-     * Метод <br> <br>
-     * {@code createButtonForRegistration(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает кнопку под сообщением для регистрации нового пользователя
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
     public final SendMessage createButtonForRegistration(Long chatId, String answer) {
         return createOneButton(chatId, answer, REGISTRATION, REGISTRATION_BUTTON);
     }
 
-    /**
-     * Метод <br> <br>
-     * {@code createButtonsForChoiceShelter(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает кнопку под сообщением для выбора приюта
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
     public final SendMessage createButtonsForChoiceShelter(Long chatId, String answer) {
         return createTwoButtons(chatId, answer, DOG_SHELTER, DOG_SHELTER_BUTTON, CAT_SHELTER, CAT_SHELTER_BUTTON);
     }
 
-    /**
-     * Метод <br> <br>
-     * {@code createButtonGetInfoAboutShelter(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает кнопку под сообщением для получения информации о приюте
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
-    public final SendMessage createButtonForGetInfoAboutShelter(Long chatId, String answer) {
-        return createOneButton(chatId, answer, INFO_ABOUT_SHELTER, INFO_ABOUT_SHELTER_BUTTON);
+    public final SendMessage createButtonsForGetInfoAboutProcessForDogShelter(Long chatId, String answer) {
+        return createTwoButtons(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON, INFO_ABOUT_PROCESS_FOR_DOG_SHELTER, INFO_PROCESS_FOR_DOG_SHELTER_BUTTON);
     }
 
-    /**
-     * Метод <br> <br>
-     * {@code createButtonsForGetInfoAboutProcess(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает кнопки под сообщением для получения информации о процессе получения животного
-     * или получения подробной информации о приюте
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
-    public final SendMessage createButtonsForGetInfoAboutProcess(Long chatId, String answer) {
-        return createTwoButtons(chatId, answer, DETAILED_INFO, DETAILED_INFO_PART_1_BUTTON, INFO_ABOUT_PROCESS, INFO_ABOUT_PROCESS_BUTTON);
+    public final SendMessage createButtonsForGetInfoAboutProcessForCatShelter(Long chatId, String answer) {
+        return createTwoButtons(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON, INFO_ABOUT_PROCESS_FOR_DOG_SHELTER, INFO_PROCESS_FOR_CAT_SHELTER_BUTTON);
     }
 
-    /**
-     * Метод <br> <br>
-     * {@code createButtonForCallVolunteer(Long chatId, String answer)} <br> <br>
-     * <p>
-     * Создает кнопку под сообщением для вызова волонтера
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
     @Override
     public final SendMessage createButtonForCallVolunteer(Long chatId, String answer) {
         return createOneButton(chatId, answer, CALL_VOLUNTEER, CALL_VOLUNTEER_BUTTON);
     }
 
     /**
-     * Метод <br> <br>
-     * {@code createOneButton(Long chatId, String answer, String nameButton, String callbackData)} <br> <br>
-     * <p>
-     * Является шаблоном для создания <b> ОДНОЙ </b> кнопки под сообщением
+     * Метод является шаблоном для создания <b> ОДНОЙ </b> кнопки под сообщением
      *
      * @param chatId       <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer       <i> является текстом для отправки пользователю </i> <br>
@@ -147,10 +89,7 @@ public class CreatingButtonsImpl implements CreatingButtons {
     }
 
     /**
-     * Метод <br> <br>
-     * {@code createTwoButtons(Long chatId, String answer, String firstButton, String callbackData)} <br> <br>
-     * <p>
-     * Является шаблоном для создания <b> ДВУХ </b> кнопок под сообщением
+     * Метод является шаблоном для создания <b> ДВУХ </b> кнопок под сообщением
      *
      * @param chatId             <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer             <i> является текстом для отправки пользователю </i> <br>
