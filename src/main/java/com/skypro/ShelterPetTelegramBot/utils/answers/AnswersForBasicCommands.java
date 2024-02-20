@@ -17,7 +17,10 @@ public class AnswersForBasicCommands {
     }
 
     public static String REACTION_TO_COMMAND_START_FOR_REGISTERED_USERS(String userFirstName) {
-        return String.format("С возвращением, %s!", userFirstName);
+        return String.format("""
+                С возвращением, %s!
+                                
+                Пожалуйста, Выберите приют.""", userFirstName);
     }
 
     public static String REACTION_TO_COMMAND_HELP_FOR_UNREGISTERED_USERS(String userFirstName) {

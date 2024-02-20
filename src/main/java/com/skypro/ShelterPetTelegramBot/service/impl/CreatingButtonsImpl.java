@@ -47,6 +47,11 @@ public class CreatingButtonsImpl implements CreatingButtons {
         return createOneButton(chatId, answer, REGISTRATION, REGISTRATION_BUTTON);
     }
 
+    @Override
+    public final SendMessage createButtonsForChoiceShelter(Long chatId, String answer) {
+        return createTwoButtons(chatId, answer, DOG_SHELTER, DOG_SHELTER_BUTTON, CAT_SHELTER, CAT_SHELTER_BUTTON);
+    }
+
     /**
      * Метод <br> <br>
      * {@code createButtonGetInfoAboutShelter(Long chatId, String answer)} <br> <br>

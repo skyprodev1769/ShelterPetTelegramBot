@@ -14,6 +14,9 @@ public class AnswersForRegistrationCommands {
     }
 
     public static String REACTION_TO_SUCCESSFUL_REGISTRATION(String userFirstName) {
-        return String.format("Поздравляю, %s, Вы успешно зарегистрированы!", userFirstName);
+        return String.format("""
+                Поздравляю, %s, Вы успешно зарегистрированы!
+                    
+                Пожалуйста, Выберите приют.""", userFirstName);
     }
 }

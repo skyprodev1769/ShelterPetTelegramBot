@@ -11,7 +11,7 @@ public class Commands {
     public static final String SETTINGS = "/settings";
 
     /*
-    КОМАНДЫ ДЛЯ РЕГИСТРАЦИИ
+    КОМАНДЫ РЕГИСТРАЦИИ
      */
 
     public static final String YES = "Да";
@@ -19,7 +19,14 @@ public class Commands {
     public static final String REGISTRATION = "Зарегистрироваться";
 
     /*
-    КОМАНДЫ ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ
+    КОМАНДЫ ВЫБОРА ПРИЮТА
+     */
+
+    public static final String DOG_SHELTER = "Приют для собак";
+    public static final String CAT_SHELTER = "Приют для кошек";
+
+    /*
+    КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ
      */
 
     public static final String INFO_ABOUT_SHELTER = "Информация о приюте";
@@ -29,19 +36,19 @@ public class Commands {
     public static final String RECORD_CONTACT_DETAILS = "Принять и записать контактные данные для связи";
 
     /*
-    КОМАНДЫ ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО
+    КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО
      */
 
     public static final String INFO_ABOUT_PROCESS = "Как взять животное из приюта";
 
     /*
-    КОМАНДА ДЛЯ ПОЛУЧЕНИЯ ОТЧЕТА О ЖИВОТНОМ
+    КОМАНДА ОТЧЕТА О ЖИВОТНОМ
      */
 
     public static final String REPORT_ABOUT_PET = "Отчет о домашнем животном";
 
     /*
-    КОМАНДА ПОЛУЧЕНИЯ ПОДРОБНОЙ ИНФОРМАЦИИ
+    КОМАНДА ПОДРОБНОЙ ИНФОРМАЦИИ
      */
 
     public static final String DETAILED_INFO = "Подробная информация";

@@ -32,8 +32,11 @@ import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Descriptions.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForBasicCommands.*;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForChoiceShelterCommands.REACTION_TO_CHOICE_CAT_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForChoiceShelterCommands.REACTION_TO_CHOICE_DOG_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForGeneralCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForInfoAboutShelterCommands.*;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRecordContactsCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRegistrationCommands.*;
 
 /**
@@ -186,7 +189,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case START -> {
                 answer = REACTION_TO_COMMAND_START_FOR_REGISTERED_USERS(userFirstName);
-                message = buttons.createButtonForGetInfoAboutShelter(chatId, answer);
+                message = buttons.createButtonsForChoiceShelter(chatId, answer);
                 executeMessage(message);
             }
 
@@ -203,7 +206,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             /*
-            КОМАНДЫ ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ
+            КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ
              */
 
             case INFO_ABOUT_SHELTER -> {
@@ -289,12 +292,27 @@ public class TelegramBot extends TelegramLongPollingBot {
             case REGISTRATION_BUTTON -> {
                 saveNewUserToDB(chatId, userFirstName);
                 answer = REACTION_TO_SUCCESSFUL_REGISTRATION(userFirstName);
-                message = buttons.createButtonForGetInfoAboutShelter(chatId, answer);
+                message = buttons.createButtonsForChoiceShelter(chatId, answer);
                 executeMessage(message);
             }
 
             /*
-            КНОПКИ ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ
+            КНОПКИ ВЫБОРА ПРИЮТА
+             */
+
+            case DOG_SHELTER_BUTTON -> {
+                answer = REACTION_TO_CHOICE_DOG_SHELTER(userFirstName);
+                message = buttons.createButtonForGetInfoAboutShelter(chatId, answer);
+                executeMessage(message);
+            }
+
+            case CAT_SHELTER_BUTTON -> {
+                answer = REACTION_TO_CHOICE_CAT_SHELTER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            /*
+            КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ
              */
 
             case INFO_ABOUT_SHELTER_BUTTON -> {
