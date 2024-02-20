@@ -47,6 +47,15 @@ public class CreatingButtonsImpl implements CreatingButtons {
         return createOneButton(chatId, answer, REGISTRATION, REGISTRATION_BUTTON);
     }
 
+    /**
+     * Метод <br> <br>
+     * {@code createButtonsForChoiceShelter(Long chatId, String answer)} <br> <br>
+     * <p>
+     * Создает кнопку под сообщением для выбора приюта
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param answer <i> является текстом для отправки пользователю </i>
+     */
     @Override
     public final SendMessage createButtonsForChoiceShelter(Long chatId, String answer) {
         return createTwoButtons(chatId, answer, DOG_SHELTER, DOG_SHELTER_BUTTON, CAT_SHELTER, CAT_SHELTER_BUTTON);
