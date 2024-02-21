@@ -205,7 +205,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case SETTINGS -> {
                 answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
-                message = keyBoards.createKeyBoardForUnregisteredUsers(chatId, answer);
+                message = keyBoards.createKeyBoardForRegistration(chatId, answer);
+                executeMessage(message);
+            }
+
+            case REGISTRATION -> {
+                saveNewUserToDB(chatId, userFirstName);
+                answer = REACTION_TO_SUCCESSFUL_REGISTRATION(userFirstName);
+                message = buttons.createButtonsForChoiceShelter(chatId, answer);
                 executeMessage(message);
             }
 
@@ -458,7 +465,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case NO_BUTTON -> {
                 answer = REACTION_TO_DISAGREEMENT_REGISTRATION(userFirstName);
-                message = keyBoards.createKeyBoardForUnregisteredUsers(chatId, answer);
+                message = keyBoards.createKeyBoardForRegistration(chatId, answer);
                 executeMessage(message);
             }
 

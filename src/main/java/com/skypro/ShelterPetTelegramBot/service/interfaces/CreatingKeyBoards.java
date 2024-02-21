@@ -10,12 +10,12 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 public interface CreatingKeyBoards {
 
     /**
-     * Метод создает интерактивную клавиатуру для выбора команд для <b> НЕЗАРЕГИСТРИРОВАННЫХ </b> пользователей
+     * Метод создает интерактивную клавиатуру для регистрации нового пользователя
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createKeyBoardForUnregisteredUsers(Long chatId, String answer);
+    SendMessage createKeyBoardForRegistration(Long chatId, String answer);
 
     /**
      * Метод создает интерактивную клавиатуру для выбора приюта

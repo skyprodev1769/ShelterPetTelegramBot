@@ -19,7 +19,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
     @Override
-    public final SendMessage createKeyBoardForUnregisteredUsers(Long chatId, String answer) {
+    public final SendMessage createKeyBoardForRegistration(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -30,15 +30,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add(START);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(HELP);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(SETTINGS);
+        row.add(REGISTRATION);
         rows.add(row);
 
         keyboard.setKeyboard(rows);

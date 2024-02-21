@@ -52,10 +52,10 @@ public class AnswersForBasicCommands {
     }
 
     public static String DEFAULT_REACTION_FOR_UNREGISTERED_USERS(String userFirstName) {
-        return String.format("%s, пожалуйста, выберите команду из списка меню или вызовите команду /help.", userFirstName);
+        return String.format("%s, пожалуйста, выберите команду из списка меню.", userFirstName);
     }
 
     public static String DEFAULT_REACTION_FOR_REGISTERED_USERS(String userFirstName) {
-        return String.format("%s, пожалуйста, выберите команду из списка меню, вызовите команду /help или воспользуйтесь кнопкой вызова волонтера.", userFirstName);
+        return String.format("%s, пожалуйста, выберите команду из списка меню или воспользуйтесь кнопкой вызова волонтера.", userFirstName);
     }
 }
