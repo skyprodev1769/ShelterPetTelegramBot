@@ -1,17 +1,17 @@
 package com.skypro.ShelterPetTelegramBot.service.impl;
 
 import com.skypro.ShelterPetTelegramBot.model.entity.PotentialParent;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.RecordContacts;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.RecordingContacts;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 
 /**
- * Класс {@link RecordContactsImpl}
+ * Класс {@link RecordingContactsImpl}
  * является сервисным классом для записи контактных данных потенциальных усыновителей {@link PotentialParent}
  */
 @Component
-public class RecordContactsImpl implements RecordContacts {
+public class RecordingContactsImpl implements RecordingContacts {
 
     @Override
     public final PotentialParent recordContact(Long chatId, Matcher matcher) {

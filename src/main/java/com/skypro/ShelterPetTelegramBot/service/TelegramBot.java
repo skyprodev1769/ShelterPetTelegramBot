@@ -7,21 +7,27 @@ import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentReposito
 import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
 import com.skypro.ShelterPetTelegramBot.service.impl.CreatingButtonsImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.CreatingKeyBoardsImpl;
-import com.skypro.ShelterPetTelegramBot.service.impl.RecordContactsImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.RecordingContactsImpl;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CreatingButtons;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CreatingKeyBoards;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.RecordContacts;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.RecordingContacts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +44,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForGeneralCo
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRecordContactsCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRegistrationCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.REACTION_TO_SCHEME_DRIVING;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER;
@@ -49,12 +56,13 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersFor
  */
 @Slf4j
 @Component
+@PropertySource("application.properties")
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfiguration configuration;
 
     private final CreatingButtons buttons;
-    private final RecordContacts recordContacts;
+    private final RecordingContacts recordingContacts;
     private final CreatingKeyBoards keyBoards;
 
     @Autowired
@@ -62,15 +70,18 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private PotentialParentRepository parentRepository;
 
-    private final static Pattern PATTERN = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
     private static Boolean isDogShelter;
+    private final static Pattern PATTERN = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
+    private final static String PATH_FOR_DOG_SHELTER = "/Users/Иван/Documents/GitHub/ShelterPetTelegramBot/src/main/resources/schemes/SCHEME_FOR_DOG_SHELTER.png";
+    private final static String PATH_FOR_CAT_SHELTER = "/Users/Иван/Documents/GitHub/ShelterPetTelegramBot/src/main/resources/schemes/SCHEME_FOR_CAT_SHELTER.png";
+
 
     public TelegramBot(BotConfiguration configuration) {
         super(configuration.getToken());
         this.configuration = configuration;
         this.buttons = new CreatingButtonsImpl();
         this.keyBoards = new CreatingKeyBoardsImpl();
-        this.recordContacts = new RecordContactsImpl();
+        this.recordingContacts = new RecordingContactsImpl();
         createMainMenu();
     }
 
@@ -110,7 +121,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     // Если нет записи о потенциальном усыновителе в БД
                     if (parentRepository.findById(chatId).isEmpty() && matcher.matches()) {
 
-                        PotentialParent parent = recordContacts.recordContact(chatId, matcher);
+                        PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
                         parentRepository.save(parent);
 
                         answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
@@ -135,7 +146,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     // Если нет записи о потенциальном усыновителе в БД
                     if (parentRepository.findById(chatId).isEmpty() && matcher.matches()) {
 
-                        PotentialParent parent = recordContacts.recordContact(chatId, matcher);
+                        PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
                         parentRepository.save(parent);
 
                         answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
@@ -267,13 +278,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case INFO_ABOUT_DOG_SHELTER -> {
                 answer = REACTION_TO_REQUEST(userFirstName);
-                message = buttons.createButtonsForGetInfoAboutProcessForDogShelter(chatId, answer);
+                message = buttons.createButtonsForGetDetailedInfoAboutDogShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER -> {
                 answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER(userFirstName);
-                reactionToCommand(chatId, answer);
+                message = buttons.createButtonsForSchemeDrivingForDogShelter(chatId, answer);
+                executeMessage(message);
             }
 
             case INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER -> {
@@ -375,13 +387,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case INFO_ABOUT_CAT_SHELTER -> {
                 answer = REACTION_TO_REQUEST(userFirstName);
-                message = buttons.createButtonsForGetInfoAboutProcessForCatShelter(chatId, answer);
+                message = buttons.createButtonsForGetDetailedInfoAboutCatShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER -> {
                 answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER(userFirstName);
-                reactionToCommand(chatId, answer);
+                message = buttons.createButtonsForSchemeDrivingForCatShelter(chatId, answer);
+                executeMessage(message);
             }
 
             case INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER -> {
@@ -476,7 +489,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case INFO_DOG_SHELTER_BUTTON -> {
                 answer = REACTION_TO_REQUEST(userFirstName);
-                executeMessage(buttons.createButtonsForGetInfoAboutProcessForDogShelter(chatId, answer));
+                executeMessage(buttons.createButtonsForGetDetailedInfoAboutDogShelter(chatId, answer));
+            }
+
+            case SCHEME_DRIVING_FOR_DOG_SHELTER_BUTTON -> {
+                answer = REACTION_TO_SCHEME_DRIVING(userFirstName);
+                sendPhoto(chatId, answer, PATH_FOR_DOG_SHELTER);
             }
 
             case DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON -> {
@@ -488,7 +506,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case INFO_CAT_SHELTER_BUTTON -> {
                 answer = REACTION_TO_REQUEST(userFirstName);
-                executeMessage(buttons.createButtonsForGetInfoAboutProcessForCatShelter(chatId, answer));
+                executeMessage(buttons.createButtonsForGetDetailedInfoAboutCatShelter(chatId, answer));
+            }
+
+            case SCHEME_DRIVING_FOR_CAT_SHELTER_BUTTON -> {
+                answer = REACTION_TO_SCHEME_DRIVING(userFirstName);
+                sendPhoto(chatId, answer, PATH_FOR_CAT_SHELTER);
             }
 
             case DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON -> {
@@ -543,6 +566,35 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
+     * Метод отправляет картинку пользователю: <br>
+     *
+     * @param chatId  <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param caption <i> является подписью под картинкой для отправки пользователю </i>
+     * @param path    <i> является путем к расположению картинки </i>
+     */
+    private void sendPhoto(Long chatId, String caption, String path) {
+        File image;
+
+        try {
+            image = ResourceUtils.getFile(path);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        SendPhoto photo = new SendPhoto();
+
+        photo.setPhoto(new InputFile(image));
+        photo.setChatId(chatId);
+        photo.setCaption(caption);
+
+        try {
+            execute(photo);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Метод является ответной реакцией в виде текстового сообщения на действие пользователя
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
@@ -556,7 +608,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод отправляет объект класса {@link SendMessage} пользователю
+     * Метод отправляет текстовое сообщение пользователю
      *
      * @param message <i> является объектом класса {@link SendMessage} </i>
      */

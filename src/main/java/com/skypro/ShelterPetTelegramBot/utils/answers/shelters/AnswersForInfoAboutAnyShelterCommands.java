@@ -18,4 +18,8 @@ public class AnswersForInfoAboutAnyShelterCommands {
                             
                 4. Кричать, размахивать руками, бегать между будками или вольерами, пугать и дразнить животных.""", userFirstName);
     }
+
+    public static String REACTION_TO_SCHEME_DRIVING(String userFirstName) {
+        return String.format("%s, это схема проезда к нашему приюту", userFirstName);
+    }
 }

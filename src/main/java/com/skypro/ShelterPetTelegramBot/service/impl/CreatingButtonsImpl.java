@@ -35,13 +35,23 @@ public class CreatingButtonsImpl implements CreatingButtons {
     }
 
     @Override
-    public final SendMessage createButtonsForGetInfoAboutProcessForDogShelter(Long chatId, String answer) {
-        return createTwoButtons(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON, INFO_ABOUT_PROCESS_FOR_DOG_SHELTER, INFO_PROCESS_FOR_DOG_SHELTER_BUTTON);
+    public SendMessage createButtonsForSchemeDrivingForDogShelter(Long chatId, String answer) {
+        return createOneButton(chatId, answer, SCHEME_DRIVING_FOR_DOG_SHELTER, SCHEME_DRIVING_FOR_DOG_SHELTER_BUTTON);
     }
 
     @Override
-    public final SendMessage createButtonsForGetInfoAboutProcessForCatShelter(Long chatId, String answer) {
-        return createTwoButtons(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON, INFO_ABOUT_PROCESS_FOR_DOG_SHELTER, INFO_PROCESS_FOR_CAT_SHELTER_BUTTON);
+    public SendMessage createButtonsForSchemeDrivingForCatShelter(Long chatId, String answer) {
+        return createOneButton(chatId, answer, SCHEME_DRIVING_FOR_CAT_SHELTER, SCHEME_DRIVING_FOR_CAT_SHELTER_BUTTON);
+    }
+
+    @Override
+    public final SendMessage createButtonsForGetDetailedInfoAboutDogShelter(Long chatId, String answer) {
+        return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON);
+    }
+
+    @Override
+    public final SendMessage createButtonsForGetDetailedInfoAboutCatShelter(Long chatId, String answer) {
+        return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON);
     }
 
     @Override
