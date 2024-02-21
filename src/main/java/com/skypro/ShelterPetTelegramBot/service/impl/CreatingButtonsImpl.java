@@ -1,6 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.service.impl;
 
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CreatingButtons;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,46 +17,55 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
  * Класс {@link CreatingButtonsImpl}
  * является сервисным классом для создания кнопок под сообщениями
  */
+@Slf4j
 @Component
 public class CreatingButtonsImpl implements CreatingButtons {
 
     @Override
     public final SendMessage createButtonsForChoiceRegistration(Long chatId, String answer) {
+        log.info("СОЗДАНЫ КНОПКИ СОГЛАСИЯ НА РЕГИСТРАЦИЮ");
         return createTwoButtons(chatId, answer, YES, YES_BUTTON, NO, NO_BUTTON);
     }
 
     @Override
     public final SendMessage createButtonForRegistration(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА РЕГИСТРАЦИИ");
         return createOneButton(chatId, answer, REGISTRATION, REGISTRATION_BUTTON);
     }
 
     @Override
     public final SendMessage createButtonsForChoiceShelter(Long chatId, String answer) {
+        log.info("СОЗДАНЫ КНОПКИ ВЫБОРА ПРИЮТА");
         return createTwoButtons(chatId, answer, DOG_SHELTER, DOG_SHELTER_BUTTON, CAT_SHELTER, CAT_SHELTER_BUTTON);
     }
 
     @Override
-    public SendMessage createButtonsForSchemeDrivingForDogShelter(Long chatId, String answer) {
+    public SendMessage createButtonForSchemeDrivingForDogShelter(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ СХЕМЫ ПРОЕЗДА К ПРИЮТУ ДЛЯ СОБАК");
         return createOneButton(chatId, answer, SCHEME_DRIVING_FOR_DOG_SHELTER, SCHEME_DRIVING_FOR_DOG_SHELTER_BUTTON);
     }
 
     @Override
-    public SendMessage createButtonsForSchemeDrivingForCatShelter(Long chatId, String answer) {
+    public SendMessage createButtonForSchemeDrivingForCatShelter(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ СХЕМЫ ПРОЕЗДА К ПРИЮТУ ДЛЯ КОШЕК");
         return createOneButton(chatId, answer, SCHEME_DRIVING_FOR_CAT_SHELTER, SCHEME_DRIVING_FOR_CAT_SHELTER_BUTTON);
     }
 
     @Override
-    public final SendMessage createButtonsForGetDetailedInfoAboutDogShelter(Long chatId, String answer) {
+    public final SendMessage createButtonForGetDetailedInfoAboutDogShelter(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК");
         return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON);
     }
 
     @Override
-    public final SendMessage createButtonsForGetDetailedInfoAboutCatShelter(Long chatId, String answer) {
+    public final SendMessage createButtonForGetDetailedInfoAboutCatShelter(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК");
         return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON);
     }
 
     @Override
     public final SendMessage createButtonForCallVolunteer(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА ВЫЗОВА ВОЛОНТЕРА");
         return createOneButton(chatId, answer, CALL_VOLUNTEER, CALL_VOLUNTEER_BUTTON);
     }
 

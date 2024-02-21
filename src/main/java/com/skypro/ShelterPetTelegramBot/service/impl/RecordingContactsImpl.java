@@ -2,6 +2,7 @@ package com.skypro.ShelterPetTelegramBot.service.impl;
 
 import com.skypro.ShelterPetTelegramBot.model.entity.PotentialParent;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.RecordingContacts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
@@ -10,6 +11,7 @@ import java.util.regex.Matcher;
  * Класс {@link RecordingContactsImpl}
  * является сервисным классом для записи контактных данных потенциальных усыновителей {@link PotentialParent}
  */
+@Slf4j
 @Component
 public class RecordingContactsImpl implements RecordingContacts {
 
@@ -26,6 +28,7 @@ public class RecordingContactsImpl implements RecordingContacts {
         parent.setLastName(lastName);
         parent.setPhoneNumber(phoneNumber);
 
+        log.info("ЗАПИСАНЫ КОНТАКТНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ {}", chatId);
         return parent;
     }
 }

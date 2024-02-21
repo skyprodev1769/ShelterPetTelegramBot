@@ -39,7 +39,7 @@ public interface CreatingButtons {
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createButtonsForSchemeDrivingForDogShelter(Long chatId, String answer);
+    SendMessage createButtonForSchemeDrivingForDogShelter(Long chatId, String answer);
 
     /**
      * Метод создает кнопку под сообщением для получения схемы проезда к приюту <b> ДЛЯ КОШЕК </b>
@@ -47,7 +47,7 @@ public interface CreatingButtons {
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createButtonsForSchemeDrivingForCatShelter(Long chatId, String answer);
+    SendMessage createButtonForSchemeDrivingForCatShelter(Long chatId, String answer);
 
     /**
      * Метод создает кнопку под сообщением для выбора детальной информации о приюте <b> ДЛЯ СОБАК </b>
@@ -55,7 +55,7 @@ public interface CreatingButtons {
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createButtonsForGetDetailedInfoAboutDogShelter(Long chatId, String answer);
+    SendMessage createButtonForGetDetailedInfoAboutDogShelter(Long chatId, String answer);
 
     /**
      * Метод создает кнопку под сообщением для выбора детальной информации о приюте <b> ДЛЯ КОШЕК </b>
@@ -63,7 +63,7 @@ public interface CreatingButtons {
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createButtonsForGetDetailedInfoAboutCatShelter(Long chatId, String answer);
+    SendMessage createButtonForGetDetailedInfoAboutCatShelter(Long chatId, String answer);
 
     /**
      * Метод создает кнопку под сообщением для вызова волонтера

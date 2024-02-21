@@ -1,6 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.service.impl;
 
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CreatingKeyBoards;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -15,6 +16,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
  * Класс {@link CreatingKeyBoardsImpl}
  * является сервисным классом для создания интерактивных клавиатур
  */
+@Slf4j
 @Component
 public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
@@ -37,6 +39,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ РЕГИСТРАЦИИ");
         return message;
     }
 
@@ -63,6 +66,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ВЫБОРА ПРИЮТА");
         return message;
     }
 
@@ -97,6 +101,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК");
         return message;
     }
 
@@ -131,6 +136,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК");
         return message;
     }
 
@@ -181,6 +187,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК");
         return message;
     }
 
@@ -231,6 +238,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК");
         return message;
     }
 }

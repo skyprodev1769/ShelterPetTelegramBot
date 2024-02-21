@@ -12,9 +12,9 @@ import org.springframework.context.annotation.PropertySource;
  * <b> {@code String name} </b> <br> <i> является наименованием телеграм бота </i> <br> <br>
  * <b> {@code String token} </b> <br> <i> является аутентификационным номером телеграм бота </i>
  */
-@PropertySource("application.properties")
 @Data
 @Configuration
+@PropertySource("application.properties")
 public class BotConfiguration {
 
     @Value("${bot.name}")

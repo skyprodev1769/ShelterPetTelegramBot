@@ -70,7 +70,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private PotentialParentRepository parentRepository;
 
-    private static Boolean isDogShelter;
+    private static Boolean isDogShelter = true;
     private final static Pattern PATTERN = Pattern.compile("([\\W+]+)(\\s)([\\W+]+)(\\s)([0-9]{11})");
     private final static String PATH_FOR_DOG_SHELTER = "/Users/Иван/Documents/GitHub/ShelterPetTelegramBot/src/main/resources/schemes/SCHEME_FOR_DOG_SHELTER.png";
     private final static String PATH_FOR_CAT_SHELTER = "/Users/Иван/Documents/GitHub/ShelterPetTelegramBot/src/main/resources/schemes/SCHEME_FOR_CAT_SHELTER.png";
@@ -124,9 +124,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                         PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
                         parentRepository.save(parent);
 
+                        log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПИСАЛСЯ КАК ПОТЕНЦИАЛЬНЫЙ УСЫНОВИТЕЛЬ", chatId, userFirstName);
+
                         answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
                         message = keyBoards.createKeyBoardForDetailedInfoAboutDogShelter(chatId, answer);
                         executeMessage(message);
+
                         return;
 
                         // Если есть запись о потенциальном усыновителе в БД
@@ -149,9 +152,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                         PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
                         parentRepository.save(parent);
 
+                        log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПИСАЛСЯ КАК ПОТЕНЦИАЛЬНЫЙ УСЫНОВИТЕЛЬ", chatId, userFirstName);
+
                         answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
                         message = keyBoards.createKeyBoardForDetailedInfoAboutCatShelter(chatId, answer);
                         executeMessage(message);
+
                         return;
 
                         // Если есть запись о потенциальном усыновителе в БД
@@ -193,6 +199,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         switch (text) {
 
             case START -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СТАРТОВОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_START_FOR_UNREGISTERED_USERS(userFirstName);
                 message = buttons.createButtonsForChoiceRegistration(chatId, answer);
                 executeMessage(message);
@@ -201,9 +208,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             case HELP -> {
                 answer = REACTION_TO_COMMAND_HELP_FOR_UNREGISTERED_USERS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ОПИСАТЕЛЬНОЕ СООБЩЕНИЕ", chatId, userFirstName);
             }
 
             case SETTINGS -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КЛАВИАТУРУ ДЛЯ РЕГИСТРАЦИИ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
                 message = keyBoards.createKeyBoardForRegistration(chatId, answer);
                 executeMessage(message);
@@ -211,6 +220,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case REGISTRATION -> {
                 saveNewUserToDB(chatId, userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАРЕГИСТРИРОВАЛСЯ", chatId, userFirstName);
                 answer = REACTION_TO_SUCCESSFUL_REGISTRATION(userFirstName);
                 message = buttons.createButtonsForChoiceShelter(chatId, answer);
                 executeMessage(message);
@@ -219,6 +229,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             default -> {
                 answer = DEFAULT_REACTION_FOR_UNREGISTERED_USERS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ДЕФОЛТНОЕ СООБЩЕНИЕ", chatId, userFirstName);
             }
         }
     }
@@ -241,18 +252,21 @@ public class TelegramBot extends TelegramLongPollingBot {
             // БАЗОВЫЕ КОМАНДЫ
 
             case START -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СТАРТОВОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_START_FOR_REGISTERED_USERS(userFirstName);
                 message = buttons.createButtonsForChoiceShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case HELP -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ОПИСАТЕЛЬНОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_HELP_FOR_REGISTERED_USERS(userFirstName);
                 message = buttons.createButtonForCallVolunteer(chatId, answer);
                 executeMessage(message);
             }
 
             case SETTINGS -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КЛАВИАТУРУ ДЛЯ ВЫБОРА ПРИЮТА", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
                 message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
                 executeMessage(message);
@@ -261,6 +275,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КОМАНДЫ ВЫБОРА ПРИЮТА
 
             case DOG_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ВЫБРАЛ ПРИЮТ ДЛЯ СОБАК", chatId, userFirstName);
                 isDogShelter = true;
                 answer = REACTION_TO_CHOICE_DOG_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardGeneralStepsForDogShelter(chatId, answer);
@@ -268,6 +283,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case CAT_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ВЫБРАЛ ПРИЮТ ДЛЯ КОШЕК", chatId, userFirstName);
                 isDogShelter = false;
                 answer = REACTION_TO_CHOICE_CAT_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardGeneralStepsForCatShelter(chatId, answer);
@@ -279,25 +295,29 @@ public class TelegramBot extends TelegramLongPollingBot {
             case INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION -> {
                 answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ИНФОРМАЦИЮ О ТРЕБОВАНИЯХ БЕЗОПАСНОСТИ НА ТЕРРИТОРИИ ПРИЮТА", chatId, userFirstName);
             }
 
             // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК
 
             case INFO_ABOUT_DOG_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРИЮТЕ ДЛЯ СОБАК", chatId, userFirstName);
                 answer = REACTION_TO_REQUEST(userFirstName);
-                message = buttons.createButtonsForGetDetailedInfoAboutDogShelter(chatId, answer);
+                message = buttons.createButtonForGetDetailedInfoAboutDogShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ СОБАК", chatId, userFirstName);
                 answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER(userFirstName);
-                message = buttons.createButtonsForSchemeDrivingForDogShelter(chatId, answer);
+                message = buttons.createButtonForSchemeDrivingForDogShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER -> {
                 answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕРА ОХРАНЫ ПРИЮТА ДЛЯ СОБАК", chatId, userFirstName);
             }
 
             // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
@@ -305,11 +325,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             case RECORD_CONTACT_DETAILS -> {
                 answer = REACTION_TO_RECORD_CONTACT_DETAILS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ФОРМУ ДЛЯ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ", chatId, userFirstName);
             }
 
             // КОМАНДА СМЕНЫ ПРИЮТА
 
             case CHANGE_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИЗМЕНЕНИЯ ВЫБОРА ПРИЮТА", chatId, userFirstName);
                 answer = REACTION_TO_CHANGED_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
                 executeMessage(message);
@@ -320,11 +342,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             case CALL_VOLUNTEER -> {
                 answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕРА ВОЛОНТЕРОВ", chatId, userFirstName);
             }
 
             // ДЕФОЛТНАЯ КОМАНДА
 
             default -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ДЕФОЛТНОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
                 message = buttons.createButtonForCallVolunteer(chatId, answer);
                 executeMessage(message);
@@ -350,18 +374,21 @@ public class TelegramBot extends TelegramLongPollingBot {
             // БАЗОВЫЕ КОМАНДЫ
 
             case START -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СТАРТОВОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_START_FOR_REGISTERED_USERS(userFirstName);
                 message = buttons.createButtonsForChoiceShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case HELP -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ОПИСАТЕЛЬНОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_HELP_FOR_REGISTERED_USERS(userFirstName);
                 message = buttons.createButtonForCallVolunteer(chatId, answer);
                 executeMessage(message);
             }
 
             case SETTINGS -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КЛАВИАТУРУ ДЛЯ ВЫБОРА ПРИЮТА", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
                 message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
                 executeMessage(message);
@@ -370,6 +397,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КОМАНДЫ ВЫБОРА ПРИЮТА
 
             case DOG_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ВЫБРАЛ ПРИЮТ ДЛЯ СОБАК", chatId, userFirstName);
                 isDogShelter = true;
                 answer = REACTION_TO_CHOICE_DOG_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardGeneralStepsForDogShelter(chatId, answer);
@@ -377,6 +405,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case CAT_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ВЫБРАЛ ПРИЮТ ДЛЯ КОШЕК", chatId, userFirstName);
                 isDogShelter = false;
                 answer = REACTION_TO_CHOICE_CAT_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardGeneralStepsForCatShelter(chatId, answer);
@@ -388,25 +417,29 @@ public class TelegramBot extends TelegramLongPollingBot {
             case INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION -> {
                 answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ИНФОРМАЦИЮ О ТРЕБОВАНИЯХ БЕЗОПАСНОСТИ НА ТЕРРИТОРИИ ПРИЮТА", chatId, userFirstName);
             }
 
             // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК
 
             case INFO_ABOUT_CAT_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРИЮТЕ ДЛЯ КОШЕК", chatId, userFirstName);
                 answer = REACTION_TO_REQUEST(userFirstName);
-                message = buttons.createButtonsForGetDetailedInfoAboutCatShelter(chatId, answer);
+                message = buttons.createButtonForGetDetailedInfoAboutCatShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ КОШЕК", chatId, userFirstName);
                 answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER(userFirstName);
-                message = buttons.createButtonsForSchemeDrivingForCatShelter(chatId, answer);
+                message = buttons.createButtonForSchemeDrivingForCatShelter(chatId, answer);
                 executeMessage(message);
             }
 
             case INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER -> {
                 answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕРА ОХРАНЫ ПРИЮТА ДЛЯ КОШЕК", chatId, userFirstName);
             }
 
             // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
@@ -414,11 +447,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             case RECORD_CONTACT_DETAILS -> {
                 answer = REACTION_TO_RECORD_CONTACT_DETAILS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ФОРМУ ДЛЯ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ", chatId, userFirstName);
             }
 
             // КОМАНДА СМЕНЫ ПРИЮТА
 
             case CHANGE_SHELTER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИЗМЕНЕНИЯ ВЫБОРА ПРИЮТА", chatId, userFirstName);
                 answer = REACTION_TO_CHANGED_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
                 executeMessage(message);
@@ -429,11 +464,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             case CALL_VOLUNTEER -> {
                 answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕРА ВОЛОНТЕРОВ", chatId, userFirstName);
             }
 
             // ДЕФОЛТНАЯ КОМАНДА
 
             default -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ДЕФОЛТНОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
                 message = buttons.createButtonForCallVolunteer(chatId, answer);
                 executeMessage(message);
@@ -458,12 +495,14 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКИ РЕГИСТРАЦИИ
 
             case YES_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} СОГЛАСИЛСЯ НА РЕГИСТРАЦИЮ", chatId, userFirstName);
                 answer = REACTION_TO_AGREEMENT_REGISTRATION(userFirstName);
                 message = buttons.createButtonForRegistration(chatId, answer);
                 executeMessage(message);
             }
 
             case NO_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ОТКАЗАЛСЯ ОТ РЕГИСТРАЦИИ", chatId, userFirstName);
                 answer = REACTION_TO_DISAGREEMENT_REGISTRATION(userFirstName);
                 message = keyBoards.createKeyBoardForRegistration(chatId, answer);
                 executeMessage(message);
@@ -471,6 +510,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case REGISTRATION_BUTTON -> {
                 saveNewUserToDB(chatId, userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАРЕГИСТРИРОВАЛСЯ", chatId, userFirstName);
                 answer = REACTION_TO_SUCCESSFUL_REGISTRATION(userFirstName);
                 message = buttons.createButtonsForChoiceShelter(chatId, answer);
                 executeMessage(message);
@@ -479,6 +519,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКИ ВЫБОРА ПРИЮТА
 
             case DOG_SHELTER_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ВЫБРАЛ ПРИЮТ ДЛЯ СОБАК", chatId, userFirstName);
                 isDogShelter = true;
                 answer = REACTION_TO_CHOICE_DOG_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardGeneralStepsForDogShelter(chatId, answer);
@@ -486,6 +527,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case CAT_SHELTER_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ВЫБРАЛ ПРИЮТ ДЛЯ КОШЕК", chatId, userFirstName);
                 isDogShelter = false;
                 answer = REACTION_TO_CHOICE_CAT_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardGeneralStepsForCatShelter(chatId, answer);
@@ -495,16 +537,19 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК
 
             case INFO_DOG_SHELTER_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРИЮТЕ ДЛЯ СОБАК", chatId, userFirstName);
                 answer = REACTION_TO_REQUEST(userFirstName);
-                executeMessage(buttons.createButtonsForGetDetailedInfoAboutDogShelter(chatId, answer));
+                executeMessage(buttons.createButtonForGetDetailedInfoAboutDogShelter(chatId, answer));
             }
 
             case SCHEME_DRIVING_FOR_DOG_SHELTER_BUTTON -> {
                 answer = REACTION_TO_SCHEME_DRIVING(userFirstName);
                 sendPhoto(chatId, answer, PATH_FOR_DOG_SHELTER);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СХЕМУ ПРОЕЗДА К ПРИЮТУ ДЛЯ СОБАК", chatId, userFirstName);
             }
 
             case DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ДЕТАЛЬНУЮ ИНФОРМАЦИЮ О ПРИЮТЕ ДЛЯ СОБАК", chatId, userFirstName);
                 answer = REACTION_TO_DETAILED_INFO(userFirstName);
                 executeMessage(keyBoards.createKeyBoardForDetailedInfoAboutDogShelter(chatId, answer));
             }
@@ -512,16 +557,19 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК
 
             case INFO_CAT_SHELTER_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРИЮТЕ ДЛЯ КОШЕК", chatId, userFirstName);
                 answer = REACTION_TO_REQUEST(userFirstName);
-                executeMessage(buttons.createButtonsForGetDetailedInfoAboutCatShelter(chatId, answer));
+                executeMessage(buttons.createButtonForGetDetailedInfoAboutCatShelter(chatId, answer));
             }
 
             case SCHEME_DRIVING_FOR_CAT_SHELTER_BUTTON -> {
                 answer = REACTION_TO_SCHEME_DRIVING(userFirstName);
                 sendPhoto(chatId, answer, PATH_FOR_CAT_SHELTER);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СХЕМУ ПРОЕЗДА К ПРИЮТУ ДЛЯ КОШЕК", chatId, userFirstName);
             }
 
             case DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ДЕТАЛЬНУЮ ИНФОРМАЦИЮ О ПРИЮТЕ ДЛЯ КОШЕК", chatId, userFirstName);
                 answer = REACTION_TO_DETAILED_INFO(userFirstName);
                 executeMessage(keyBoards.createKeyBoardForDetailedInfoAboutCatShelter(chatId, answer));
             }
@@ -531,6 +579,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             case CALL_VOLUNTEER_BUTTON -> {
                 answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕРА ВОЛОНТЕРОВ", chatId, userFirstName);
             }
         }
     }
@@ -549,6 +598,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         user.setRegisterAt(new Timestamp(System.currentTimeMillis()));
 
         userRepository.save(user);
+
+        log.info("ДОБАВЛЕН НОВЫЙ ПОЛЬЗОВАТЕЛЬ: {} {}", chatId, userFirstName);
     }
 
     /**
@@ -568,16 +619,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
-            log.error("ERROR: setting bot`s command list {}", e.getMessage());
+            log.error("ОШИБКА СОЗДАНИЯ ГЛАВНОГО МЕНЮ: {}", e.getMessage());
         }
     }
 
     /**
-     * Метод отправляет картинку пользователю: <br>
+     * Метод отправляет изображение пользователю: <br>
      *
      * @param chatId  <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param caption <i> является подписью под картинкой для отправки пользователю </i>
-     * @param path    <i> является путем к расположению картинки </i>
+     * @param path    <i> является путем к расположению изображения </i>
      */
     private void sendPhoto(Long chatId, String caption, String path) {
         File image;
@@ -585,6 +636,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             image = ResourceUtils.getFile(path);
         } catch (FileNotFoundException e) {
+            log.error("ОШИБКА ПОИСКА ИЗОБРАЖЕНИЯ: {}", e.getMessage());
             throw new RuntimeException(e);
         }
 
@@ -597,7 +649,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(photo);
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            log.error("ОШИБКА ОТПРАВКИ ИЗОБРАЖЕНИЯ: {}", e.getMessage());
         }
     }
 
@@ -623,7 +675,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error("ERROR: {}", e.getMessage());
+            log.error("ОШИБКА ОТПРАВКИ ТЕКСТОВОГО СООБЩЕНИЯ: {}", e.getMessage());
         }
     }
 }
