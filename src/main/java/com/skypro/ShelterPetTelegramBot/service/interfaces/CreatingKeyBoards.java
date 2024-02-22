@@ -40,4 +40,20 @@ public interface CreatingKeyBoards {
      * @param answer <i> является текстом для отправки пользователю </i>
      */
     SendMessage createKeyBoardForDetailedInfoAboutShelter(Long chatId, String answer);
+
+    /**
+     * Метод создает интерактивную клавиатуру для получения подробной информации о процессе получения <b> СОБАКИ </b>
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param answer <i> является текстом для отправки пользователю </i>
+     */
+    SendMessage createKeyBoardForDetailedInfoAboutProcessForDog(Long chatId, String answer);
+
+    /**
+     * Метод создает интерактивную клавиатуру для получения подробной информации о процессе получения <b> КОШКИ </b>
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param answer <i> является текстом для отправки пользователю </i>
+     */
+    SendMessage createKeyBoardForDetailedInfoAboutProcessForCat(Long chatId, String answer);
 }

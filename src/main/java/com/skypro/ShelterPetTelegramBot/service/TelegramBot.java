@@ -90,21 +90,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId;
         String userFirstName;
 
-        if (update.hasMessage() && update.getMessage().hasText()) {               // ЕСЛИ ПРИХОДИТ ТЕКСТОВОЕ СООБЩЕНИЕ
+        if (update.hasMessage() && update.getMessage().hasText()) {                                                     // ЕСЛИ ПРИХОДИТ ТЕКСТОВОЕ СООБЩЕНИЕ
 
             chatId = update.getMessage().getChatId();
             userFirstName = update.getMessage().getChat().getFirstName();
             String text = update.getMessage().getText();
 
-            if (userRepository.findById(chatId).isEmpty()) {                      // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ РЕГИСТРИРОВАЛСЯ
+            if (userRepository.findById(chatId).isEmpty()) {                                                            // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ РЕГИСТРИРОВАЛСЯ
 
                 getReactionsForUnregisteredUsers(chatId, userFirstName, text);
 
-            } else {                                                              // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ЗАРЕГИСТРИРОВАЛСЯ
+            } else {                                                                                                    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ЗАРЕГИСТРИРОВАЛСЯ
 
                 Matcher matcher = appConfiguration.getPattern().matcher(text);
 
-                if (matcher.matches()) {                                          // ЕСЛИ ВХОДЯЩЕЕ СООБЩЕНИЕ СОДЕРЖИТ ФОРМУ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ
+                if (matcher.matches()) {                                                                                // ЕСЛИ ВХОДЯЩЕЕ СООБЩЕНИЕ СОДЕРЖИТ ФОРМУ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ
                     savePotentialParentToDB(chatId, userFirstName, matcher);
                     return;
                 }
@@ -112,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 getReactionsForRegisteredUsers(chatId, userFirstName, text);
             }
 
-        } else if (update.hasCallbackQuery()) {                                   // ЕСЛИ ПРИХОДИТ ОТКЛИК ОТ НАЖАТИЯ КНОПКИ
+        } else if (update.hasCallbackQuery()) {                                                                         // ЕСЛИ ПРИХОДИТ ОТКЛИК ОТ НАЖАТИЯ КНОПКИ
 
             chatId = update.getCallbackQuery().getMessage().getChatId();
             userFirstName = update.getCallbackQuery().getFrom().getFirstName();
@@ -204,7 +204,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case SETTINGS -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ КЛАВИАТУРУ ДЛЯ ВЫБОРА ПРИЮТА", chatId, userFirstName);
-                answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
+                answer = REACTION_TO_CHANGED_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
                 executeMessage(message);
             }
@@ -231,8 +231,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case INFO_ABOUT_SHELTER -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРИЮТЕ", chatId, userFirstName);
-                answer = REACTION_TO_REQUEST(userFirstName);
-                message = buttons.createButtonForGetDetailedInfoAboutShelter(chatId, answer);
+                answer = REACTION_TO_DETAILED_INFO(userFirstName);
+                message = keyBoards.createKeyBoardForDetailedInfoAboutShelter(chatId, answer);
                 executeMessage(message);
             }
 
@@ -267,6 +267,22 @@ public class TelegramBot extends TelegramLongPollingBot {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ИНФОРМАЦИЮ О ТРЕБОВАНИЯХ БЕЗОПАСНОСТИ НА ТЕРРИТОРИИ ПРИЮТА", chatId, userFirstName);
                 answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION(userFirstName);
                 reactionToCommand(chatId, answer);
+            }
+
+            // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИИ ЖИВОТНОГО
+
+            case INFO_ABOUT_PROCESS -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО", chatId, userFirstName);
+                answer = REACTION_TO_DETAILED_INFO(userFirstName);
+
+                if (appConfiguration.getIsDogShelter()) {
+                    message = keyBoards.createKeyBoardForDetailedInfoAboutProcessForDog(chatId, answer);
+
+                } else {
+                    message = keyBoards.createKeyBoardForDetailedInfoAboutProcessForCat(chatId, answer);
+                }
+
+                executeMessage(message);
             }
 
             // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
@@ -361,13 +377,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 executeMessage(message);
             }
 
-            // КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ
-
-            case INFO_ABOUT_SHELTER_BUTTON -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ОБЩУЮ ИНФОРМАЦИЮ О ПРИЮТЕ", chatId, userFirstName);
-                answer = REACTION_TO_REQUEST(userFirstName);
-                executeMessage(buttons.createButtonForGetDetailedInfoAboutShelter(chatId, answer));
-            }
+            // КНОПКА СХЕМЫ ПРОЕЗДА
 
             case SCHEME_DRIVING_BUTTON -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СХЕМУ ПРОЕЗДА К ПРИЮТУ", chatId, userFirstName);
@@ -379,12 +389,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 } else {
                     sendImage(chatId, answer, appConfiguration.getPathForCatShelter());
                 }
-            }
-
-            case DETAILED_INFO_ABOUT_SHELTER_BUTTON -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ДЕТАЛЬНУЮ ИНФОРМАЦИЮ О ПРИЮТЕ", chatId, userFirstName);
-                answer = REACTION_TO_DETAILED_INFO(userFirstName);
-                executeMessage(keyBoards.createKeyBoardForDetailedInfoAboutShelter(chatId, answer));
             }
 
             // КНОПКА ВЫЗОВА ВОЛОНТЕРА
@@ -422,7 +426,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             answer = REACTION_TO_REPEAT_RECORD_CONTACT(userFirstName);
         }
 
-        SendMessage message = keyBoards.createKeyBoardForDetailedInfoAboutShelter(chatId, answer);
+        SendMessage message = keyBoards.createKeyBoardForGeneralInfo(chatId, answer);
         executeMessage(message);
     }
 

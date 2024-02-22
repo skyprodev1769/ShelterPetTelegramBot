@@ -48,7 +48,7 @@ public class AnswersForBasicCommands {
     }
 
     public static String REACTION_TO_COMMAND_SETTINGS(String userFirstname) {
-        return String.format("%s, пожалуйста, выберите команду из клавиатуры ниже.", userFirstname);
+        return String.format("%s, если желаете зарегистрироваться - нажмите кнопу \"Зарегистрироваться\" из клавиатуры ниже.", userFirstname);
     }
 
     public static String DEFAULT_REACTION_FOR_UNREGISTERED_USERS(String userFirstName) {

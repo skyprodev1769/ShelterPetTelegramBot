@@ -10,7 +10,7 @@ public class AnswersForRegistrationCommands {
     }
 
     public static String REACTION_TO_DISAGREEMENT_REGISTRATION(String userFirstName) {
-        return String.format("%s, Вы можете зарегистрироваться в любой удобный для Вас момент, а пока Вам доступен ограниченный функционал.", userFirstName);
+        return String.format("%s, Вы можете зарегистрироваться в любой удобный для Вас момент, но пока Вам не будет доступен весь функционал бота.", userFirstName);
     }
 
     public static String REACTION_TO_SUCCESSFUL_REGISTRATION(String userFirstName) {

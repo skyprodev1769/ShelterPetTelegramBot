@@ -34,14 +34,6 @@ public interface CreatingButtons {
     SendMessage createButtonsForChoiceShelter(Long chatId, String answer);
 
     /**
-     * Метод создает кнопку под сообщением для выбора детальной информации о приюте
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
-    SendMessage createButtonForGetDetailedInfoAboutShelter(Long chatId, String answer);
-
-    /**
      * Метод создает кнопку под сообщением для получения схемы проезда к приюту
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>

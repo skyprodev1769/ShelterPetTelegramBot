@@ -13,10 +13,8 @@ public class Buttons {
     public static final String CAT_SHELTER_BUTTON = "CAT_SHELTER_BUTTON";
 
 
-    // КНОПКИ ИНФОРМАЦИИ О ПРИЮТЕ
-    public static final String INFO_ABOUT_SHELTER_BUTTON = "INFO_ABOUT_SHELTER_BUTTON";
+    // КНОПКА СХЕМЫ ПРОЕЗДА
     public static final String SCHEME_DRIVING_BUTTON = "SCHEME_DRIVING_BUTTON";
-    public static final String DETAILED_INFO_ABOUT_SHELTER_BUTTON = "DETAILED_INFO_ABOUT_SHELTER_BUTTON";
 
 
     // КНОПКА ВЫЗОВА ВОЛОНТЕРА

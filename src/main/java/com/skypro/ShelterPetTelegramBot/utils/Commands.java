@@ -27,16 +27,25 @@ public class Commands {
     public static final String INFO_ABOUT_SECURITY_CONTACT_DETAILS = "Информация о контактных данных охраны для оформления пропуска на машину";
     public static final String INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION = "Информация об общих рекомендациях о технике безопасности на территории приюта";
 
+
+    // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО
     public static final String INFO_ABOUT_PROCESS = "ЭТАП 2: Как взять животное из приюта";
+    public static final String RULES_DATING = "Правила знакомства с животным до того, как забрать его из приюта";
+    public static final String LIST_REQUIRED_DOCS = "Список необходимых документов, чтобы забрать животное";
+    public static final String RECOMMENDATIONS_FOR_TRANSPORTATION = "Рекомендации по транспортировке животного";
+    public static final String RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_YOUNG_PET = "Рекомендации по обустройству дома для маленького животного";
+    public static final String RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_ADULT_PET = "Рекомендации по обустройству дома для взрослого животного";
+    public static final String RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_DISABLED_PET = "Рекомендации по обустройству дома для животного с ограниченными возможностями";
+    public static final String RECOMMENDATIONS_FROM_DOG_HANDLER = "Советы кинолога по первичному общению с собакой";
+    public static final String RECOMMENDATIONS_FOR_TRUSTED_DOG_HANDLER = "Рекомендации по проверенным кинологам для дальнейшего обращения к ним";
+    public static final String LIST_REASONS_FOR_REFUSAL = "Список причин, почему могут отказать в том, чтобы забрать животное";
+
+
     public static final String REPORT_ABOUT_PET = "ЭТАП 3: Отчет о домашнем животном";
 
 
     // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
     public static final String RECORD_CONTACT_DETAILS = "Принять и записать контактные данные для связи";
-
-
-    // КОМАНДА ПОДРОБНОЙ ИНФОРМАЦИИ
-    public static final String DETAILED_INFO = "Подробная информация";
 
 
     // КОМАНДА ВЫЗОВА ВОЛОНТЕРА

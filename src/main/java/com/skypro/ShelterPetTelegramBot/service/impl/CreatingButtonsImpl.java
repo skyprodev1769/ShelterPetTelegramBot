@@ -40,12 +40,6 @@ public class CreatingButtonsImpl implements CreatingButtons {
     }
 
     @Override
-    public final SendMessage createButtonForGetDetailedInfoAboutShelter(Long chatId, String answer) {
-        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ");
-        return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_ABOUT_SHELTER_BUTTON);
-    }
-
-    @Override
     public SendMessage createButtonForSchemeDrivingToShelter(Long chatId, String answer) {
         log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ СХЕМЫ ПРОЕЗДА К ПРИЮТУ");
         return createOneButton(chatId, answer, SCHEME_DRIVING, SCHEME_DRIVING_BUTTON);

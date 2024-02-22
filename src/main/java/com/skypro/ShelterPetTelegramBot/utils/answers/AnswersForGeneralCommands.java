@@ -5,10 +5,6 @@ package com.skypro.ShelterPetTelegramBot.utils.answers;
  */
 public class AnswersForGeneralCommands {
 
-    public static String REACTION_TO_REQUEST(String userFirstName) {
-        return String.format("%s, пожалуйста, укажите, нужна ли Вам подробная информация или перейдите к следующему этапу.", userFirstName);
-    }
-
     public static String REACTION_TO_DETAILED_INFO(String userFirstName) {
         return String.format("%s, пожалуйста, выберите, что бы Вы хотели узнать.", userFirstName);
     }

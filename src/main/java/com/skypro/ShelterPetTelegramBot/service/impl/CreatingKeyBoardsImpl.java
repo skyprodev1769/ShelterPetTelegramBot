@@ -155,4 +155,146 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ");
         return message;
     }
+
+    @Override
+    public final SendMessage createKeyBoardForDetailedInfoAboutProcessForDog(Long chatId, String answer) {
+        SendMessage message = createKeyBoardForDetailedInfoAboutProcessForCat(chatId, answer);
+
+        message.setChatId(chatId);
+        message.setText(answer);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(RULES_DATING);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(LIST_REQUIRED_DOCS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_TRANSPORTATION);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_YOUNG_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_ADULT_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_DISABLED_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FROM_DOG_HANDLER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_TRUSTED_DOG_HANDLER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(LIST_REASONS_FOR_REFUSAL);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECORD_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REPORT_ABOUT_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CHANGE_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CALL_VOLUNTEER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ СОБАКИ");
+        return message;
+    }
+
+    @Override
+    public SendMessage createKeyBoardForDetailedInfoAboutProcessForCat(Long chatId, String answer) {
+        SendMessage message = new SendMessage();
+
+        message.setChatId(chatId);
+        message.setText(answer);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(RULES_DATING);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(LIST_REQUIRED_DOCS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_TRANSPORTATION);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_YOUNG_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_ADULT_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_DISABLED_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(LIST_REASONS_FOR_REFUSAL);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECORD_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REPORT_ABOUT_PET);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CHANGE_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CALL_VOLUNTEER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ КОШКИ");
+        return message;
+    }
 }
