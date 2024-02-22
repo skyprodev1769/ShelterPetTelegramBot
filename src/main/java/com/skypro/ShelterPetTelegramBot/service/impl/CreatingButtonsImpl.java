@@ -40,27 +40,15 @@ public class CreatingButtonsImpl implements CreatingButtons {
     }
 
     @Override
-    public SendMessage createButtonForSchemeDrivingForDogShelter(Long chatId, String answer) {
-        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ СХЕМЫ ПРОЕЗДА К ПРИЮТУ ДЛЯ СОБАК");
-        return createOneButton(chatId, answer, SCHEME_DRIVING_FOR_DOG_SHELTER, SCHEME_DRIVING_FOR_DOG_SHELTER_BUTTON);
+    public final SendMessage createButtonForGetDetailedInfoAboutShelter(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ");
+        return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_ABOUT_SHELTER_BUTTON);
     }
 
     @Override
-    public SendMessage createButtonForSchemeDrivingForCatShelter(Long chatId, String answer) {
-        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ СХЕМЫ ПРОЕЗДА К ПРИЮТУ ДЛЯ КОШЕК");
-        return createOneButton(chatId, answer, SCHEME_DRIVING_FOR_CAT_SHELTER, SCHEME_DRIVING_FOR_CAT_SHELTER_BUTTON);
-    }
-
-    @Override
-    public final SendMessage createButtonForGetDetailedInfoAboutDogShelter(Long chatId, String answer) {
-        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК");
-        return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_DOG_SHELTER_PART_1_BUTTON);
-    }
-
-    @Override
-    public final SendMessage createButtonForGetDetailedInfoAboutCatShelter(Long chatId, String answer) {
-        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК");
-        return createOneButton(chatId, answer, DETAILED_INFO, DETAILED_INFO_FOR_CAT_SHELTER_PART_1_BUTTON);
+    public SendMessage createButtonForSchemeDrivingToShelter(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА ПОЛУЧЕНИЯ СХЕМЫ ПРОЕЗДА К ПРИЮТУ");
+        return createOneButton(chatId, answer, SCHEME_DRIVING, SCHEME_DRIVING_BUTTON);
     }
 
     @Override

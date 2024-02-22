@@ -26,34 +26,18 @@ public interface CreatingKeyBoards {
     SendMessage createKeyBoardForChoiceShelter(Long chatId, String answer);
 
     /**
-     * Метод создает интерактивную клавиатуру для выбора основных шагов запросов информации о приюте <b> ДЛЯ СОБАК </b>
+     * Метод создает интерактивную клавиатуру для выбора основных шагов запросов информации о приюте
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createKeyBoardGeneralStepsForDogShelter(Long chatId, String answer);
+    SendMessage createKeyBoardForGeneralInfo(Long chatId, String answer);
 
     /**
-     * Метод создает интерактивную клавиатуру для выбора основных шагов запросов информации о приюте <b> ДЛЯ КОШЕК </b>
+     * Метод создает интерактивную клавиатуру для получения подробной информации о приюте
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createKeyBoardGeneralStepsForCatShelter(Long chatId, String answer);
-
-    /**
-     * Метод создает интерактивную клавиатуру для получения подробной информации о приюте <b> ДЛЯ СОБАК </b>
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
-    SendMessage createKeyBoardForDetailedInfoAboutDogShelter(Long chatId, String answer);
-
-    /**
-     * Метод создает интерактивную клавиатуру для получения подробной информации о приюте <b> ДЛЯ КОШЕК </b>
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
-    SendMessage createKeyBoardForDetailedInfoAboutCatShelter(Long chatId, String answer);
+    SendMessage createKeyBoardForDetailedInfoAboutShelter(Long chatId, String answer);
 }

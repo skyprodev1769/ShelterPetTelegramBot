@@ -34,36 +34,20 @@ public interface CreatingButtons {
     SendMessage createButtonsForChoiceShelter(Long chatId, String answer);
 
     /**
-     * Метод создает кнопку под сообщением для получения схемы проезда к приюту <b> ДЛЯ СОБАК </b>
+     * Метод создает кнопку под сообщением для выбора детальной информации о приюте
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createButtonForSchemeDrivingForDogShelter(Long chatId, String answer);
+    SendMessage createButtonForGetDetailedInfoAboutShelter(Long chatId, String answer);
 
     /**
-     * Метод создает кнопку под сообщением для получения схемы проезда к приюту <b> ДЛЯ КОШЕК </b>
+     * Метод создает кнопку под сообщением для получения схемы проезда к приюту
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>
      */
-    SendMessage createButtonForSchemeDrivingForCatShelter(Long chatId, String answer);
-
-    /**
-     * Метод создает кнопку под сообщением для выбора детальной информации о приюте <b> ДЛЯ СОБАК </b>
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
-    SendMessage createButtonForGetDetailedInfoAboutDogShelter(Long chatId, String answer);
-
-    /**
-     * Метод создает кнопку под сообщением для выбора детальной информации о приюте <b> ДЛЯ КОШЕК </b>
-     *
-     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param answer <i> является текстом для отправки пользователю </i>
-     */
-    SendMessage createButtonForGetDetailedInfoAboutCatShelter(Long chatId, String answer);
+    SendMessage createButtonForSchemeDrivingToShelter(Long chatId, String answer);
 
     /**
      * Метод создает кнопку под сообщением для вызова волонтера

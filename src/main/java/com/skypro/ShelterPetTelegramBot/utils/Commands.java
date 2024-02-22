@@ -20,26 +20,15 @@ public class Commands {
     public static final String CHANGE_SHELTER = "Выбрать другой приют";
 
 
-    // КОМАНДЫ ИНФОРМАЦИИ О ЛЮБОМ ПРИЮТЕ
+    // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ
+    public static final String INFO_ABOUT_SHELTER = "ЭТАП 1: Информация о приюте";
+    public static final String INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS = "Информация о расписании работы приюта и адрес";
+    public static final String SCHEME_DRIVING = "Схема проезда";
+    public static final String INFO_ABOUT_SECURITY_CONTACT_DETAILS = "Информация о контактных данных охраны для оформления пропуска на машину";
     public static final String INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION = "Информация об общих рекомендациях о технике безопасности на территории приюта";
 
-
-    // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК
-    public static final String INFO_ABOUT_DOG_SHELTER = "ЭТАП 1: Информация о приюте";
-    public static final String INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER = "Информация о расписании работы приюта, адрес и схема проезда";
-    public static final String SCHEME_DRIVING_FOR_DOG_SHELTER = "Схема проезда";
-    public static final String INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER = "Информация о контактных данных охраны для оформления пропуска на машину";
-    public static final String INFO_ABOUT_PROCESS_FOR_DOG_SHELTER = "ЭТАП 2: Как взять животное из приюта";
-    public static final String REPORT_ABOUT_DOG = "ЭТАП 3: Отчет о домашнем животном";
-
-
-    // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК
-    public static final String INFO_ABOUT_CAT_SHELTER = "ЭТАП 1: Информация о приюте";
-    public static final String INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER = "Информация о расписании работы приюта, адрес и схема проезда";
-    public static final String SCHEME_DRIVING_FOR_CAT_SHELTER = "Схема проезда";
-    public static final String INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER = "Информация о контактных данных охраны для оформления пропуска на машину";
-    public static final String INFO_ABOUT_PROCESS_FOR_CAT_SHELTER = "ЭТАП 2: Как взять животное из приюта";
-    public static final String REPORT_ABOUT_CAT = "ЭТАП 3: Отчет о домашнем животном";
+    public static final String INFO_ABOUT_PROCESS = "ЭТАП 2: Как взять животное из приюта";
+    public static final String REPORT_ABOUT_PET = "ЭТАП 3: Отчет о домашнем животном";
 
 
     // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ

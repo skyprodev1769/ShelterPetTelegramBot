@@ -71,7 +71,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
     }
 
     @Override
-    public final SendMessage createKeyBoardGeneralStepsForDogShelter(Long chatId, String answer) {
+    public final SendMessage createKeyBoardForGeneralInfo(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -82,15 +82,15 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add(INFO_ABOUT_DOG_SHELTER);
+        row.add(INFO_ABOUT_SHELTER);
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(INFO_ABOUT_PROCESS_FOR_DOG_SHELTER);
+        row.add(INFO_ABOUT_PROCESS);
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(REPORT_ABOUT_DOG);
+        row.add(REPORT_ABOUT_PET);
         rows.add(row);
 
         row = new KeyboardRow();
@@ -101,12 +101,12 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
-        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК");
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ОБЩИХ ЗАПРОСОВ ИНФОРМАЦИИ О ПРИЮТЕ");
         return message;
     }
 
     @Override
-    public final SendMessage createKeyBoardGeneralStepsForCatShelter(Long chatId, String answer) {
+    public final SendMessage createKeyBoardForDetailedInfoAboutShelter(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -117,46 +117,11 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
-        row.add(INFO_ABOUT_CAT_SHELTER);
+        row.add(INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS);
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(INFO_ABOUT_PROCESS_FOR_CAT_SHELTER);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(REPORT_ABOUT_CAT);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(CALL_VOLUNTEER);
-        rows.add(row);
-
-        keyboard.setKeyboard(rows);
-
-        message.setReplyMarkup(keyboard);
-
-        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК");
-        return message;
-    }
-
-    @Override
-    public final SendMessage createKeyBoardForDetailedInfoAboutDogShelter(Long chatId, String answer) {
-        SendMessage message = new SendMessage();
-
-        message.setChatId(chatId);
-        message.setText(answer);
-
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
-
-        List<KeyboardRow> rows = new ArrayList<>();
-
-        KeyboardRow row = new KeyboardRow();
-        row.add(INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER);
+        row.add(INFO_ABOUT_SECURITY_CONTACT_DETAILS);
         rows.add(row);
 
         row = new KeyboardRow();
@@ -168,11 +133,11 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(INFO_ABOUT_PROCESS_FOR_DOG_SHELTER);
+        row.add(INFO_ABOUT_PROCESS);
         rows.add(row);
 
         row = new KeyboardRow();
-        row.add(REPORT_ABOUT_DOG);
+        row.add(REPORT_ABOUT_PET);
         rows.add(row);
 
         row = new KeyboardRow();
@@ -187,58 +152,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         message.setReplyMarkup(keyboard);
 
-        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ СОБАК");
-        return message;
-    }
-
-    @Override
-    public final SendMessage createKeyBoardForDetailedInfoAboutCatShelter(Long chatId, String answer) {
-        SendMessage message = new SendMessage();
-
-        message.setChatId(chatId);
-        message.setText(answer);
-
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
-
-        List<KeyboardRow> rows = new ArrayList<>();
-
-        KeyboardRow row = new KeyboardRow();
-        row.add(INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(RECORD_CONTACT_DETAILS);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(INFO_ABOUT_PROCESS_FOR_CAT_SHELTER);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(REPORT_ABOUT_CAT);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(CHANGE_SHELTER);
-        rows.add(row);
-
-        row = new KeyboardRow();
-        row.add(CALL_VOLUNTEER);
-        rows.add(row);
-
-        keyboard.setKeyboard(rows);
-
-        message.setReplyMarkup(keyboard);
-
-        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ ДЛЯ КОШЕК");
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРИЮТЕ");
         return message;
     }
 }
