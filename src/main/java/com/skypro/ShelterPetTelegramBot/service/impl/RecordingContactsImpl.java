@@ -23,12 +23,12 @@ public class RecordingContactsImpl implements RecordingContacts {
 
         PotentialParent parent = new PotentialParent();
 
+        parent.setPhoneNumber(phoneNumber);
         parent.setChatId(chatId);
         parent.setFirstName(firstName);
         parent.setLastName(lastName);
-        parent.setPhoneNumber(phoneNumber);
 
-        log.info("ЗАПИСАНЫ КОНТАКТНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ {}", chatId);
+        log.info("ЗАПИСАНЫ КОНТАКТНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ {}: {} {} {}", chatId, firstName, lastName, phoneNumber);
         return parent;
     }
 }

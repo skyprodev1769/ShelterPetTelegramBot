@@ -466,18 +466,18 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher) {
 
         String answer;
+        PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
+        Long id = Long.valueOf(parent.getPhoneNumber());
 
-        if (parentRepository.findById(chatId).isEmpty()) {                                                              // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
+        if (parentRepository.findById(id).isEmpty()) {                                                              // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
 
-            PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
             parentRepository.save(parent);
-
             log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПИСАЛСЯ КАК ПОТЕНЦИАЛЬНЫЙ УСЫНОВИТЕЛЬ", chatId, userFirstName);
             answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
 
         } else {                                                                                                        // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
 
-            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОПЫТАЛСЯ СНОВА ОТПРАВИТЬ КОНТАКТНЫЕ ДАННЫЕ", chatId, userFirstName);
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОПЫТАЛСЯ ПОВТОРНО ОТПРАВИТЬ НОМЕР ТЕЛЕФОНА", chatId, userFirstName);
             answer = REACTION_TO_REPEAT_RECORD_CONTACT(userFirstName);
         }
 

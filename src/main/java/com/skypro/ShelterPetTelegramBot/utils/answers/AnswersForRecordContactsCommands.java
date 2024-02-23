@@ -15,10 +15,10 @@ public class AnswersForRecordContactsCommands {
     }
 
     public static String REACTION_TO_SUCCESSFUL_RECORD_CONTACT(String userFirstName) {
-        return String.format("%s, Ваши данные успешно записаны!", userFirstName);
+        return String.format("%s, переданные данные успешно записаны!", userFirstName);
     }
 
     public static String REACTION_TO_REPEAT_RECORD_CONTACT(String userFirstName) {
-        return String.format("%s, Ваши данные уже были записаны ранее!", userFirstName);
+        return String.format("%s, Данный номер телефона уже был записан ранее!", userFirstName);
     }
 }
