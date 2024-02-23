@@ -48,6 +48,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersFor
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutProcess.*;
 
 /**
  * Класс {@link TelegramBot}
@@ -283,6 +284,60 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
 
                 executeMessage(message);
+            }
+
+            case RULES_DATING -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРАВИЛ ДЛЯ ЗНАКОМСТВА С ЖИВОТНЫМ", chatId, userFirstName);
+                answer = REACTION_TO_RULES_DATING(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case LIST_REQUIRED_DOCS -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК НЕОБХОДИМЫХ ДОКУМЕНТОВ", chatId, userFirstName);
+                answer = REACTION_TO_LIST_REQUIRED_DOCS(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case RECOMMENDATIONS_FOR_TRANSPORTATION -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ТРАНСПОРТИРОВКЕ ЖИВОТНОГО", chatId, userFirstName);
+                answer = REACTION_TO_RECOMMENDATIONS_FOR_TRANSPORTATION(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_YOUNG_PET -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ МАЛЕНЬКОГО ЖИВОТНОГО", chatId, userFirstName);
+                answer = REACTION_TO_RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_YOUNG_PET(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_ADULT_PET -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ ВЗРОСЛОГО ЖИВОТНОГО", chatId, userFirstName);
+                answer = REACTION_TO_RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_ADULT_PET(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_DISABLED_PET -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ ЖИВОТНОГО С ОГРАНИЧЕННЫМИ ВОЗМОЖНОСТЯМИ", chatId, userFirstName);
+                answer = REACTION_TO_RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_DISABLED_PET(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case RECOMMENDATIONS_FROM_DOG_HANDLER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СОВЕТЫ КИНОЛОГА ПО ПЕРВИЧНОМУ ОБЩЕНИЮ С СОБАКОЙ", chatId, userFirstName);
+                answer = REACTION_TO_RECOMMENDATIONS_FROM_DOG_HANDLER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case RECOMMENDATIONS_FOR_TRUSTED_DOG_HANDLER -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ПРОВЕРЕННЫМ КИНОЛОГАМ", chatId, userFirstName);
+                answer = REACTION_TO_RECOMMENDATIONS_FOR_TRUSTED_DOG_HANDLER(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            case LIST_REASONS_FOR_REFUSAL -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРИЧИН ДЛЯ ОТКАЗА", chatId, userFirstName);
+                answer = REACTION_TO_LIST_REASONS_FOR_REFUSAL(userFirstName);
+                reactionToCommand(chatId, answer);
             }
 
             // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
