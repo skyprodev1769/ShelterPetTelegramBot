@@ -42,6 +42,14 @@ public interface CreatingButtons {
     SendMessage createButtonForSchemeDrivingToShelter(Long chatId, String answer);
 
     /**
+     * Метод создает кнопку под сообщением для удаления контактных данных усыновителя
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param answer <i> является текстом для отправки пользователю </i>
+     */
+    SendMessage createButtonForRemoveContactDetails(Long chatId, String answer);
+
+    /**
      * Метод создает кнопку под сообщением для вызова волонтера
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>

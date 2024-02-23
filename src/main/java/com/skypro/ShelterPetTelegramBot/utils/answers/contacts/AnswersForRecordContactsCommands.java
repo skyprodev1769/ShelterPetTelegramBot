@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.utils.answers;
+package com.skypro.ShelterPetTelegramBot.utils.answers.contacts;
 
 /**
  * РЕАКЦИИ НА КОМАНДЫ ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
@@ -8,6 +8,8 @@ public class AnswersForRecordContactsCommands {
     public static String REACTION_TO_RECORD_CONTACT_DETAILS(String userFirstName) {
         return String.format("""
                 %s, Вы можете оставить свои контактные данные для обратной связи.
+                
+                Если Вы захотите, удалить Ваши контактные данные можно в любой момент.
                                     
                 Пожалуйста, введите необходимую информацию в УКАЗАННОМ ФОРМАТЕ
                                     

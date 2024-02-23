@@ -17,6 +17,10 @@ public class Buttons {
     public static final String SCHEME_DRIVING_BUTTON = "SCHEME_DRIVING_BUTTON";
 
 
+    // КНОПКА УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ
+    public static final String REMOVE_BUTTON = "REMOVE_BUTTON";
+
+
     // КНОПКА ВЫЗОВА ВОЛОНТЕРА
     public static final String CALL_VOLUNTEER_BUTTON = "CALL_VOLUNTEER_BUTTON";
 }

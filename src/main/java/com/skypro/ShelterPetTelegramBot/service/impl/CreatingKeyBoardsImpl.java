@@ -133,6 +133,10 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         rows.add(row);
 
         row = new KeyboardRow();
+        row.add(REMOVE_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
         row.add(INFO_ABOUT_PROCESS);
         rows.add(row);
 
@@ -208,6 +212,10 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         rows.add(row);
 
         row = new KeyboardRow();
+        row.add(REMOVE_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
         row.add(INFO_ABOUT_SHELTER);
         rows.add(row);
 
@@ -272,6 +280,10 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
         row = new KeyboardRow();
         row.add(RECORD_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REMOVE_CONTACT_DETAILS);
         rows.add(row);
 
         row = new KeyboardRow();

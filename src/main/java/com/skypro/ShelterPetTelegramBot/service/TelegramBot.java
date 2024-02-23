@@ -40,8 +40,9 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForBasicComm
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForChoiceShelterCommands.REACTION_TO_CHOICE_CAT_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForChoiceShelterCommands.REACTION_TO_CHOICE_DOG_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForGeneralCommands.*;
-import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRecordContactsCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRegistrationCommands.*;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.contacts.AnswersForRecordContactsCommands.*;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.contacts.AnswersForRemovedContactsCommand.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.REACTION_TO_SCHEME_DRIVING;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER;
@@ -91,21 +92,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId;
         String userFirstName;
 
-        if (update.hasMessage() && update.getMessage().hasText()) {                                                     // ЕСЛИ ПРИХОДИТ ТЕКСТОВОЕ СООБЩЕНИЕ
+        if (update.hasMessage() && update.getMessage().hasText()) { // ЕСЛИ ПРИХОДИТ ТЕКСТОВОЕ СООБЩЕНИЕ
 
             chatId = update.getMessage().getChatId();
             userFirstName = update.getMessage().getChat().getFirstName();
             String text = update.getMessage().getText();
 
-            if (userRepository.findById(chatId).isEmpty()) {                                                            // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ РЕГИСТРИРОВАЛСЯ
+            if (userRepository.findById(chatId).isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ РЕГИСТРИРОВАЛСЯ
 
                 getReactionsForUnregisteredUsers(chatId, userFirstName, text);
 
-            } else {                                                                                                    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ЗАРЕГИСТРИРОВАЛСЯ
+            } else { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ЗАРЕГИСТРИРОВАЛСЯ
 
                 Matcher matcher = appConfiguration.getPattern().matcher(text);
 
-                if (matcher.matches()) {                                                                                // ЕСЛИ ВХОДЯЩЕЕ СООБЩЕНИЕ СОДЕРЖИТ ФОРМУ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ
+                if (matcher.matches()) { // ЕСЛИ ВХОДЯЩЕЕ СООБЩЕНИЕ СОДЕРЖИТ ФОРМУ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ
                     savePotentialParentToDB(chatId, userFirstName, matcher);
                     return;
                 }
@@ -113,7 +114,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 getReactionsForRegisteredUsers(chatId, userFirstName, text);
             }
 
-        } else if (update.hasCallbackQuery()) {                                                                         // ЕСЛИ ПРИХОДИТ ОТКЛИК ОТ НАЖАТИЯ КНОПКИ
+        } else if (update.hasCallbackQuery()) { // ЕСЛИ ПРИХОДИТ ОТКЛИК ОТ НАЖАТИЯ КНОПКИ
 
             chatId = update.getCallbackQuery().getMessage().getChatId();
             userFirstName = update.getCallbackQuery().getFrom().getFirstName();
@@ -348,6 +349,15 @@ public class TelegramBot extends TelegramLongPollingBot {
                 reactionToCommand(chatId, answer);
             }
 
+            // КОМАНДА УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ
+
+            case REMOVE_CONTACT_DETAILS -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ УДАЛЕНИЕ КОНТАКТНЫХ ДАННЫХ", chatId, userFirstName);
+                answer = REACTION_TO_REQUEST_TO_REMOVED_CONTACTS_DETAILS(userFirstName);
+                message = buttons.createButtonForRemoveContactDetails(chatId, answer);
+                executeMessage(message);
+            }
+
             // КОМАНДА СМЕНЫ ПРИЮТА
 
             case CHANGE_SHELTER -> {
@@ -446,6 +456,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
 
+            // КНОПКА УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ
+
+            case REMOVE_BUTTON -> {
+                removePotentialParentFromDB(chatId, userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} УДАЛИЛ КОНТАКТНЫЕ ДАННЫЕ", chatId, userFirstName);
+            }
+
             // КНОПКА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER_BUTTON -> {
@@ -469,20 +486,48 @@ public class TelegramBot extends TelegramLongPollingBot {
         PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
         Long id = Long.valueOf(parent.getPhoneNumber());
 
-        if (parentRepository.findById(id).isEmpty()) {                                                              // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
+        if (parentRepository.findById(id).isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
 
             parentRepository.save(parent);
             log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПИСАЛСЯ КАК ПОТЕНЦИАЛЬНЫЙ УСЫНОВИТЕЛЬ", chatId, userFirstName);
             answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
+            SendMessage message = keyBoards.createKeyBoardForGeneralInfo(chatId, answer);
+            executeMessage(message);
 
-        } else {                                                                                                        // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
+        } else { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
 
             log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОПЫТАЛСЯ ПОВТОРНО ОТПРАВИТЬ НОМЕР ТЕЛЕФОНА", chatId, userFirstName);
             answer = REACTION_TO_REPEAT_RECORD_CONTACT(userFirstName);
+            reactionToCommand(chatId, answer);
         }
+    }
 
-        SendMessage message = keyBoards.createKeyBoardForGeneralInfo(chatId, answer);
-        executeMessage(message);
+    /**
+     * Метод стирает все ранее переданные контакты усыновителя {@link PotentialParent} из БД
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i> <br>
+     */
+    private void removePotentialParentFromDB(Long chatId, String userFirstName) {
+
+        String answer;
+
+        List<PotentialParent> parent = parentRepository.getAllByChatId(chatId);
+
+        if (parent.isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ ОТПРАВЛЯЛ РАНЕЕ КОНТАКТНЫЕ ДАННЫЕ
+
+            log.info("НЕ НАЙДЕНЫ КОНТАКТНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ: {} {}", chatId, userFirstName);
+            answer = REACTION_TO_REMOVED_EMPTY_CONTACTS_DETAILS(userFirstName);
+            reactionToCommand(chatId, answer);
+
+        } else { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОТПРАВЛЯЛ РАНЕЕ КОНТАКТНЫЕ ДАННЫЕ
+
+            parentRepository.deleteAll();
+            log.info("СТЕРТЫ КОНТАКТНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ: {} {}", chatId, userFirstName);
+            answer = REACTION_TO_REMOVED_CONTACTS_DETAILS(userFirstName);
+            SendMessage message = keyBoards.createKeyBoardForGeneralInfo(chatId, answer);
+            executeMessage(message);
+        }
     }
 
     /**

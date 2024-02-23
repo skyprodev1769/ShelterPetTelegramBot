@@ -20,7 +20,7 @@ public class Commands {
     public static final String CHANGE_SHELTER = "Выбрать другой приют";
 
 
-    // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ
+    // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ (ЭТАП 1)
     public static final String INFO_ABOUT_SHELTER = "ЭТАП 1: Информация о приюте";
     public static final String INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS = "Информация о расписании работы приюта и адрес";
     public static final String SCHEME_DRIVING = "Схема проезда";
@@ -28,7 +28,7 @@ public class Commands {
     public static final String INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION = "Информация об общих рекомендациях о технике безопасности на территории приюта";
 
 
-    // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО
+    // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО (ЭТАП 2)
     public static final String INFO_ABOUT_PROCESS = "ЭТАП 2: Как взять животное из приюта";
     public static final String RULES_DATING = "Правила знакомства с животным до того, как забрать его из приюта";
     public static final String LIST_REQUIRED_DOCS = "Список необходимых документов, чтобы забрать животное";
@@ -46,6 +46,11 @@ public class Commands {
 
     // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
     public static final String RECORD_CONTACT_DETAILS = "Принять и записать контактные данные для связи";
+
+
+    // КОМАНДА УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ
+    public static final String REMOVE_CONTACT_DETAILS = "Удалить мои контактные данные";
+    public static final String REMOVE = "Удалить";
 
 
     // КОМАНДА ВЫЗОВА ВОЛОНТЕРА

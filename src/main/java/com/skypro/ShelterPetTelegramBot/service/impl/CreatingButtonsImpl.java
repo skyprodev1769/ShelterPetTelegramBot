@@ -46,6 +46,12 @@ public class CreatingButtonsImpl implements CreatingButtons {
     }
 
     @Override
+    public SendMessage createButtonForRemoveContactDetails(Long chatId, String answer) {
+        log.info("СОЗДАНА КНОПКА УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ");
+        return createOneButton(chatId, answer, REMOVE, REMOVE_BUTTON);
+    }
+
+    @Override
     public final SendMessage createButtonForCallVolunteer(Long chatId, String answer) {
         log.info("СОЗДАНА КНОПКА ВЫЗОВА ВОЛОНТЕРА");
         return createOneButton(chatId, answer, CALL_VOLUNTEER, CALL_VOLUNTEER_BUTTON);
