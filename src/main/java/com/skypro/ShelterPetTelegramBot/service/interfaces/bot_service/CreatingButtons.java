@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 /**
  * Интерфейс {@link CreatingButtons}
- * содержит набор методов для класса {@link CreatingButtonsImpl}
+ * содержит набор методов для сервисного класса {@link CreatingButtonsImpl}
  */
 public interface CreatingButtons {
 

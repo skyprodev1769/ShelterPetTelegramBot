@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 
 /**
  * Интерфейс {@link RecordingContacts}
- * содержит набор методов для класса {@link RecordingContactsImpl}
+ * содержит набор методов для сервисного класса {@link RecordingContactsImpl}
  */
 public interface RecordingContacts {
 

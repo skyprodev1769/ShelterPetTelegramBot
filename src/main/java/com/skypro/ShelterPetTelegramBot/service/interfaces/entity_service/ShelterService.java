@@ -8,7 +8,7 @@ import java.util.Collection;
 
 /**
  * Интерфейс {@link ShelterService}
- * содержит набор методов для класса {@link ShelterServiceImpl}
+ * содержит набор методов для сервисного класса {@link ShelterServiceImpl}
  */
 public interface ShelterService {
 

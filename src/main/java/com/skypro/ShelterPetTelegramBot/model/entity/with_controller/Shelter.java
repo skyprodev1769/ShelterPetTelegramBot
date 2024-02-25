@@ -1,16 +1,15 @@
 package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Collection;
+
 /**
  * Класс {@link Shelter}
- * является сущностью для хранения приютов для животных в БД и имеет 3 поля: <br> <br>
- *
- * <b> {@code Long id} </b> <br> <i> является идентификатором приюта </i> <br> <br>
- * <b> {@code PetType type} </b> <br> <i> является указателем типа животных в приюте </i> <br> <br>
- * <b> {@code String address} </b> <br> <i> является адресом приюта </i>
+ * является сущностью для хранения приютов для животных в БД
  */
 @Data
 @Entity(name = "shelter")
@@ -27,6 +26,10 @@ public class Shelter {
 
     @Column(name = "address")
     private String address;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "shelter")
+    private Collection<Pet> pets;
 
     public Shelter() {
     }

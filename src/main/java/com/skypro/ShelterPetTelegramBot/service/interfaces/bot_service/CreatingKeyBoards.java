@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 /**
  * Интерфейс {@link CreatingKeyBoards}
- * содержит набор методов для класса {@link CreatingKeyBoardsImpl}
+ * содержит набор методов для сервисного класса {@link CreatingKeyBoardsImpl}
  */
 public interface CreatingKeyBoards {
 

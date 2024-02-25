@@ -4,7 +4,6 @@ import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.repository.ShelterRepository;
-import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingKeyBoardsImpl;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 /**
- * Класс {@link CreatingKeyBoardsImpl}
+ * Класс {@link ShelterServiceImpl}
  * является сервисным классом для контроллера {@link ShelterController}
  */
 @Service
