@@ -1,18 +1,15 @@
 package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Collection;
-
 /**
- * Класс {@link Volunteer}
- * является сущностью для хранения волонтеров в БД
+ * Класс {@link Parent}
+ * является сущностью для хранения усыновителей в БД
  */
 @Data
-@Entity(name = "volunteer")
-public class Volunteer {
+@Entity(name = "parent")
+public class Parent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,20 +26,21 @@ public class Volunteer {
     private String phoneNumber;
 
     @ManyToOne
-    @JoinColumn(name = "shelter_id")
-    private Shelter shelter;
+    @JoinColumn(name = "volunteer_id")
+    private Volunteer volunteer;
 
-    @JsonIgnore
-    @OneToMany
-    private Collection<Parent> parents;
+    @OneToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
 
-    public Volunteer() {
+    public Parent() {
     }
 
-    public Volunteer(String firstName, String lastName, String phoneNumber, Shelter shelter) {
+    public Parent(String firstName, String lastName, String phoneNumber, Volunteer volunteer, Pet pet) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.shelter = shelter;
+        this.volunteer = volunteer;
+        this.pet = pet;
     }
 }

@@ -9,7 +9,7 @@ import java.util.Collection;
 
 /**
  * Класс {@link VolunteerController}
- * является контроллером для обработки запросов, связанных с животным
+ * является контроллером для обработки запросов, связанных с волонтером
  */
 @RestController
 @RequestMapping("/volunteer")

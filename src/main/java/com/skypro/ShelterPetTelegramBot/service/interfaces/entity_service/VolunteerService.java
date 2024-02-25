@@ -14,10 +14,10 @@ public interface VolunteerService {
     /**
      * Метод добавляет нового волонтера в БД
      *
-     * @param firstName   <i> является именем нового волонтера </i>
-     * @param lastName    <i> является фамилией нового волонтера </i>
-     * @param phoneNumber <i> является номером телефона нового волонтера </i>
-     * @param shelterId   <i> является идентификатором приюта для нового животного </i>
+     * @param firstName   <i> является именем нового волонтера </i> <br>
+     * @param lastName    <i> является фамилией нового волонтера </i> <br>
+     * @param phoneNumber <i> является номером телефона нового волонтера </i> <br>
+     * @param shelterId   <i> является идентификатором приюта для животного </i>
      */
     Volunteer add(String firstName,
                   String lastName,
@@ -40,9 +40,9 @@ public interface VolunteerService {
      * Метод изменяет данные волонтера В БД
      *
      * @param id          <i> является идентификатором волонтера </i> <br>
-     * @param firstName   <i> является новым именем волонтера </i>
-     * @param lastName    <i> является новой фамилией волонтера </i>
-     * @param phoneNumber <i> является новым номером телефона волонтера </i>
+     * @param firstName   <i> является новым именем волонтера </i> <br>
+     * @param lastName    <i> является новой фамилией волонтера </i> <br>
+     * @param phoneNumber <i> является новым номером телефона волонтера </i> <br>
      * @param shelterId   <i> является новым идентификатором приюта для животного </i>
      */
     Volunteer edit(Long id,
