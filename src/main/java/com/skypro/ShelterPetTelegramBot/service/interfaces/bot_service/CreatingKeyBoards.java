@@ -1,6 +1,6 @@
-package com.skypro.ShelterPetTelegramBot.service.interfaces;
+package com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service;
 
-import com.skypro.ShelterPetTelegramBot.service.impl.CreatingKeyBoardsImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingKeyBoardsImpl;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 /**

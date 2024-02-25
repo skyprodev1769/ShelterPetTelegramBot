@@ -1,7 +1,7 @@
-package com.skypro.ShelterPetTelegramBot.service.impl;
+package com.skypro.ShelterPetTelegramBot.service.impl.bot_service;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.PotentialParent;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.RecordingContacts;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.RecordingContacts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

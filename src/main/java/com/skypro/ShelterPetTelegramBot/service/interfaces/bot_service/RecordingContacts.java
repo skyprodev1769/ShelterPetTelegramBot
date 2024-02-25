@@ -1,7 +1,7 @@
-package com.skypro.ShelterPetTelegramBot.service.interfaces;
+package com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.PotentialParent;
-import com.skypro.ShelterPetTelegramBot.service.impl.RecordingContactsImpl;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.RecordingContactsImpl;
 
 import java.util.regex.Matcher;
 

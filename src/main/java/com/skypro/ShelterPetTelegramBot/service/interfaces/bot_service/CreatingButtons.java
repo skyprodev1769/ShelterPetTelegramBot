@@ -1,6 +1,6 @@
-package com.skypro.ShelterPetTelegramBot.service.interfaces;
+package com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service;
 
-import com.skypro.ShelterPetTelegramBot.service.impl.CreatingButtonsImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingButtonsImpl;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 /**

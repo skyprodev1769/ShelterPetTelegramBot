@@ -1,6 +1,6 @@
-package com.skypro.ShelterPetTelegramBot.service.impl;
+package com.skypro.ShelterPetTelegramBot.service.impl.bot_service;
 
-import com.skypro.ShelterPetTelegramBot.service.interfaces.CreatingButtons;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingButtons;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

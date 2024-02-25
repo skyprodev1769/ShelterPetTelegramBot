@@ -2,16 +2,16 @@ package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
-import com.skypro.ShelterPetTelegramBot.model.entity.PotentialParent;
-import com.skypro.ShelterPetTelegramBot.model.entity.User;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.User;
 import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
 import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
-import com.skypro.ShelterPetTelegramBot.service.impl.CreatingButtonsImpl;
-import com.skypro.ShelterPetTelegramBot.service.impl.CreatingKeyBoardsImpl;
-import com.skypro.ShelterPetTelegramBot.service.impl.RecordingContactsImpl;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.CreatingButtons;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.CreatingKeyBoards;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.RecordingContacts;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingButtonsImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingKeyBoardsImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.RecordingContactsImpl;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingButtons;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingKeyBoards;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.RecordingContacts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -229,7 +229,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 executeMessage(message);
             }
 
-            // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ
+            // КОМАНДЫ ИНФОРМАЦИИ О ПРИЮТЕ (ЭТАП 1)
 
             case INFO_ABOUT_SHELTER -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРИЮТЕ", chatId, userFirstName);
@@ -271,7 +271,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 reactionToCommand(chatId, answer);
             }
 
-            // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИИ ЖИВОТНОГО
+            // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИИ ЖИВОТНОГО (ЭТАП 2)
 
             case INFO_ABOUT_PROCESS -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО", chatId, userFirstName);

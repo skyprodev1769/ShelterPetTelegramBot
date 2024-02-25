@@ -31,7 +31,7 @@ public class AnswersForBasicCommands {
                                 
                 Нажмите /help, чтобы вывелось данное сообщение снова
                                 
-                Нажмите /settings, чтобы вывелась интерактивная клавиатура""", userFirstName);
+                Нажмите /settings, чтобы вывелась интерактивная клавиатура для регистрации""", userFirstName);
     }
 
     public static String REACTION_TO_COMMAND_HELP_FOR_REGISTERED_USERS(String userFirstName) {
@@ -42,7 +42,7 @@ public class AnswersForBasicCommands {
                                 
                 Нажмите /help, чтобы вывелось данное сообщение снова
                                 
-                Нажмите /settings, чтобы вывелась интерактивная клавиатура
+                Нажмите /settings, чтобы вывелась интерактивная клавиатура выбора приюта
                                 
                 или воспользуйтесь кнопкой вызова волонтера""", userFirstName);
     }

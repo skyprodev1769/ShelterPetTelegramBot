@@ -1,6 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.model.repository;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.User;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.model.entity;
+package com.skypro.ShelterPetTelegramBot.model.entity.without_controller;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
