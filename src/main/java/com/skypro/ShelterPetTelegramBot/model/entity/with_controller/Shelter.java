@@ -29,6 +29,10 @@ public class Shelter {
 
     @JsonIgnore
     @OneToMany(mappedBy = "shelter")
+    private Collection<Volunteer> volunteers;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "shelter")
     private Collection<Pet> pets;
 
     public Shelter() {
