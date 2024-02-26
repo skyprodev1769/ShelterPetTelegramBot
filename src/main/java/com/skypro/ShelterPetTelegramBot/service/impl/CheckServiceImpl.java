@@ -2,8 +2,8 @@ package com.skypro.ShelterPetTelegramBot.service.impl;
 
 import com.skypro.ShelterPetTelegramBot.exception.DifferentTypesException;
 import com.skypro.ShelterPetTelegramBot.exception.InvalideInputException;
-import com.skypro.ShelterPetTelegramBot.exception.InvalideNumberException;
-import com.skypro.ShelterPetTelegramBot.exception.NumberAlreadyAddedException;
+import com.skypro.ShelterPetTelegramBot.exception.number.InvalideNumberException;
+import com.skypro.ShelterPetTelegramBot.exception.number.NumberAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.parent.ParentAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.pet.PetAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterAlreadyAddedException;

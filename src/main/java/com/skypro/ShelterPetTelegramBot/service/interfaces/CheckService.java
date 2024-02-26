@@ -52,7 +52,7 @@ public interface CheckService {
                       Collection<Shelter> shelters);
 
     /**
-     * Метод проверяет вводимое число на корректность
+     * Метод проверяет вводимое значение на корректность
      *
      * @param value <i> является проверяемым значением </i>
      */
@@ -61,28 +61,28 @@ public interface CheckService {
     /**
      * Метод проверяет вводимое имя на корректность
      *
-     * @param string <i> является проверяемым значением </i>
+     * @param name <i> является проверяемым именем </i>
      */
-    void validateName(String string);
+    void validateName(String name);
 
     /**
      * Метод проверяет вводимый адрес на корректность
      *
-     * @param string <i> является проверяемым значением </i>
+     * @param address <i> является проверяемым адресом </i>
      */
-    void validateAddress(String string);
+    void validateAddress(String address);
 
     /**
-     * Метод проверяет вводимый номер на корректность
+     * Метод проверяет вводимый номер телефона на корректность
      *
-     * @param phoneNumber <i> является проверяемым номером </i>
+     * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
     void validatePhoneNumber(String phoneNumber);
 
     /**
      * Метод проверяет вводимый тип животного на соответствие
      *
-     * @param typeOne <i> является проверяемым типы </i> <br>
+     * @param typeOne <i> является проверяемым типом </i> <br>
      * @param typeTwo <i> является проверяющим типом </i>
      */
     void validateTypes(PetType typeOne, PetType typeTwo);
