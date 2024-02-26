@@ -33,7 +33,7 @@ public class VolunteerServiceImpl implements VolunteerService {
                          String phoneNumber,
                          Long shelterId) {
 
-        Shelter shelter = shelterService.get(shelterId);
+        Shelter shelter = shelterService.getById(shelterId);
         Volunteer volunteer = new Volunteer(firstName, lastName, phoneNumber, shelter);
 
         checkService.checkVolunteer(firstName, lastName, phoneNumber, volunteer, getAll());
@@ -110,7 +110,7 @@ public class VolunteerServiceImpl implements VolunteerService {
             }
 
             if (shelterId != null) {
-                Shelter shelter = shelterService.get(shelterId);
+                Shelter shelter = shelterService.getById(shelterId);
                 edit.setShelter(shelter);
             }
 

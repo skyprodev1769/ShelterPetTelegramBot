@@ -32,9 +32,24 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    public Shelter get(Long id) {
+    public Shelter getById(Long id) {
         checkService.validateLong(id);
         return repository.findById(id).orElseThrow(ShelterNotFoundException::new);
+    }
+
+    @Override
+    public Collection<Shelter> getAllByParameters(String address, PetType type) {
+
+        if (address != null) {
+            checkService.validateAddress(address);
+            return repository.getAllByAddressContainsIgnoreCase(address);
+
+        } else if (type != null) {
+            return repository.getAllByType(type);
+
+        } else {
+            return getAll();
+        }
     }
 
     @Override
@@ -45,7 +60,7 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public Shelter edit(Long id, PetType type, String address) {
 
-        Shelter shelter = get(id);
+        Shelter shelter = getById(id);
 
         if (type == null & address == null) {
             return shelter;
@@ -70,7 +85,7 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     public Shelter delete(Long id) {
-        Shelter shelter = get(id);
+        Shelter shelter = getById(id);
         repository.delete(shelter);
         return shelter;
     }

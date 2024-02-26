@@ -21,11 +21,16 @@ public interface ShelterService {
     Shelter add(PetType type, String address);
 
     /**
-     * Метод находит приют для животных из БД
+     * Метод находит приют для животных из БД по id
      *
      * @param id <i> является идентификатором приюта </i>
      */
-    Shelter get(Long id);
+    Shelter getById(Long id);
+
+    /**
+     * Метод находит все приюты для животных из БД по разным параметрам
+     */
+    Collection<Shelter> getAllByParameters(String address, PetType type);
 
     /**
      * Метод находит все приюты для животных из БД

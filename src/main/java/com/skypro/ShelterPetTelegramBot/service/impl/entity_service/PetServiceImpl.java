@@ -30,7 +30,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Pet add(PetType type, String name, Long shelterId) {
-        Shelter shelter = shelterService.get(shelterId);
+        Shelter shelter = shelterService.getById(shelterId);
         Pet pet = new Pet(type, name, shelter);
         checkService.checkPet(type, shelter.getType(), name, pet, getAll());
         return repository.save(pet);
@@ -68,7 +68,7 @@ public class PetServiceImpl implements PetService {
             }
 
             if (shelterId != null) {
-                Shelter shelter = shelterService.get(shelterId);
+                Shelter shelter = shelterService.getById(shelterId);
                 edit.setShelter(shelter);
             }
 

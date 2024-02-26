@@ -33,8 +33,15 @@ public class ShelterController {
     }
 
     @GetMapping("{id}")
-    public Shelter get(@PathVariable Long id) {
-        return service.get(id);
+    public Shelter getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
+    @GetMapping
+    public Collection<Shelter> getAllByParameters(@RequestParam(required = false) String address,
+                                                  @RequestParam(required = false) PetType type) {
+
+        return service.getAllByParameters(address, type);
     }
 
     @GetMapping("/all")
