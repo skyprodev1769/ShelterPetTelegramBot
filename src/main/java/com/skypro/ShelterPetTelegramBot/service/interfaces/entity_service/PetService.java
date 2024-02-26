@@ -22,11 +22,18 @@ public interface PetService {
     Pet add(PetType type, String name, Long shelterId);
 
     /**
-     * Метод находит животное из БД
+     * Метод находит животное из БД по id
      *
      * @param id <i> является идентификатором животного </i>
      */
-    Pet get(Long id);
+    Pet getById(Long id);
+
+    /**
+     * Метод находит всех животных из БД по разным параметрам
+     */
+    Collection<Pet> getAllByParameters(String name,
+                                       PetType type,
+                                       Long shelterId);
 
     /**
      * Метод находит всех животных из БД

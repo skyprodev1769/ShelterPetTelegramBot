@@ -37,9 +37,28 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet get(Long id) {
+    public Pet getById(Long id) {
         checkService.validateLong(id);
         return repository.findById(id).orElseThrow(PetNotFoundException::new);
+    }
+
+    @Override
+    public Collection<Pet> getAllByParameters(String name, PetType type, Long shelterId) {
+
+        if (name != null) {
+            checkService.validateName(name);
+            return repository.getAllByNameContainsIgnoreCase(name);
+
+        } else if (type != null) {
+            return repository.getAllByType(type);
+
+        } else if (shelterId != null) {
+            checkService.validateLong(shelterId);
+            return repository.getAllByShelterId(shelterId);
+
+        } else {
+            return getAll();
+        }
     }
 
     @Override
@@ -50,7 +69,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public Pet edit(Long id, PetType type, String name, Long shelterId) {
 
-        Pet pet = get(id);
+        Pet pet = getById(id);
 
         if (type == null & name == null & shelterId == null) {
             return pet;
@@ -80,7 +99,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Pet delete(Long id) {
-        Pet pet = get(id);
+        Pet pet = getById(id);
         repository.delete(pet);
         return pet;
     }

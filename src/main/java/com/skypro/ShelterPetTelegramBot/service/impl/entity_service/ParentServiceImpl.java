@@ -40,7 +40,7 @@ public class ParentServiceImpl implements ParentService {
                       Long petId) {
 
         Volunteer volunteer = volunteerService.getById(volunteerId);
-        Pet pet = petService.get(petId);
+        Pet pet = petService.getById(petId);
         Parent parent = new Parent(firstName, lastName, phoneNumber, volunteer, pet);
 
         PetType typeOne = volunteer.getShelter().getType();
@@ -101,7 +101,7 @@ public class ParentServiceImpl implements ParentService {
             }
 
             if (petId != null) {
-                Pet pet = petService.get(petId);
+                Pet pet = petService.getById(petId);
                 edit.setPet(pet);
             }
 

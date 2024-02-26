@@ -34,8 +34,16 @@ public class PetController {
     }
 
     @GetMapping("{id}")
-    public Pet get(@PathVariable Long id) {
-        return service.get(id);
+    public Pet getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
+    @GetMapping
+    public Collection<Pet> getAllByParameters(@RequestParam(required = false) String name,
+                                              @RequestParam(required = false) PetType type,
+                                              @RequestParam(required = false) Long shelterId) {
+
+        return service.getAllByParameters(name, type, shelterId);
     }
 
     @GetMapping("/all")
