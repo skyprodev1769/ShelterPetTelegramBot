@@ -4,6 +4,7 @@ import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ParentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Collection;
 
@@ -18,12 +19,18 @@ public class ParentController {
     @Autowired
     private ParentService service;
 
+    @ExceptionHandler
+    public String handleException(HttpStatusCodeException e) {
+        return String.format("Code: %s. Error: %s", e.getStatusCode(), e.getStatusText());
+    }
+
     @PostMapping
     public Parent add(@RequestParam String firstName,
                       @RequestParam String lastName,
                       @RequestParam String phoneNumber,
                       @RequestParam Long volunteerId,
                       @RequestParam Long petId) {
+
         return service.add(firstName, lastName, phoneNumber, volunteerId, petId);
     }
 
@@ -39,11 +46,12 @@ public class ParentController {
 
     @PutMapping("{id}")
     public Parent edit(@PathVariable Long id,
-                       @RequestParam String firstName,
-                       @RequestParam String lastName,
-                       @RequestParam String phoneNumber,
-                       @RequestParam Long volunteerId,
-                       @RequestParam Long petId) {
+                       @RequestParam(required = false) String firstName,
+                       @RequestParam(required = false) String lastName,
+                       @RequestParam(required = false) String phoneNumber,
+                       @RequestParam(required = false) Long volunteerId,
+                       @RequestParam(required = false) Long petId) {
+
         return service.edit(id, firstName, lastName, phoneNumber, volunteerId, petId);
     }
 

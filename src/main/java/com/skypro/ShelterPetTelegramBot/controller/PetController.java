@@ -5,6 +5,7 @@ import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Collection;
 
@@ -19,10 +20,16 @@ public class PetController {
     @Autowired
     private PetService service;
 
+    @ExceptionHandler
+    public String handleException(HttpStatusCodeException e) {
+        return String.format("Code: %s. Error: %s", e.getStatusCode(), e.getStatusText());
+    }
+
     @PostMapping
     public Pet add(@RequestParam PetType type,
                    @RequestParam String name,
                    @RequestParam Long shelterId) {
+
         return service.add(type, name, shelterId);
     }
 
@@ -41,6 +48,7 @@ public class PetController {
                     @RequestParam(required = false) PetType type,
                     @RequestParam(required = false) String name,
                     @RequestParam(required = false) Long shelterId) {
+
         return service.edit(id, type, name, shelterId);
     }
 

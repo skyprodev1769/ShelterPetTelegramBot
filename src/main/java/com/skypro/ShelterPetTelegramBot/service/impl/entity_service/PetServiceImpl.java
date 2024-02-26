@@ -1,10 +1,12 @@
 package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.PetController;
+import com.skypro.ShelterPetTelegramBot.exception.pet.PetNotFoundException;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +24,22 @@ public class PetServiceImpl implements PetService {
     @Autowired
     PetRepository repository;
     @Autowired
+    CheckService checkService;
+    @Autowired
     ShelterService shelterService;
 
     @Override
     public Pet add(PetType type, String name, Long shelterId) {
         Shelter shelter = shelterService.get(shelterId);
         Pet pet = new Pet(type, name, shelter);
+        checkService.checkPet(type, shelter.getType(), name, pet, getAll());
         return repository.save(pet);
     }
 
     @Override
     public Pet get(Long id) {
-        return repository.findById(id).orElseThrow();
+        checkService.validateLong(id);
+        return repository.findById(id).orElseThrow(PetNotFoundException::new);
     }
 
     @Override
@@ -43,14 +49,33 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Pet edit(Long id, PetType type, String name, Long shelterId) {
+
         Pet pet = get(id);
-        Shelter shelter = shelterService.get(shelterId);
 
-        pet.setType(type);
-        pet.setName(name);
-        pet.setShelter(shelter);
+        if (type == null & name == null & shelterId == null) {
+            return pet;
 
-        return repository.save(pet);
+        } else {
+
+            Pet edit = new Pet(pet.getType(), pet.getName(), pet.getShelter());
+
+            if (type != null) {
+                edit.setType(type);
+            }
+
+            if (name != null) {
+                edit.setName(name);
+            }
+
+            if (shelterId != null) {
+                Shelter shelter = shelterService.get(shelterId);
+                edit.setShelter(shelter);
+            }
+
+            edit.setId(pet.getId());
+            checkService.checkPet(edit.getType(), edit.getShelter().getType(), edit.getName(), edit, getAll());
+            return repository.save(edit);
+        }
     }
 
     @Override

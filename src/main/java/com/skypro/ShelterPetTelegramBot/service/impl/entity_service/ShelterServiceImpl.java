@@ -1,9 +1,11 @@
 package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
+import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterNotFoundException;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.repository.ShelterRepository;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +21,20 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Autowired
     ShelterRepository repository;
+    @Autowired
+    CheckService checkService;
 
     @Override
     public Shelter add(PetType type, String address) {
         Shelter shelter = new Shelter(type, address);
+        checkService.checkShelter(address, shelter, getAll());
         return repository.save(shelter);
     }
 
     @Override
     public Shelter get(Long id) {
-        return repository.findById(id).orElseThrow();
+        checkService.validateLong(id);
+        return repository.findById(id).orElseThrow(ShelterNotFoundException::new);
     }
 
     @Override
@@ -38,12 +44,28 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     public Shelter edit(Long id, PetType type, String address) {
+
         Shelter shelter = get(id);
 
-        shelter.setType(type);
-        shelter.setAddress(address);
+        if (type == null & address == null) {
+            return shelter;
 
-        return repository.save(shelter);
+        } else {
+
+            Shelter edit = new Shelter(shelter.getType(), shelter.getAddress());
+
+            if (type != null) {
+                edit.setType(type);
+            }
+
+            if (address != null) {
+                edit.setAddress(address);
+            }
+
+            edit.setId(shelter.getId());
+            checkService.checkShelter(edit.getAddress(), edit, getAll());
+            return repository.save(edit);
+        }
     }
 
     @Override

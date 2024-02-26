@@ -1,9 +1,11 @@
 package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.VolunteerController;
+import com.skypro.ShelterPetTelegramBot.exception.volunteer.VolunteerNotFoundException;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import com.skypro.ShelterPetTelegramBot.model.repository.VolunteerRepository;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Autowired
     VolunteerRepository repository;
     @Autowired
+    CheckService checkService;
+    @Autowired
     ShelterService shelterService;
 
     @Override
@@ -31,12 +35,17 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         Shelter shelter = shelterService.get(shelterId);
         Volunteer volunteer = new Volunteer(firstName, lastName, phoneNumber, shelter);
+
+        checkService.checkVolunteer(firstName, lastName, phoneNumber, volunteer, getAll());
+        checkService.isPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
+
         return repository.save(volunteer);
     }
 
     @Override
     public Volunteer get(Long id) {
-        return repository.findById(id).orElseThrow();
+        checkService.validateLong(id);
+        return repository.findById(id).orElseThrow(VolunteerNotFoundException::new);
     }
 
     @Override
@@ -52,14 +61,36 @@ public class VolunteerServiceImpl implements VolunteerService {
                           Long shelterId) {
 
         Volunteer volunteer = get(id);
-        Shelter shelter = shelterService.get(shelterId);
 
-        volunteer.setFirstName(firstName);
-        volunteer.setLastName(lastName);
-        volunteer.setPhoneNumber(phoneNumber);
-        volunteer.setShelter(shelter);
+        if (firstName == null & lastName == null & phoneNumber == null & shelterId == null) {
+            return volunteer;
 
-        return repository.save(volunteer);
+        } else {
+
+            Volunteer edit = new Volunteer(volunteer.getFirstName(), volunteer.getLastName(), volunteer.getPhoneNumber(), volunteer.getShelter());
+
+            if (firstName != null) {
+                edit.setFirstName(firstName);
+            }
+
+            if (lastName != null) {
+                edit.setLastName(lastName);
+            }
+
+            if (phoneNumber != null) {
+                checkService.isPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
+                edit.setPhoneNumber(phoneNumber);
+            }
+
+            if (shelterId != null) {
+                Shelter shelter = shelterService.get(shelterId);
+                edit.setShelter(shelter);
+            }
+
+            edit.setId(volunteer.getId());
+            checkService.checkVolunteer(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), edit, getAll());
+            return repository.save(edit);
+        }
     }
 
     @Override
