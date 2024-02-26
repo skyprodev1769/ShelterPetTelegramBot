@@ -43,9 +43,36 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
-    public Volunteer get(Long id) {
+    public Volunteer getById(Long id) {
         checkService.validateLong(id);
         return repository.findById(id).orElseThrow(VolunteerNotFoundException::new);
+    }
+
+    @Override
+    public Collection<Volunteer> getAllByParameters(String firstName,
+                                                    String lastName,
+                                                    String phoneNumber,
+                                                    Long shelterId) {
+
+        if (firstName != null) {
+            checkService.validateName(firstName);
+            return repository.getAllByFirstNameContainsIgnoreCase(firstName);
+
+        } else if (lastName != null) {
+            checkService.validateName(lastName);
+            return repository.getAllByLastNameContainsIgnoreCase(lastName);
+
+        } else if (phoneNumber != null) {
+            checkService.validatePhoneNumber(phoneNumber);
+            return repository.getAllByPhoneNumberContains(phoneNumber);
+
+        } else if (shelterId != null) {
+            checkService.validateLong(shelterId);
+            return repository.getAllByShelterId(shelterId);
+
+        } else {
+            return getAll();
+        }
     }
 
     @Override
@@ -60,7 +87,7 @@ public class VolunteerServiceImpl implements VolunteerService {
                           String phoneNumber,
                           Long shelterId) {
 
-        Volunteer volunteer = get(id);
+        Volunteer volunteer = getById(id);
 
         if (firstName == null & lastName == null & phoneNumber == null & shelterId == null) {
             return volunteer;
@@ -95,7 +122,7 @@ public class VolunteerServiceImpl implements VolunteerService {
 
     @Override
     public Volunteer delete(Long id) {
-        Volunteer volunteer = get(id);
+        Volunteer volunteer = getById(id);
         repository.delete(volunteer);
         return volunteer;
     }

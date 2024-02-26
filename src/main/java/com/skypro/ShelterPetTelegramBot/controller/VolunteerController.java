@@ -34,8 +34,17 @@ public class VolunteerController {
     }
 
     @GetMapping("{id}")
-    public Volunteer get(@PathVariable Long id) {
-        return service.get(id);
+    public Volunteer getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
+    @GetMapping
+    public Collection<Volunteer> getAllByParameters(@RequestParam(required = false) String firstName,
+                                                    @RequestParam(required = false) String lastName,
+                                                    @RequestParam(required = false) String phoneNumber,
+                                                    @RequestParam(required = false) Long shelterId) {
+
+        return service.getAllByParameters(firstName, lastName, phoneNumber, shelterId);
     }
 
     @GetMapping("/all")

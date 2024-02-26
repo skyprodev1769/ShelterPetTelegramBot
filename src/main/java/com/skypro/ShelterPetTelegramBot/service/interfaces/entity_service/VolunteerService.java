@@ -25,11 +25,24 @@ public interface VolunteerService {
                   Long shelterId);
 
     /**
-     * Метод находит волонтера из БД
+     * Метод находит волонтера из БД по id
      *
      * @param id <i> является идентификатором волонтера </i>
      */
-    Volunteer get(Long id);
+    Volunteer getById(Long id);
+
+    /**
+     * Метод находит всех волонтеров из БД по разным параметрам
+     *
+     * @param firstName   <i> является именем волонтера </i> <br>
+     * @param lastName    <i> является фамилией волонтера </i> <br>
+     * @param phoneNumber <i> является номером телефона волонтера </i> <br>
+     * @param shelterId   <i> является идентификатором приюта </i>
+     */
+    Collection<Volunteer> getAllByParameters(String firstName,
+                                             String lastName,
+                                             String phoneNumber,
+                                             Long shelterId);
 
     /**
      * Метод находит всех волонтеров из БД
