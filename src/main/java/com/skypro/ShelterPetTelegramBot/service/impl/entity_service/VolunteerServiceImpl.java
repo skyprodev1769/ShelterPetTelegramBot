@@ -63,7 +63,6 @@ public class VolunteerServiceImpl implements VolunteerService {
             return repository.getAllByLastNameContainsIgnoreCase(lastName);
 
         } else if (phoneNumber != null) {
-            checkService.validatePhoneNumber(phoneNumber);
             return repository.getAllByPhoneNumberContains(phoneNumber);
 
         } else if (shelterId != null) {

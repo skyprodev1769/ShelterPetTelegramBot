@@ -35,8 +35,17 @@ public class ParentController {
     }
 
     @GetMapping("{id}")
-    public Parent get(@PathVariable Long id) {
-        return service.get(id);
+    public Parent getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
+    @GetMapping
+    public Collection<Parent> getAllByParameters(@RequestParam(required = false) String firstName,
+                                                 @RequestParam(required = false) String lastName,
+                                                 @RequestParam(required = false) String phoneNumber,
+                                                 @RequestParam(required = false) Long volunteerId) {
+
+        return service.getAllByParameters(firstName, lastName, phoneNumber, volunteerId);
     }
 
     @GetMapping("/all")

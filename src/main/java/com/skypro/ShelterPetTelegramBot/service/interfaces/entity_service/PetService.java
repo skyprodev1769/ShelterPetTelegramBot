@@ -30,6 +30,10 @@ public interface PetService {
 
     /**
      * Метод находит всех животных из БД по разным параметрам
+     *
+     * @param name      <i> является именем животного </i> <br>
+     * @param type      <i> является типом животного </i> <br>
+     * @param shelterId <i> является идентификатором приюта</i>
      */
     Collection<Pet> getAllByParameters(String name,
                                        PetType type,

@@ -29,6 +29,9 @@ public interface ShelterService {
 
     /**
      * Метод находит все приюты для животных из БД по разным параметрам
+     *
+     * @param address <i> является адресом приюта </i> <br>
+     * @param type    <i> является типом животного </i>
      */
     Collection<Shelter> getAllByParameters(String address, PetType type);
 

@@ -27,11 +27,24 @@ public interface ParentService {
                Long petId);
 
     /**
-     * Метод находит усыновителя из БД
+     * Метод находит усыновителя из БД по id
      *
      * @param id <i> является идентификатором усыновителя </i>
      */
-    Parent get(Long id);
+    Parent getById(Long id);
+
+    /**
+     * Метод находит всех усыновителей из БД по разным параметрам
+     *
+     * @param firstName   <i> является именем усыновителя </i> <br>
+     * @param lastName    <i> является фамилией усыновителя </i> <br>
+     * @param phoneNumber <i> является номером телефона усыновителя </i> <br>
+     * @param volunteerId <i> является идентификатором волонтера </i>
+     */
+    Collection<Parent> getAllByParameters(String firstName,
+                                          String lastName,
+                                          String phoneNumber,
+                                          Long volunteerId);
 
     /**
      * Метод находит всех усыновителей из БД

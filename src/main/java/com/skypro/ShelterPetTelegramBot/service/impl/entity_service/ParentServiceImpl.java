@@ -54,9 +54,32 @@ public class ParentServiceImpl implements ParentService {
     }
 
     @Override
-    public Parent get(Long id) {
+    public Parent getById(Long id) {
         checkService.validateLong(id);
         return repository.findById(id).orElseThrow(ParentNotFoundException::new);
+    }
+
+    @Override
+    public Collection<Parent> getAllByParameters(String firstName, String lastName, String phoneNumber, Long volunteerId) {
+
+        if (firstName != null) {
+            checkService.validateName(firstName);
+            return repository.getAllByFirstNameContainsIgnoreCase(firstName);
+
+        } else if (lastName != null) {
+            checkService.validateName(lastName);
+            return repository.getAllByLastNameContainsIgnoreCase(lastName);
+
+        } else if (phoneNumber != null) {
+            return repository.getAllByPhoneNumberContains(phoneNumber);
+
+        } else if (volunteerId != null) {
+            checkService.validateLong(volunteerId);
+            return repository.getAllByVolunteerId(volunteerId);
+
+        } else {
+            return getAll();
+        }
     }
 
     @Override
@@ -72,7 +95,7 @@ public class ParentServiceImpl implements ParentService {
                        Long volunteerId,
                        Long petId) {
 
-        Parent parent = get(id);
+        Parent parent = getById(id);
 
         if (firstName == null & lastName == null & phoneNumber == null & volunteerId == null & petId == null) {
             return parent;
@@ -116,7 +139,7 @@ public class ParentServiceImpl implements ParentService {
 
     @Override
     public Parent delete(Long id) {
-        Parent parent = get(id);
+        Parent parent = getById(id);
         repository.delete(parent);
         return parent;
     }
