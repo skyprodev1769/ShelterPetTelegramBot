@@ -41,7 +41,7 @@ public class PetControllerDoc {
                     "4.Данное животное уже было добавлено ранее.\n" + PET_ALREADY_ADDED;
 
     public static final String EXAMPLE_GET_BY_ID_PET_CODE_400 =
-            "1.Передан некорректный id.\n" + INVALIDE_INPUT;
+            "1.Передан некорректный id животного.\n" + INVALIDE_INPUT;
 
     public static final String EXAMPLE_GET_BY_ID_PET_CODE_404 =
             "1.Животное с данным id еще не было добавлено.\n" + PET_NOT_FOUND;

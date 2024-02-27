@@ -153,7 +153,7 @@ public class ShelterController {
     }
 
     @Operation(
-            summary = "Изменение данных приюта для животных",
+            summary = "Изменение данных приюта для животных по id",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -194,7 +194,7 @@ public class ShelterController {
     }
 
     @Operation(
-            summary = "Удаление приюта для животных",
+            summary = "Удаление приюта для животных по id",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,

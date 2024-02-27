@@ -166,7 +166,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Изменение данных животного",
+            summary = "Изменение данных животного по id",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -210,7 +210,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Удаление приюта для животных",
+            summary = "Удаление приюта для животных по id",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
