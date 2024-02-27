@@ -1,6 +1,5 @@
 package com.skypro.ShelterPetTelegramBot.controller;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -159,7 +158,7 @@ public class VolunteerController {
                             responseCode = CODE_200,
                             description = SUCCESSFUL,
                             content = @Content(
-                                    array = @ArraySchema(schema = @Schema(implementation = Pet.class)),
+                                    array = @ArraySchema(schema = @Schema(implementation = Volunteer.class)),
                                     examples = @ExampleObject(EXAMPLE_ARRAYS_VOLUNTEERS)
                             )
                     )
