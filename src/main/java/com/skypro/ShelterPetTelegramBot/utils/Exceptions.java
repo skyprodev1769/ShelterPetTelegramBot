@@ -3,6 +3,7 @@ package com.skypro.ShelterPetTelegramBot.utils;
 public class Exceptions {
     public static final String INVALIDE_INPUT = "Введено некорректное значение!";
     public static final String DIFFERENT_TYPES = "Указаны несоответствующие типы!";
+    public static final String DIFFERENT_SHELTERS = "Указаны несоответствующие приюты для животных!";
     public static final String INVALIDE_NUMBER = "Введен некорректный номер телефона!";
     public static final String NUMBER_ALREADY_ADDED = "Данный номер телефона уже используется!";
     public static final String PARENT_ALREADY_ADDED = "Усыновитель с такими данными уже был добавлен!";

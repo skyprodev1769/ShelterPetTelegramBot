@@ -1,5 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.service.impl;
 
+import com.skypro.ShelterPetTelegramBot.exception.DifferentSheltersException;
 import com.skypro.ShelterPetTelegramBot.exception.DifferentTypesException;
 import com.skypro.ShelterPetTelegramBot.exception.InvalideInputException;
 import com.skypro.ShelterPetTelegramBot.exception.number.InvalideNumberException;
@@ -29,15 +30,15 @@ public class CheckServiceImpl implements CheckService {
     public void checkParent(String firstName,
                             String lastName,
                             String phoneNumber,
-                            PetType typeOne,
-                            PetType typeTwo,
+                            Shelter shelterOne,
+                            Shelter shelterTwo,
                             Parent parent,
                             Collection<Parent> parents) {
 
         validateName(firstName);
         validateName(lastName);
         validatePhoneNumber(phoneNumber);
-        validateTypes(typeOne, typeTwo);
+        validateShelters(shelterOne, shelterTwo);
         isParentAlreadyAdded(parents, parent);
     }
 
@@ -106,6 +107,13 @@ public class CheckServiceImpl implements CheckService {
                 || phoneNumber.isBlank()
                 || !phoneNumber.matches("[0-9]{11}")) {
             throw new InvalideNumberException();
+        }
+    }
+
+    @Override
+    public void validateShelters(Shelter shelterOne, Shelter shelterTwo) {
+        if (!shelterOne.equals(shelterTwo)) {
+            throw new DifferentSheltersException();
         }
     }
 

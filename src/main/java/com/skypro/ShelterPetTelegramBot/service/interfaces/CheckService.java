@@ -21,8 +21,8 @@ public interface CheckService {
     void checkParent(String firstName,
                      String lastName,
                      String phoneNumber,
-                     PetType typeOne,
-                     PetType typeTwo,
+                     Shelter shelterOne,
+                     Shelter shelterTwo,
                      Parent parent,
                      Collection<Parent> parents);
 
@@ -78,6 +78,14 @@ public interface CheckService {
      * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
     void validatePhoneNumber(String phoneNumber);
+
+    /**
+     * Метод проверяет вводимый тип приюта на соответствие
+     *
+     * @param shelterOne <i> является проверяемым типом </i> <br>
+     * @param shelterTwo <i> является проверяющим типом </i>
+     */
+    void validateShelters(Shelter shelterOne, Shelter shelterTwo);
 
     /**
      * Метод проверяет вводимый тип животного на соответствие

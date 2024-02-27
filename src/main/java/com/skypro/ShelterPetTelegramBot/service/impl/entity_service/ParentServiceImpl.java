@@ -2,9 +2,9 @@ package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.ParentController;
 import com.skypro.ShelterPetTelegramBot.exception.parent.ParentNotFoundException;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import com.skypro.ShelterPetTelegramBot.model.repository.ParentRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
@@ -43,10 +43,10 @@ public class ParentServiceImpl implements ParentService {
         Pet pet = petService.getById(petId);
         Parent parent = new Parent(firstName, lastName, phoneNumber, volunteer, pet);
 
-        PetType typeOne = volunteer.getShelter().getType();
-        PetType typeTwo = pet.getShelter().getType();
+        Shelter shelterOne = volunteer.getShelter();
+        Shelter shelterTwo = pet.getShelter();
 
-        checkService.checkParent(firstName, lastName, phoneNumber, typeOne, typeTwo, parent, getAll());
+        checkService.checkParent(firstName, lastName, phoneNumber, shelterOne, shelterTwo, parent, getAll());
         checkService.isPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
         checkService.isPhoneNumberVolunteerAlreadyAdded(volunteerService.getAll(), phoneNumber);
 
@@ -128,11 +128,11 @@ public class ParentServiceImpl implements ParentService {
                 edit.setPet(pet);
             }
 
-            PetType typeOne = edit.getVolunteer().getShelter().getType();
-            PetType typeTwo = edit.getPet().getShelter().getType();
+            Shelter shelterOne = edit.getVolunteer().getShelter();
+            Shelter shelterTwo = edit.getPet().getShelter();
 
             edit.setId(parent.getId());
-            checkService.checkParent(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), typeOne, typeTwo, edit, getAll());
+            checkService.checkParent(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), shelterOne, shelterTwo, edit, getAll());
             return repository.save(edit);
         }
     }
