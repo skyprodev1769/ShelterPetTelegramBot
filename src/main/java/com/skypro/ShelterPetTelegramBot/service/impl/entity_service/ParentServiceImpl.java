@@ -52,6 +52,8 @@ public class ParentServiceImpl implements ParentService {
         checkService.isPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
         checkService.isPhoneNumberVolunteerAlreadyAdded(volunteerService.getAll(), phoneNumber);
 
+        volunteer.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
+
         return repository.save(parent);
     }
 
@@ -135,6 +137,7 @@ public class ParentServiceImpl implements ParentService {
 
             edit.setId(parent.getId());
             checkService.checkParent(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), shelterOne, shelterTwo, edit, getAll());
+            edit.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
             return repository.save(edit);
         }
     }

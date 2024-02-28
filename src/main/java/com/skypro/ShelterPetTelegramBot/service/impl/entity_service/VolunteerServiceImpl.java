@@ -41,6 +41,8 @@ public class VolunteerServiceImpl implements VolunteerService {
         checkService.checkVolunteer(firstName, lastName, phoneNumber, volunteer, getAll());
         checkService.isPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
 
+        volunteer.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
+
         return repository.save(volunteer);
     }
 
@@ -117,6 +119,7 @@ public class VolunteerServiceImpl implements VolunteerService {
 
             edit.setId(volunteer.getId());
             checkService.checkVolunteer(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), edit, getAll());
+            edit.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
             return repository.save(edit);
         }
     }

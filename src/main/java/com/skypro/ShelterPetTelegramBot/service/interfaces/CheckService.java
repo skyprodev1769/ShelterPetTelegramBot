@@ -73,6 +73,13 @@ public interface CheckService {
     void validateAddress(String address);
 
     /**
+     * Метод изменяет переданный номер телефона под заданный формат
+     *
+     * @param phoneNumber <i> является проверяемым номером телефона </i>
+     */
+    String changePhoneNumber(String phoneNumber);
+
+    /**
      * Метод проверяет вводимый номер телефона на корректность
      *
      * @param phoneNumber <i> является проверяемым номером телефона </i>
