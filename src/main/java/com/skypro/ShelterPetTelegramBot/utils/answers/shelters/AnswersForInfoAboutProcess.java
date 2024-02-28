@@ -68,9 +68,9 @@ public class AnswersForInfoAboutProcess {
         return String.format("""
                 %s, ознакомьтесь со списком профессиональных кинологов:
                                 
-                1. Иванов Иван, телефон 8-999-99-99
-                2. Петров Пётр, телефон 8-666-66-66
-                3. Павлов Павел, телефон 8-555-55-55""", userFirstName);
+                1. Иванов Иван, телефон +7-999-99-99
+                2. Петров Пётр, телефон +7-666-66-66
+                3. Павлов Павел, телефон +7-555-55-55""", userFirstName);
     }
 
     public static String REACTION_TO_LIST_REASONS_FOR_REFUSAL(String userFirstName) {

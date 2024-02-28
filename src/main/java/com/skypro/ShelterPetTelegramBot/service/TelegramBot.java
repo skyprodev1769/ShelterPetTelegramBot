@@ -3,6 +3,8 @@ package com.skypro.ShelterPetTelegramBot.service;
 import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.User;
 import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
@@ -14,6 +16,8 @@ import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingB
 import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingKeyBoards;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.RecordingContacts;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
@@ -46,12 +51,9 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForGeneralCo
 import static com.skypro.ShelterPetTelegramBot.utils.answers.AnswersForRegistrationCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.contacts.AnswersForRecordContactsCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.contacts.AnswersForRemovedContactsCommand.*;
-import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION;
-import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.REACTION_TO_SCHEME_DRIVING;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutAnyShelterCommands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER;
-import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER;
-import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutProcess.*;
 
 /**
@@ -74,7 +76,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private PotentialParentRepository parentRepository;
     @Autowired
+    private ShelterService shelterService;
+    @Autowired
     private PetService petService;
+    @Autowired
+    private VolunteerService volunteerService;
 
     public TelegramBot(BotConfiguration botConfiguration, AppConfiguration appConfiguration) {
         super(botConfiguration.getToken());
@@ -244,15 +250,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА", chatId, userFirstName);
-
-                if (appConfiguration.getIsDogShelter()) {
-                    answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_DOG_SHELTER(userFirstName);
-
-                } else {
-                    answer = REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS_FOR_CAT_SHELTER(userFirstName);
-                }
-
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА", chatId, userFirstName);
+                answer = String.valueOf(sendAddressShelter(chatId, userFirstName));
                 message = buttons.createButtonForSchemeDrivingToShelter(chatId, answer);
                 executeMessage(message);
             }
@@ -381,8 +380,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КОМАНДА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕРА ВОЛОНТЕРОВ", chatId, userFirstName);
-                answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
+                answer = String.valueOf(sendListVolunteer(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
             }
 
@@ -477,8 +476,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER_BUTTON -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕРА ВОЛОНТЕРОВ", chatId, userFirstName);
-                answer = REACTION_TO_CALL_VOLUNTEER(userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ВОЛОНТЕРОВ", chatId, userFirstName);
+                answer = String.valueOf(sendListVolunteer(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
             }
         }
@@ -487,6 +486,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     /**
      * Метод возвращает, в зависимости от выбранного типа, список животных для усыновления из БД
      *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param userFirstName <i> является именем пользователя </i>
      */
     private StringBuilder sendListPets(Long chatId, String userFirstName) {
@@ -496,11 +496,13 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         for (Pet pet : petService.getAll()) {
 
+            String data = String.format("%s\nПриют - %s\n", pet.getName(), pet.getShelter().getAddress());
+
             if (pet.getType() == DOG) {
-                dogs.append(pet.getName()).append(" - ").append(pet.getShelter().getAddress()).append("\n");
+                dogs.append(data).append("\n");
 
             } else {
-                cats.append(pet.getName()).append(" - ").append(pet.getShelter().getAddress()).append("\n");
+                cats.append(data).append("\n");
             }
         }
 
@@ -510,6 +512,57 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         } else {
             log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК КОШЕК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
+            return cats;
+        }
+    }
+
+    /**
+     * Метод возвращает список контактов волонтеров из БД
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i>
+     */
+    private StringBuilder sendListVolunteer(Long chatId, String userFirstName) {
+
+        StringBuilder list = new StringBuilder(REACTION_TO_CALL_VOLUNTEER(userFirstName)).append("\n\n");
+
+        for (Volunteer volunteer : volunteerService.getAll()) {
+
+            String data = String.format("%s %s\nПриют - %s\n", volunteer.getPhoneNumber(), volunteer.getFirstName(), volunteer.getShelter().getAddress());
+            list.append(data).append("\n");
+        }
+
+        log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
+        return list;
+    }
+
+    /**
+     * Метод возвращает список адресов приютов из БД
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i>
+     */
+    private StringBuilder sendAddressShelter(Long chatId, String userFirstName) {
+
+        StringBuilder cats = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
+        StringBuilder dogs = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
+
+        for (Shelter shelter : shelterService.getAll()) {
+
+            if (shelter.getType() == CAT) {
+                cats.append(shelter.getAddress()).append("\n");
+
+            } else {
+                dogs.append(shelter.getAddress()).append("\n");
+            }
+        }
+
+        if (appConfiguration.getIsDogShelter()) {
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ СОБАК", chatId, userFirstName);
+            return dogs;
+
+        } else {
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ КОШЕК", chatId, userFirstName);
             return cats;
         }
     }

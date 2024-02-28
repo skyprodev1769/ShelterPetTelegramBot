@@ -5,6 +5,13 @@ package com.skypro.ShelterPetTelegramBot.utils.answers.shelters;
  */
 public class AnswersForInfoAboutAnyShelterCommands {
 
+    public static String REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(String userFirstName) {
+        return String.format("""
+                %s, наш приют работает ежедневно с 8:00 до 20:00.
+                                
+                Мы находимся по адресу:""", userFirstName);
+    }
+
     public static String REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION(String userFirstName) {
         return String.format("""
                 %s, соблюдайте технику безопасности!
