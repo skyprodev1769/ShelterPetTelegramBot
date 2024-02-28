@@ -13,6 +13,8 @@ import java.util.Collection;
 @Repository
 public interface ParentRepository extends JpaRepository<Parent, Long> {
 
+    Parent getByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(String firstName, String lastName);
+
     Collection<Parent> getAllByFirstNameContainsIgnoreCase(String firstName);
 
     Collection<Parent> getAllByLastNameContainsIgnoreCase(String lastName);

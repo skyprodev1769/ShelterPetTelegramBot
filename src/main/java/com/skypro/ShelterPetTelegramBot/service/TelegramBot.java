@@ -381,7 +381,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case CALL_VOLUNTEER -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
-                answer = String.valueOf(sendListVolunteer(chatId, userFirstName));
+                answer = String.valueOf(sendListVolunteers(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
             }
 
@@ -477,7 +477,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             case CALL_VOLUNTEER_BUTTON -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ВОЛОНТЕРОВ", chatId, userFirstName);
-                answer = String.valueOf(sendListVolunteer(chatId, userFirstName));
+                answer = String.valueOf(sendListVolunteers(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
             }
         }
@@ -522,7 +522,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param userFirstName <i> является именем пользователя </i>
      */
-    private StringBuilder sendListVolunteer(Long chatId, String userFirstName) {
+    private StringBuilder sendListVolunteers(Long chatId, String userFirstName) {
 
         StringBuilder list = new StringBuilder(REACTION_TO_CALL_VOLUNTEER(userFirstName)).append("\n\n");
 

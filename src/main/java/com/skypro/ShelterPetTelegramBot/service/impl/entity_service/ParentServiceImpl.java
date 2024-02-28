@@ -54,7 +54,7 @@ public class ParentServiceImpl implements ParentService {
         checkService.isPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
         checkService.isPhoneNumberVolunteerAlreadyAdded(volunteerService.getAll(), phoneNumber);
 
-        volunteer.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
+        parent.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
 
         log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ {} {} {} {}", firstName, lastName, phoneNumber, volunteerId);
         return repository.save(parent);
