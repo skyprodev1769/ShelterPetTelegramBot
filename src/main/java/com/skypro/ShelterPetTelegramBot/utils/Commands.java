@@ -30,6 +30,7 @@ public class Commands {
 
     // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО (ЭТАП 2)
     public static final String INFO_ABOUT_PROCESS = "ЭТАП 2: Как взять животное из приюта";
+    public static final String LIST_PETS = "Список животных для усыновления";
     public static final String RULES_DATING = "Правила знакомства с животным до того, как забрать его из приюта";
     public static final String LIST_REQUIRED_DOCS = "Список необходимых документов, чтобы забрать животное";
     public static final String RECOMMENDATIONS_FOR_TRANSPORTATION = "Рекомендации по транспортировке животного";

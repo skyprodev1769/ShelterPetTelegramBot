@@ -2,6 +2,7 @@ package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.User;
 import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
@@ -12,6 +13,7 @@ import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.RecordingContac
 import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingButtons;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingKeyBoards;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.RecordingContacts;
+import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Descriptions.*;
@@ -64,12 +67,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final CreatingButtons buttons;
     private final CreatingKeyBoards keyBoards;
-    private final RecordingContacts recordingContacts;
+    private final RecordingContacts contacts;
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PotentialParentRepository parentRepository;
+    @Autowired
+    private PetService petService;
 
     public TelegramBot(BotConfiguration botConfiguration, AppConfiguration appConfiguration) {
         super(botConfiguration.getToken());
@@ -77,7 +82,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.appConfiguration = appConfiguration;
         this.buttons = new CreatingButtonsImpl();
         this.keyBoards = new CreatingKeyBoardsImpl();
-        this.recordingContacts = new RecordingContactsImpl();
+        this.contacts = new RecordingContactsImpl();
         createMainMenu();
     }
 
@@ -287,6 +292,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                 executeMessage(message);
             }
 
+            case LIST_PETS -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ СПИСОК ЖИВОТНЫХ ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
+                answer = String.valueOf(sendListPets(chatId, userFirstName));
+                reactionToCommand(chatId, answer);
+            }
+
             case RULES_DATING -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРАВИЛ ДЛЯ ЗНАКОМСТВА С ЖИВОТНЫМ", chatId, userFirstName);
                 answer = REACTION_TO_RULES_DATING(userFirstName);
@@ -474,6 +485,36 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
+     * Метод возвращает, в зависимости от выбранного типа, список животных для усыновления из БД
+     *
+     * @param userFirstName <i> является именем пользователя </i>
+     */
+    private StringBuilder sendListPets(Long chatId, String userFirstName) {
+
+        StringBuilder dogs = new StringBuilder(REACTION_TO_LIST_PETS(userFirstName) + "\n\n");
+        StringBuilder cats = new StringBuilder(REACTION_TO_LIST_PETS(userFirstName) + "\n\n");
+
+        for (Pet pet : petService.getAll()) {
+
+            if (pet.getType() == DOG) {
+                dogs.append(pet.getName()).append(" - ").append(pet.getShelter().getAddress()).append("\n");
+
+            } else {
+                cats.append(pet.getName()).append(" - ").append(pet.getShelter().getAddress()).append("\n");
+            }
+        }
+
+        if (appConfiguration.getIsDogShelter()) {
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК СОБАК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
+            return dogs;
+
+        } else {
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК КОШЕК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
+            return cats;
+        }
+    }
+
+    /**
      * Метод сохраняет контакты потенциального усыновителя {@link PotentialParent} в БД
      *
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
@@ -483,7 +524,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher) {
 
         String answer;
-        PotentialParent parent = recordingContacts.recordContact(chatId, matcher);
+        PotentialParent parent = contacts.recordContact(chatId, matcher);
         Long id = Long.valueOf(parent.getPhoneNumber());
 
         if (parentRepository.findById(id).isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ

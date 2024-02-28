@@ -8,7 +8,6 @@ import com.skypro.ShelterPetTelegramBot.model.repository.VolunteerRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -20,12 +19,15 @@ import java.util.Collection;
 @Service
 public class VolunteerServiceImpl implements VolunteerService {
 
-    @Autowired
-    VolunteerRepository repository;
-    @Autowired
-    CheckService checkService;
-    @Autowired
-    ShelterService shelterService;
+    private final VolunteerRepository repository;
+    private final CheckService checkService;
+    private final ShelterService shelterService;
+
+    public VolunteerServiceImpl(VolunteerRepository repository, CheckService checkService, ShelterService shelterService) {
+        this.repository = repository;
+        this.checkService = checkService;
+        this.shelterService = shelterService;
+    }
 
     @Override
     public Volunteer add(String firstName,

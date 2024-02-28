@@ -172,6 +172,10 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
+        row.add(LIST_PETS);
+        rows.add(row);
+
+        row = new KeyboardRow();
         row.add(RULES_DATING);
         rows.add(row);
 
@@ -251,6 +255,10 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         List<KeyboardRow> rows = new ArrayList<>();
 
         KeyboardRow row = new KeyboardRow();
+        row.add(LIST_PETS);
+        rows.add(row);
+
+        row = new KeyboardRow();
         row.add(RULES_DATING);
         rows.add(row);
 

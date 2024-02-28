@@ -5,6 +5,10 @@ package com.skypro.ShelterPetTelegramBot.utils.answers.shelters;
  */
 public class AnswersForInfoAboutProcess {
 
+    public static String REACTION_TO_LIST_PETS(String userFirstName) {
+        return String.format("%s, ознакомьтесь со списком животных для усыновления:", userFirstName);
+    }
+
     public static String REACTION_TO_RULES_DATING(String userFirstName) {
         return String.format("""
                 %s, Вам необходимо каждый день посещать приют, чтобы познакомиться с питомцем и привыкнуть друг к другу.

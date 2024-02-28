@@ -28,11 +28,11 @@ public class Shelter {
     private String address;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "shelter")
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     private Collection<Volunteer> volunteers;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "shelter")
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     private Collection<Pet> pets;
 
     public Shelter() {

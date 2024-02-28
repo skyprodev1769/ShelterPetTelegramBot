@@ -9,7 +9,6 @@ import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -21,12 +20,15 @@ import java.util.Collection;
 @Service
 public class PetServiceImpl implements PetService {
 
-    @Autowired
-    PetRepository repository;
-    @Autowired
-    CheckService checkService;
-    @Autowired
-    ShelterService shelterService;
+    private final PetRepository repository;
+    private final CheckService checkService;
+    private final ShelterService shelterService;
+
+    public PetServiceImpl(PetRepository repository, CheckService checkService, ShelterService shelterService) {
+        this.repository = repository;
+        this.checkService = checkService;
+        this.shelterService = shelterService;
+    }
 
     @Override
     public Pet add(PetType type, String name, Long shelterId) {

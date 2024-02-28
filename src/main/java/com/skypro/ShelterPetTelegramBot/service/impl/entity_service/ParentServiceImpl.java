@@ -11,7 +11,6 @@ import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ParentService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,14 +22,17 @@ import java.util.Collection;
 @Service
 public class ParentServiceImpl implements ParentService {
 
-    @Autowired
-    ParentRepository repository;
-    @Autowired
-    CheckService checkService;
-    @Autowired
-    VolunteerService volunteerService;
-    @Autowired
-    PetService petService;
+    private final ParentRepository repository;
+    private final CheckService checkService;
+    private final VolunteerService volunteerService;
+    private final PetService petService;
+
+    public ParentServiceImpl(ParentRepository repository, CheckService checkService, VolunteerService volunteerService, PetService petService) {
+        this.repository = repository;
+        this.checkService = checkService;
+        this.volunteerService = volunteerService;
+        this.petService = petService;
+    }
 
     @Override
     public Parent add(String firstName,
