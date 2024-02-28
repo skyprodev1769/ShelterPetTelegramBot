@@ -8,6 +8,7 @@ import com.skypro.ShelterPetTelegramBot.model.repository.VolunteerRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ import java.util.Collection;
  * Класс {@link VolunteerServiceImpl}
  * является сервисным классом для контроллера {@link VolunteerController}
  */
+@Slf4j
 @Service
 public class VolunteerServiceImpl implements VolunteerService {
 
@@ -43,12 +45,14 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         volunteer.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
 
+        log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР {} {} {} {}", firstName, lastName, phoneNumber, shelterId);
         return repository.save(volunteer);
     }
 
     @Override
     public Volunteer getById(Long id) {
         checkService.validateLong(id);
+        log.info("ПОЛУЧЕН ВОЛОНТЕР {}", id);
         return repository.findById(id).orElseThrow(VolunteerNotFoundException::new);
     }
 
@@ -60,17 +64,21 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         if (firstName != null) {
             checkService.validateName(firstName);
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ {}", firstName);
             return repository.getAllByFirstNameContainsIgnoreCase(firstName);
 
         } else if (lastName != null) {
             checkService.validateName(lastName);
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ {}", lastName);
             return repository.getAllByLastNameContainsIgnoreCase(lastName);
 
         } else if (phoneNumber != null) {
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО НОМЕРУ ТЕЛЕФОНА {}", phoneNumber);
             return repository.getAllByPhoneNumberContains(phoneNumber);
 
         } else if (shelterId != null) {
             checkService.validateLong(shelterId);
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО id ПРИЮТА ДЛЯ ЖИВОТНЫХ {}", shelterId);
             return repository.getAllByShelterId(shelterId);
 
         } else {
@@ -80,6 +88,7 @@ public class VolunteerServiceImpl implements VolunteerService {
 
     @Override
     public Collection<Volunteer> getAll() {
+        log.info("ПОЛУЧЕНЫ ВСЕ ВОЛОНТЕРЫ");
         return repository.findAll();
     }
 
@@ -120,6 +129,7 @@ public class VolunteerServiceImpl implements VolunteerService {
             edit.setId(volunteer.getId());
             checkService.checkVolunteer(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), edit, getAll());
             edit.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
+            log.info("ИЗМЕНЕНЫ ДАННЫЕ ВОЛОНТЕРА {}", id);
             return repository.save(edit);
         }
     }
@@ -128,6 +138,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     public Volunteer delete(Long id) {
         Volunteer volunteer = getById(id);
         repository.delete(volunteer);
+        log.info("УДАЛЕН ВОЛОНТЕР {}", id);
         return volunteer;
     }
 }

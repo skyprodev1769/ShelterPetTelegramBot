@@ -103,13 +103,13 @@ public class CheckServiceImpl implements CheckService {
 
     @Override
     public String changePhoneNumber(String phoneNumber) {
-        String firth = phoneNumber.substring(0, 1).replace(phoneNumber.charAt(0), '7');
+        String first = phoneNumber.substring(0, 1).replace(phoneNumber.charAt(0), '7');
         String second = phoneNumber.substring(1, 4);
         String third = phoneNumber.substring(4, 7);
         String fourth = phoneNumber.substring(7, 9);
         String fives = phoneNumber.substring(9);
 
-        phoneNumber = String.format("+%s-%s-%s-%s-%s", firth, second, third, fourth, fives);
+        phoneNumber = String.format("+%s-%s-%s-%s-%s", first, second, third, fourth, fives);
         return phoneNumber;
     }
 

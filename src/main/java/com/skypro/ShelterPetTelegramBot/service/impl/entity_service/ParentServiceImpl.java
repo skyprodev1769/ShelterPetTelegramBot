@@ -11,6 +11,7 @@ import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ParentService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -19,6 +20,7 @@ import java.util.Collection;
  * Класс {@link ParentServiceImpl}
  * является сервисным классом для контроллера {@link ParentController}
  */
+@Slf4j
 @Service
 public class ParentServiceImpl implements ParentService {
 
@@ -54,12 +56,14 @@ public class ParentServiceImpl implements ParentService {
 
         volunteer.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
 
+        log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ {} {} {} {}", firstName, lastName, phoneNumber, volunteerId);
         return repository.save(parent);
     }
 
     @Override
     public Parent getById(Long id) {
         checkService.validateLong(id);
+        log.info("ПОЛУЧЕН УСЫНОВИТЕЛЬ {}", id);
         return repository.findById(id).orElseThrow(ParentNotFoundException::new);
     }
 
@@ -68,17 +72,21 @@ public class ParentServiceImpl implements ParentService {
 
         if (firstName != null) {
             checkService.validateName(firstName);
+            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ {}", firstName);
             return repository.getAllByFirstNameContainsIgnoreCase(firstName);
 
         } else if (lastName != null) {
             checkService.validateName(lastName);
+            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ {}", lastName);
             return repository.getAllByLastNameContainsIgnoreCase(lastName);
 
         } else if (phoneNumber != null) {
+            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО НОМЕРУ ТЕЛЕФОНА {}", phoneNumber);
             return repository.getAllByPhoneNumberContains(phoneNumber);
 
         } else if (volunteerId != null) {
             checkService.validateLong(volunteerId);
+            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО id ВОЛОНТЕРА {}", volunteerId);
             return repository.getAllByVolunteerId(volunteerId);
 
         } else {
@@ -88,6 +96,7 @@ public class ParentServiceImpl implements ParentService {
 
     @Override
     public Collection<Parent> getAll() {
+        log.info("ПОЛУЧЕНЫ ВСЕ УСЫНОВИТЕЛИ");
         return repository.findAll();
     }
 
@@ -138,6 +147,7 @@ public class ParentServiceImpl implements ParentService {
             edit.setId(parent.getId());
             checkService.checkParent(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), shelterOne, shelterTwo, edit, getAll());
             edit.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
+            log.info("ИЗМЕНЕНЫ ДАННЫЕ УСЫНОВИТЕЛЯ {}", id);
             return repository.save(edit);
         }
     }
@@ -146,6 +156,7 @@ public class ParentServiceImpl implements ParentService {
     public Parent delete(Long id) {
         Parent parent = getById(id);
         repository.delete(parent);
+        log.info("УДАЛЕН УСЫНОВИТЕЛЬ {}", id);
         return parent;
     }
 }

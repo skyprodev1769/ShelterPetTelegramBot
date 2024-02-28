@@ -9,6 +9,7 @@ import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -17,6 +18,7 @@ import java.util.Collection;
  * Класс {@link PetServiceImpl}
  * является сервисным классом для контроллера {@link PetController}
  */
+@Slf4j
 @Service
 public class PetServiceImpl implements PetService {
 
@@ -35,12 +37,14 @@ public class PetServiceImpl implements PetService {
         Shelter shelter = shelterService.getById(shelterId);
         Pet pet = new Pet(type, name, shelter);
         checkService.checkPet(type, shelter.getType(), name, pet, getAll());
+        log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ {} {} {}", type, name, shelterId);
         return repository.save(pet);
     }
 
     @Override
     public Pet getById(Long id) {
         checkService.validateLong(id);
+        log.info("ПОЛУЧЕНО ЖИВОТНОЕ {}", id);
         return repository.findById(id).orElseThrow(PetNotFoundException::new);
     }
 
@@ -49,13 +53,16 @@ public class PetServiceImpl implements PetService {
 
         if (name != null) {
             checkService.validateName(name);
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ {}", name);
             return repository.getAllByNameContainsIgnoreCase(name);
 
         } else if (type != null) {
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ {}", type);
             return repository.getAllByType(type);
 
         } else if (shelterId != null) {
             checkService.validateLong(shelterId);
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ {}", shelterId);
             return repository.getAllByShelterId(shelterId);
 
         } else {
@@ -65,6 +72,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Collection<Pet> getAll() {
+        log.info("ПОЛУЧЕНЫ ВСЕ ЖИВОТНЫЕ");
         return repository.findAll();
     }
 
@@ -95,6 +103,7 @@ public class PetServiceImpl implements PetService {
 
             edit.setId(pet.getId());
             checkService.checkPet(edit.getType(), edit.getShelter().getType(), edit.getName(), edit, getAll());
+            log.info("ИЗМЕНЕНЫ ДАННЫЕ ЖИВОТНОГО {}", id);
             return repository.save(edit);
         }
     }
@@ -103,6 +112,7 @@ public class PetServiceImpl implements PetService {
     public Pet delete(Long id) {
         Pet pet = getById(id);
         repository.delete(pet);
+        log.info("УДАЛЕНО ЖИВОТНОЕ {}", id);
         return pet;
     }
 }
