@@ -72,13 +72,10 @@ public class ParentController {
                       @Parameter(description = "Номер телефона усыновителя")
                       @RequestParam(name = "Номер") String phoneNumber,
 
-                      @Parameter(description = "id волонтера")
-                      @RequestParam(name = "id 1") Long volunteerId,
-
                       @Parameter(description = "id животного")
-                      @RequestParam(name = "id 2") Long petId) {
+                      @RequestParam(name = "id") Long petId) {
 
-        return service.add(firstName, lastName, phoneNumber, volunteerId, petId);
+        return service.add(firstName, lastName, phoneNumber, petId);
     }
 
     @Operation(
@@ -145,12 +142,9 @@ public class ParentController {
                                                  @RequestParam(required = false, name = "Фамилия") String lastName,
 
                                                  @Parameter(description = "Номер телефона усыновителя")
-                                                 @RequestParam(required = false, name = "Номер") String phoneNumber,
+                                                 @RequestParam(required = false, name = "Номер") String phoneNumber) {
 
-                                                 @Parameter(description = "id волонтера")
-                                                 @RequestParam(required = false, name = "id") Long volunteerId) {
-
-        return service.getAllByParameters(firstName, lastName, phoneNumber, volunteerId);
+        return service.getAllByParameters(firstName, lastName, phoneNumber);
     }
 
     @Operation(
@@ -213,13 +207,10 @@ public class ParentController {
                        @Parameter(description = "Номер телефона усыновителя")
                        @RequestParam(required = false, name = "Номер") String phoneNumber,
 
-                       @Parameter(description = "id волонтера")
-                       @RequestParam(required = false, name = "id 1") Long volunteerId,
-
                        @Parameter(description = "id животного")
-                       @RequestParam(required = false, name = "id 2") Long petId) {
+                       @RequestParam(required = false, name = "id") Long petId) {
 
-        return service.edit(id, firstName, lastName, phoneNumber, volunteerId, petId);
+        return service.edit(id, firstName, lastName, phoneNumber, petId);
     }
 
     @Operation(

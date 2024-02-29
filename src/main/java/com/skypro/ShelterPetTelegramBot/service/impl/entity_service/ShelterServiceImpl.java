@@ -38,7 +38,7 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     public Shelter getById(Long id) {
-        checkService.validateLong(id);
+        checkService.checkValue(id);
         log.info("ПОЛУЧЕН ПРИЮТ {}", id);
         return repository.findById(id).orElseThrow(ShelterNotFoundException::new);
     }
@@ -47,7 +47,7 @@ public class ShelterServiceImpl implements ShelterService {
     public Collection<Shelter> getAllByParameters(String address, PetType type) {
 
         if (address != null) {
-            checkService.validateAddress(address);
+            checkService.checkAddress(address);
             log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО АДРЕСУ {}", address);
             return repository.getAllByAddressContainsIgnoreCase(address);
 

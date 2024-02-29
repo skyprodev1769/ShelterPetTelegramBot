@@ -25,7 +25,10 @@ public class VolunteerServiceImpl implements VolunteerService {
     private final CheckService checkService;
     private final ShelterService shelterService;
 
-    public VolunteerServiceImpl(VolunteerRepository repository, CheckService checkService, ShelterService shelterService) {
+    public VolunteerServiceImpl(VolunteerRepository repository,
+                                CheckService checkService,
+                                ShelterService shelterService) {
+
         this.repository = repository;
         this.checkService = checkService;
         this.shelterService = shelterService;
@@ -39,11 +42,11 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         Shelter shelter = shelterService.getById(shelterId);
         Volunteer volunteer = new Volunteer(firstName, lastName, phoneNumber, shelter);
+        checkService.checkFullName(firstName, lastName);
 
-        checkService.checkVolunteer(firstName, lastName, phoneNumber, volunteer, getAll());
-        checkService.isPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
-
-        volunteer.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
+        phoneNumber = checkService.validatePhoneNumber(phoneNumber);
+        checkService.checkPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
+        volunteer.setPhoneNumber(phoneNumber);
 
         log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР {} {} {} {}", firstName, lastName, phoneNumber, shelterId);
         return repository.save(volunteer);
@@ -51,7 +54,7 @@ public class VolunteerServiceImpl implements VolunteerService {
 
     @Override
     public Volunteer getById(Long id) {
-        checkService.validateLong(id);
+        checkService.checkValue(id);
         log.info("ПОЛУЧЕН ВОЛОНТЕР {}", id);
         return repository.findById(id).orElseThrow(VolunteerNotFoundException::new);
     }
@@ -63,12 +66,12 @@ public class VolunteerServiceImpl implements VolunteerService {
                                                     Long shelterId) {
 
         if (firstName != null) {
-            checkService.validateName(firstName);
+            checkService.checkName(firstName);
             log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ {}", firstName);
             return repository.getAllByFirstNameContainsIgnoreCase(firstName);
 
         } else if (lastName != null) {
-            checkService.validateName(lastName);
+            checkService.checkName(lastName);
             log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ {}", lastName);
             return repository.getAllByLastNameContainsIgnoreCase(lastName);
 
@@ -77,7 +80,7 @@ public class VolunteerServiceImpl implements VolunteerService {
             return repository.getAllByPhoneNumberContains(phoneNumber);
 
         } else if (shelterId != null) {
-            checkService.validateLong(shelterId);
+            checkService.checkValue(shelterId);
             log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО id ПРИЮТА ДЛЯ ЖИВОТНЫХ {}", shelterId);
             return repository.getAllByShelterId(shelterId);
 
@@ -107,17 +110,21 @@ public class VolunteerServiceImpl implements VolunteerService {
         } else {
 
             Volunteer edit = new Volunteer(volunteer.getFirstName(), volunteer.getLastName(), volunteer.getPhoneNumber(), volunteer.getShelter());
+            edit.setId(volunteer.getId());
 
             if (firstName != null) {
+                checkService.checkName(firstName);
                 edit.setFirstName(firstName);
             }
 
             if (lastName != null) {
+                checkService.checkName(lastName);
                 edit.setLastName(lastName);
             }
 
             if (phoneNumber != null) {
-                checkService.isPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
+                phoneNumber = checkService.validatePhoneNumber(phoneNumber);
+                checkService.checkPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
             }
 
@@ -126,9 +133,6 @@ public class VolunteerServiceImpl implements VolunteerService {
                 edit.setShelter(shelter);
             }
 
-            edit.setId(volunteer.getId());
-            checkService.checkVolunteer(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), edit, getAll());
-            edit.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
             log.info("ИЗМЕНЕНЫ ДАННЫЕ ВОЛОНТЕРА {}", id);
             return repository.save(edit);
         }
@@ -138,6 +142,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     public Volunteer delete(Long id) {
         Volunteer volunteer = getById(id);
         repository.delete(volunteer);
+
         log.info("УДАЛЕН ВОЛОНТЕР {}", id);
         return volunteer;
     }

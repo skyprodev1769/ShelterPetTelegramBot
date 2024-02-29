@@ -1,14 +1,14 @@
 package com.skypro.ShelterPetTelegramBot.service.impl;
 
-import com.skypro.ShelterPetTelegramBot.exception.DifferentSheltersException;
 import com.skypro.ShelterPetTelegramBot.exception.DifferentTypesException;
 import com.skypro.ShelterPetTelegramBot.exception.InvalideInputException;
-import com.skypro.ShelterPetTelegramBot.exception.number.InvalideNumberException;
-import com.skypro.ShelterPetTelegramBot.exception.number.NumberAlreadyAddedException;
+import com.skypro.ShelterPetTelegramBot.exception.InvalideNumberException;
+import com.skypro.ShelterPetTelegramBot.exception.PetStatusException;
 import com.skypro.ShelterPetTelegramBot.exception.parent.ParentAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.pet.PetAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.volunteer.VolunteerAlreadyAddedException;
+import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
+
 /**
  * Класс {@link CheckServiceImpl}
  * является сервисным классом для проверок
@@ -27,32 +29,11 @@ import java.util.Collection;
 public class CheckServiceImpl implements CheckService {
 
     @Override
-    public void checkParent(String firstName,
-                            String lastName,
-                            String phoneNumber,
-                            Shelter shelterOne,
-                            Shelter shelterTwo,
-                            Parent parent,
-                            Collection<Parent> parents) {
+    public void checkFullName(String firstName,
+                              String lastName) {
 
-        validateName(firstName);
-        validateName(lastName);
-        validatePhoneNumber(phoneNumber);
-        validateShelters(shelterOne, shelterTwo);
-        isParentAlreadyAdded(parents, parent);
-    }
-
-    @Override
-    public void checkVolunteer(String firstName,
-                               String lastName,
-                               String phoneNumber,
-                               Volunteer volunteer,
-                               Collection<Volunteer> volunteers) {
-
-        validateName(firstName);
-        validateName(lastName);
-        validatePhoneNumber(phoneNumber);
-        isVolunteerAlreadyAdded(volunteers, volunteer);
+        checkName(firstName);
+        checkName(lastName);
     }
 
     @Override
@@ -62,9 +43,9 @@ public class CheckServiceImpl implements CheckService {
                          Pet pet,
                          Collection<Pet> pets) {
 
-        validateTypes(typeOne, typeTwo);
-        validateName(name);
-        isPetAlreadyAdded(pets, pet);
+        checkTypes(typeOne, typeTwo);
+        checkName(name);
+        checkPetAlreadyAdded(pets, pet);
     }
 
     @Override
@@ -72,19 +53,19 @@ public class CheckServiceImpl implements CheckService {
                              Shelter shelter,
                              Collection<Shelter> shelters) {
 
-        validateAddress(address);
-        isShelterAlreadyAdded(shelters, shelter);
+        checkAddress(address);
+        checkShelterAlreadyAdded(shelters, shelter);
     }
 
     @Override
-    public void validateLong(Long value) {
+    public void checkValue(Long value) {
         if (value == null || value <= 0) {
             throw new InvalideInputException();
         }
     }
 
     @Override
-    public void validateName(String name) {
+    public void checkName(String name) {
         if (name == null
                 || name.isBlank()
                 || !name.matches("[а-яА-Я -]+")) {
@@ -93,7 +74,7 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public void validateAddress(String address) {
+    public void checkAddress(String address) {
         if (address == null
                 || address.isBlank()
                 || !address.matches("[0-9а-яА-Я -,.]+")) {
@@ -102,19 +83,20 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public String changePhoneNumber(String phoneNumber) {
+    public String validatePhoneNumber(String phoneNumber) {
+        checkPhoneNumber(phoneNumber);
+
         String first = phoneNumber.substring(0, 1).replace(phoneNumber.charAt(0), '7');
         String second = phoneNumber.substring(1, 4);
         String third = phoneNumber.substring(4, 7);
         String fourth = phoneNumber.substring(7, 9);
         String fives = phoneNumber.substring(9);
 
-        phoneNumber = String.format("+%s-%s-%s-%s-%s", first, second, third, fourth, fives);
-        return phoneNumber;
+        return String.format("+%s-%s-%s-%s-%s", first, second, third, fourth, fives);
     }
 
     @Override
-    public void validatePhoneNumber(String phoneNumber) {
+    public void checkPhoneNumber(String phoneNumber) {
         if (phoneNumber == null
                 || phoneNumber.isBlank()
                 || !phoneNumber.matches("[0-9]{11}")) {
@@ -123,43 +105,42 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public void validateShelters(Shelter shelterOne, Shelter shelterTwo) {
-        if (!shelterOne.equals(shelterTwo)) {
-            throw new DifferentSheltersException();
+    public void checkStatus(PetStatus status) {
+        if (!status.equals(FREE)) {
+            throw new PetStatusException();
         }
     }
 
     @Override
-    public void validateTypes(PetType typeOne, PetType typeTwo) {
+    public void checkTypes(PetType typeOne, PetType typeTwo) {
         if (!typeOne.equals(typeTwo)) {
             throw new DifferentTypesException();
         }
     }
 
     @Override
-    public void isPhoneNumberParentAlreadyAdded(Collection<Parent> parents, String phoneNumber) {
+    public void checkPhoneNumberParentAlreadyAdded(Collection<Parent> parents, String phoneNumber) {
         for (Parent element : parents) {
             if (element.getPhoneNumber().equals(phoneNumber)) {
-                throw new NumberAlreadyAddedException();
+                throw new ParentAlreadyAddedException();
             }
         }
     }
 
     @Override
-    public void isPhoneNumberVolunteerAlreadyAdded(Collection<Volunteer> volunteers, String phoneNumber) {
+    public void checkPhoneNumberVolunteerAlreadyAdded(Collection<Volunteer> volunteers, String phoneNumber) {
         for (Volunteer element : volunteers) {
             if (element.getPhoneNumber().equals(phoneNumber)) {
-                throw new NumberAlreadyAddedException();
+                throw new VolunteerAlreadyAddedException();
             }
         }
     }
 
     @Override
-    public void isShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter) {
+    public void checkShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter) {
         for (Shelter element : shelters) {
 
-            if (element.getType().equals(shelter.getType())
-                    && element.getAddress().equalsIgnoreCase(shelter.getAddress())) {
+            if (element.getAddress().equalsIgnoreCase(shelter.getAddress())) {
 
                 throw new ShelterAlreadyAddedException();
             }
@@ -167,43 +148,13 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public void isVolunteerAlreadyAdded(Collection<Volunteer> volunteers, Volunteer volunteer) {
-        for (Volunteer element : volunteers) {
-
-            if (element.getFirstName().equalsIgnoreCase(volunteer.getFirstName())
-                    && element.getLastName().equalsIgnoreCase(volunteer.getLastName())
-                    && element.getPhoneNumber().equals(volunteer.getPhoneNumber())
-                    && element.getShelter().equals(volunteer.getShelter())) {
-
-                throw new VolunteerAlreadyAddedException();
-            }
-        }
-    }
-
-    @Override
-    public void isPetAlreadyAdded(Collection<Pet> pets, Pet pet) {
+    public void checkPetAlreadyAdded(Collection<Pet> pets, Pet pet) {
         for (Pet element : pets) {
 
             if (element.getName().equalsIgnoreCase(pet.getName())
-                    && element.getType().equals(pet.getType())
                     && element.getShelter().equals(pet.getShelter())) {
 
                 throw new PetAlreadyAddedException();
-            }
-        }
-    }
-
-    @Override
-    public void isParentAlreadyAdded(Collection<Parent> parents, Parent parent) {
-        for (Parent element : parents) {
-
-            if (element.getFirstName().equalsIgnoreCase(parent.getFirstName())
-                    && element.getLastName().equalsIgnoreCase(parent.getLastName())
-                    && element.getPhoneNumber().equals(parent.getPhoneNumber())
-                    && element.getVolunteer().equals(parent.getVolunteer())
-                    && element.getPet().equals(parent.getPet())) {
-
-                throw new ParentAlreadyAddedException();
             }
         }
     }

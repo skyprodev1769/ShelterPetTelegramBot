@@ -17,13 +17,11 @@ public interface ParentService {
      * @param firstName   <i> является именем нового усыновителя </i> <br>
      * @param lastName    <i> является фамилией нового усыновителя </i> <br>
      * @param phoneNumber <i> является номером телефона нового усыновителя </i> <br>
-     * @param volunteerId <i> является идентификатором волонтера </i> <br>
      * @param petId       <i> является идентификатором животного </i>
      */
     Parent add(String firstName,
                String lastName,
                String phoneNumber,
-               Long volunteerId,
                Long petId);
 
     /**
@@ -38,13 +36,11 @@ public interface ParentService {
      *
      * @param firstName   <i> является именем усыновителя </i> <br>
      * @param lastName    <i> является фамилией усыновителя </i> <br>
-     * @param phoneNumber <i> является номером телефона усыновителя </i> <br>
-     * @param volunteerId <i> является идентификатором волонтера </i>
+     * @param phoneNumber <i> является номером телефона усыновителя </i>
      */
     Collection<Parent> getAllByParameters(String firstName,
                                           String lastName,
-                                          String phoneNumber,
-                                          Long volunteerId);
+                                          String phoneNumber);
 
     /**
      * Метод находит всех усыновителей из БД
@@ -58,14 +54,12 @@ public interface ParentService {
      * @param firstName   <i> является новым именем усыновителя </i> <br>
      * @param lastName    <i> является новой фамилией усыновителя </i> <br>
      * @param phoneNumber <i> является новым номером телефона усыновителя </i> <br>
-     * @param volunteerId <i> является новым идентификатором волонтера </i> <br>
      * @param petId       <i> является новым идентификатором животного </i>
      */
     Parent edit(Long id,
                 String firstName,
                 String lastName,
                 String phoneNumber,
-                Long volunteerId,
                 Long petId);
 
     /**

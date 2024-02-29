@@ -1,5 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
+import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,6 +25,10 @@ public class Pet {
     @Column(name = "name")
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "condition")
+    private PetStatus status;
+
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
@@ -31,9 +36,10 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(PetType type, String name, Shelter shelter) {
+    public Pet(PetType type, String name, PetStatus status, Shelter shelter) {
         this.type = type;
         this.name = name;
+        this.status = status;
         this.shelter = shelter;
     }
 }

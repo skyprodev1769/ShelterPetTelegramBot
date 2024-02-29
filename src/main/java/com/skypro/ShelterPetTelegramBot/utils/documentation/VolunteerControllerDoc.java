@@ -41,8 +41,7 @@ public class VolunteerControllerDoc {
                     "2.Передано некорректное имя.\n" +
                     "3.Передана некорректная фамилия.\n" + INVALIDE_INPUT + "\n\n" +
                     "4.Передан некорректный номер телефона.\n" + INVALIDE_NUMBER + "\n\n" +
-                    "5.Данный номер телефона уже был добавлен ранее.\n" + NUMBER_ALREADY_ADDED + "\n\n" +
-                    "6.Данный волонтер уже был добавлен ранее.\n" + VOLUNTEER_ALREADY_ADDED;
+                    "5.Данный номер телефона уже был добавлен ранее.\n" + VOLUNTEER_ALREADY_ADDED;
 
     public static final String EXAMPLE_GET_BY_ID_VOLUNTEER_CODE_400 =
             "1.Передан некорректный id волонтера.\n" + INVALIDE_INPUT;
@@ -61,8 +60,7 @@ public class VolunteerControllerDoc {
                     "3.Передано некорректное имя.\n" +
                     "4.Передана некорректная фамилия.\n" + INVALIDE_INPUT + "\n\n" +
                     "5.Передан некорректный номер телефона.\n" + INVALIDE_NUMBER + "\n\n" +
-                    "6.Данный номер телефона уже был добавлен ранее.\n" + NUMBER_ALREADY_ADDED + "\n\n" +
-                    "7.Данный волонтер уже был добавлен ранее.\n" + VOLUNTEER_ALREADY_ADDED;
+                    "6.Данный номер телефона уже был добавлен ранее.\n" + VOLUNTEER_ALREADY_ADDED;
 
     public static final String EXAMPLE_EDIT_VOLUNTEER_CODE_404 =
             "1.Волонтер с данным id еще не был добавлен.\n" + VOLUNTEER_NOT_FOUND + "\n\n" +

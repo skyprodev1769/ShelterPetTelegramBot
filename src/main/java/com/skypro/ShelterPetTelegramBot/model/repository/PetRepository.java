@@ -1,5 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.model.repository;
 
+import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,8 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     Collection<Pet> getAllByType(PetType type);
 
     Collection<Pet> getAllByNameContainsIgnoreCase(String name);
+
+    Collection<Pet> getAllByStatus(PetStatus status);
 
     Collection<Pet> getAllByShelterId(Long shelterId);
 }

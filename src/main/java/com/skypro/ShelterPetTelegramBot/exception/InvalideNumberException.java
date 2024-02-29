@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.exception.number;
+package com.skypro.ShelterPetTelegramBot.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

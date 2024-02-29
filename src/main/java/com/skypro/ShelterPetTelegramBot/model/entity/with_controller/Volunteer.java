@@ -1,10 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.Collection;
 
 /**
  * Класс {@link Volunteer}
@@ -31,10 +28,6 @@ public class Volunteer {
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
-
-    @JsonIgnore
-    @OneToMany
-    private Collection<Parent> parents;
 
     public Volunteer() {
     }

@@ -2,6 +2,7 @@ package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.PetController;
 import com.skypro.ShelterPetTelegramBot.exception.pet.PetNotFoundException;
+import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
@@ -33,9 +34,9 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet add(PetType type, String name, Long shelterId) {
+    public Pet add(PetType type, String name, PetStatus status, Long shelterId) {
         Shelter shelter = shelterService.getById(shelterId);
-        Pet pet = new Pet(type, name, shelter);
+        Pet pet = new Pet(type, name, status, shelter);
         checkService.checkPet(type, shelter.getType(), name, pet, getAll());
         log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ {} {} {}", type, name, shelterId);
         return repository.save(pet);
@@ -43,16 +44,16 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Pet getById(Long id) {
-        checkService.validateLong(id);
+        checkService.checkValue(id);
         log.info("ПОЛУЧЕНО ЖИВОТНОЕ {}", id);
         return repository.findById(id).orElseThrow(PetNotFoundException::new);
     }
 
     @Override
-    public Collection<Pet> getAllByParameters(String name, PetType type, Long shelterId) {
+    public Collection<Pet> getAllByParameters(String name, PetType type, PetStatus status, Long shelterId) {
 
         if (name != null) {
-            checkService.validateName(name);
+            checkService.checkName(name);
             log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ {}", name);
             return repository.getAllByNameContainsIgnoreCase(name);
 
@@ -61,7 +62,7 @@ public class PetServiceImpl implements PetService {
             return repository.getAllByType(type);
 
         } else if (shelterId != null) {
-            checkService.validateLong(shelterId);
+            checkService.checkValue(shelterId);
             log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ {}", shelterId);
             return repository.getAllByShelterId(shelterId);
 
@@ -77,16 +78,16 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet edit(Long id, PetType type, String name, Long shelterId) {
+    public Pet edit(Long id, PetType type, String name, PetStatus status, Long shelterId) {
 
         Pet pet = getById(id);
 
-        if (type == null & name == null & shelterId == null) {
+        if (type == null & name == null & status == null & shelterId == null) {
             return pet;
 
         } else {
 
-            Pet edit = new Pet(pet.getType(), pet.getName(), pet.getShelter());
+            Pet edit = new Pet(pet.getType(), pet.getName(), pet.getStatus(), pet.getShelter());
 
             if (type != null) {
                 edit.setType(type);

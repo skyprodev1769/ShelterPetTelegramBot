@@ -1,5 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.service.interfaces;
 
+import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
@@ -16,27 +17,22 @@ import java.util.Collection;
 public interface CheckService {
 
     /**
-     * Метод выполняет комплексную проверку усыновителя
+     * Метод выполняет комплексную проверку имени и фамилии
+     *
+     * @param firstName <i> является проверяемым именем </i> <br>
+     * @param lastName  <i> является проверяемым именем </i>
      */
-    void checkParent(String firstName,
-                     String lastName,
-                     String phoneNumber,
-                     Shelter shelterOne,
-                     Shelter shelterTwo,
-                     Parent parent,
-                     Collection<Parent> parents);
-
-    /**
-     * Метод выполняет комплексную проверку волонтера
-     */
-    void checkVolunteer(String firstName,
-                        String lastName,
-                        String phoneNumber,
-                        Volunteer volunteer,
-                        Collection<Volunteer> volunteers);
+    void checkFullName(String firstName,
+                       String lastName);
 
     /**
      * Метод выполняет комплексную проверку животного
+     *
+     * @param typeOne <i> является проверяемым типом животного </i> <br>
+     * @param typeTwo <i> является проверяющим типом приюта для животных </i> <br>
+     * @param name    <i> является проверяемым именем </i> <br>
+     * @param pet     <i> является проверяемым животным </i> <br>
+     * @param pets    <i> является списком всех животных </i>
      */
     void checkPet(PetType typeOne,
                   PetType typeTwo,
@@ -46,6 +42,10 @@ public interface CheckService {
 
     /**
      * Метод выполняет комплексную проверку приюта
+     *
+     * @param address  <i> является проверяемым адресом </i> <br>
+     * @param shelter  <i> является проверяемым приютом </i> <br>
+     * @param shelters <i> является списком всех приютов </i>
      */
     void checkShelter(String address,
                       Shelter shelter,
@@ -56,51 +56,50 @@ public interface CheckService {
      *
      * @param value <i> является проверяемым значением </i>
      */
-    void validateLong(Long value);
+    void checkValue(Long value);
 
     /**
      * Метод проверяет вводимое имя на корректность
      *
      * @param name <i> является проверяемым именем </i>
      */
-    void validateName(String name);
+    void checkName(String name);
 
     /**
      * Метод проверяет вводимый адрес на корректность
      *
      * @param address <i> является проверяемым адресом </i>
      */
-    void validateAddress(String address);
+    void checkAddress(String address);
 
     /**
      * Метод изменяет переданный номер телефона под заданный формат
      *
      * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
-    String changePhoneNumber(String phoneNumber);
+    String validatePhoneNumber(String phoneNumber);
 
     /**
      * Метод проверяет вводимый номер телефона на корректность
      *
      * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
-    void validatePhoneNumber(String phoneNumber);
+    void checkPhoneNumber(String phoneNumber);
 
     /**
-     * Метод проверяет вводимый тип приюта на соответствие
+     * Метод проверяет вводимый статус животного
      *
-     * @param shelterOne <i> является проверяемым типом </i> <br>
-     * @param shelterTwo <i> является проверяющим типом </i>
+     * @param status <i> является проверяемым статусом животного </i>
      */
-    void validateShelters(Shelter shelterOne, Shelter shelterTwo);
+    void checkStatus(PetStatus status);
 
     /**
      * Метод проверяет вводимый тип животного на соответствие
      *
-     * @param typeOne <i> является проверяемым типом </i> <br>
-     * @param typeTwo <i> является проверяющим типом </i>
+     * @param typeOne <i> является проверяемым типом животного </i> <br>
+     * @param typeTwo <i> является проверяющим типом приюта для животных </i>
      */
-    void validateTypes(PetType typeOne, PetType typeTwo);
+    void checkTypes(PetType typeOne, PetType typeTwo);
 
     /**
      * Метод проверяет вводимый номер телефона усыновителя на наличие идентичной записи в БД
@@ -108,7 +107,7 @@ public interface CheckService {
      * @param parents     <i> является списком усыновителей </i> <br>
      * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
-    void isPhoneNumberParentAlreadyAdded(Collection<Parent> parents, String phoneNumber);
+    void checkPhoneNumberParentAlreadyAdded(Collection<Parent> parents, String phoneNumber);
 
     /**
      * Метод проверяет вводимый номер телефона волонтера на наличие идентичной записи в БД
@@ -116,7 +115,7 @@ public interface CheckService {
      * @param volunteers  <i> является списком волонтеров </i> <br>
      * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
-    void isPhoneNumberVolunteerAlreadyAdded(Collection<Volunteer> volunteers, String phoneNumber);
+    void checkPhoneNumberVolunteerAlreadyAdded(Collection<Volunteer> volunteers, String phoneNumber);
 
     /**
      * Метод проверяет приют на наличие идентичной записи в БД
@@ -125,15 +124,7 @@ public interface CheckService {
      * @param shelter  <i> является проверяемым приютом </i>
      */
 
-    void isShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter);
-
-    /**
-     * Метод проверяет волонтера на наличие идентичной записи в БД
-     *
-     * @param volunteers <i> является списком всех волонтеров </i> <br>
-     * @param volunteer  <i> является проверяемым волонтером </i>
-     */
-    void isVolunteerAlreadyAdded(Collection<Volunteer> volunteers, Volunteer volunteer);
+    void checkShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter);
 
     /**
      * Метод проверяет животное на наличие идентичной записи в БД
@@ -141,13 +132,5 @@ public interface CheckService {
      * @param pets <i> является списком всех животных </i> <br>
      * @param pet  <i> является проверяемым животным </i>
      */
-    void isPetAlreadyAdded(Collection<Pet> pets, Pet pet);
-
-    /**
-     * Метод проверяет усыновителя на наличие идентичной записи в БД
-     *
-     * @param parents <i> является списком всех усыновителей </i> <br>
-     * @param parent  <i> является проверяемым усыновителем </i>
-     */
-    void isParentAlreadyAdded(Collection<Parent> parents, Parent parent);
+    void checkPetAlreadyAdded(Collection<Pet> pets, Pet pet);
 }

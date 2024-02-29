@@ -1,5 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.controller;
 
+import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
@@ -71,10 +72,12 @@ public class PetController {
                    @Parameter(description = "Имя животного")
                    @RequestParam(name = "Имя") String name,
 
+                   PetStatus status,
+
                    @Parameter(description = "id приюта для животных")
                    @RequestParam(name = "id") Long shelterId) {
 
-        return service.add(type, name, shelterId);
+        return service.add(type, name, status, shelterId);
     }
 
     @Operation(
@@ -140,10 +143,12 @@ public class PetController {
                                               @Parameter(description = "Тип животного")
                                               @RequestParam(required = false, name = "Тип") PetType type,
 
+                                              PetStatus status,
+
                                               @Parameter(description = "id приюта для животных")
                                               @RequestParam(required = false, name = "id") Long shelterId) {
 
-        return service.getAllByParameters(name, type, shelterId);
+        return service.getAllByParameters(name, type, status, shelterId);
     }
 
     @Operation(
@@ -203,10 +208,12 @@ public class PetController {
                     @Parameter(description = "Имя животного")
                     @RequestParam(required = false, name = "Имя") String name,
 
+                    PetStatus status,
+
                     @Parameter(description = "id приюта для животных")
                     @RequestParam(required = false, name = "id") Long shelterId) {
 
-        return service.edit(id, type, name, shelterId);
+        return service.edit(id, type, name, status, shelterId);
     }
 
     @Operation(

@@ -25,10 +25,6 @@ public class Parent {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "volunteer_id")
-    private Volunteer volunteer;
-
     @OneToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
@@ -36,11 +32,10 @@ public class Parent {
     public Parent() {
     }
 
-    public Parent(String firstName, String lastName, String phoneNumber, Volunteer volunteer, Pet pet) {
+    public Parent(String firstName, String lastName, String phoneNumber, Pet pet) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.volunteer = volunteer;
         this.pet = pet;
     }
 }

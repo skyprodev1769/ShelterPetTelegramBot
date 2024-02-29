@@ -4,17 +4,16 @@ import com.skypro.ShelterPetTelegramBot.controller.ParentController;
 import com.skypro.ShelterPetTelegramBot.exception.parent.ParentNotFoundException;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import com.skypro.ShelterPetTelegramBot.model.repository.ParentRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ParentService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.*;
 
 /**
  * Класс {@link ParentServiceImpl}
@@ -26,13 +25,14 @@ public class ParentServiceImpl implements ParentService {
 
     private final ParentRepository repository;
     private final CheckService checkService;
-    private final VolunteerService volunteerService;
     private final PetService petService;
 
-    public ParentServiceImpl(ParentRepository repository, CheckService checkService, VolunteerService volunteerService, PetService petService) {
+    public ParentServiceImpl(ParentRepository repository,
+                             CheckService checkService,
+                             PetService petService) {
+
         this.repository = repository;
         this.checkService = checkService;
-        this.volunteerService = volunteerService;
         this.petService = petService;
     }
 
@@ -40,54 +40,46 @@ public class ParentServiceImpl implements ParentService {
     public Parent add(String firstName,
                       String lastName,
                       String phoneNumber,
-                      Long volunteerId,
                       Long petId) {
 
-        Volunteer volunteer = volunteerService.getById(volunteerId);
         Pet pet = petService.getById(petId);
-        Parent parent = new Parent(firstName, lastName, phoneNumber, volunteer, pet);
+        Parent parent = new Parent(firstName, lastName, phoneNumber, pet);
+        checkService.checkFullName(firstName, lastName);
 
-        Shelter shelterOne = volunteer.getShelter();
-        Shelter shelterTwo = pet.getShelter();
+        phoneNumber = checkService.validatePhoneNumber(phoneNumber);
+        checkService.checkPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
+        parent.setPhoneNumber(phoneNumber);
 
-        checkService.checkParent(firstName, lastName, phoneNumber, shelterOne, shelterTwo, parent, getAll());
-        checkService.isPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
-        checkService.isPhoneNumberVolunteerAlreadyAdded(volunteerService.getAll(), phoneNumber);
+        checkService.checkStatus(pet.getStatus());
+        pet.setStatus(ADOPTED);
 
-        parent.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
-
-        log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ {} {} {} {}", firstName, lastName, phoneNumber, volunteerId);
+        log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ {} {} {} {}", firstName, lastName, phoneNumber, petId);
         return repository.save(parent);
     }
 
     @Override
     public Parent getById(Long id) {
-        checkService.validateLong(id);
+        checkService.checkValue(id);
         log.info("ПОЛУЧЕН УСЫНОВИТЕЛЬ {}", id);
         return repository.findById(id).orElseThrow(ParentNotFoundException::new);
     }
 
     @Override
-    public Collection<Parent> getAllByParameters(String firstName, String lastName, String phoneNumber, Long volunteerId) {
+    public Collection<Parent> getAllByParameters(String firstName, String lastName, String phoneNumber) {
 
         if (firstName != null) {
-            checkService.validateName(firstName);
+            checkService.checkName(firstName);
             log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ {}", firstName);
             return repository.getAllByFirstNameContainsIgnoreCase(firstName);
 
         } else if (lastName != null) {
-            checkService.validateName(lastName);
+            checkService.checkName(lastName);
             log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ {}", lastName);
             return repository.getAllByLastNameContainsIgnoreCase(lastName);
 
         } else if (phoneNumber != null) {
             log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО НОМЕРУ ТЕЛЕФОНА {}", phoneNumber);
             return repository.getAllByPhoneNumberContains(phoneNumber);
-
-        } else if (volunteerId != null) {
-            checkService.validateLong(volunteerId);
-            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО id ВОЛОНТЕРА {}", volunteerId);
-            return repository.getAllByVolunteerId(volunteerId);
 
         } else {
             return getAll();
@@ -105,48 +97,42 @@ public class ParentServiceImpl implements ParentService {
                        String firstName,
                        String lastName,
                        String phoneNumber,
-                       Long volunteerId,
                        Long petId) {
 
         Parent parent = getById(id);
 
-        if (firstName == null & lastName == null & phoneNumber == null & volunteerId == null & petId == null) {
+        if (firstName == null & lastName == null & phoneNumber == null & petId == null) {
             return parent;
 
         } else {
 
-            Parent edit = new Parent(parent.getFirstName(), parent.getLastName(), parent.getPhoneNumber(), parent.getVolunteer(), parent.getPet());
+            Parent edit = new Parent(parent.getFirstName(), parent.getLastName(), parent.getPhoneNumber(), parent.getPet());
+            edit.setId(parent.getId());
 
             if (firstName != null) {
+                checkService.checkName(firstName);
                 edit.setFirstName(firstName);
             }
 
             if (lastName != null) {
+                checkService.checkName(lastName);
                 edit.setLastName(lastName);
             }
 
             if (phoneNumber != null) {
-                checkService.isPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
-                checkService.isPhoneNumberVolunteerAlreadyAdded(volunteerService.getAll(), phoneNumber);
+                phoneNumber = checkService.validatePhoneNumber(phoneNumber);
+                checkService.checkPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
-            }
-
-            if (volunteerId != null) {
-                Volunteer volunteer = volunteerService.getById(volunteerId);
-                edit.setVolunteer(volunteer);
             }
 
             if (petId != null) {
                 Pet pet = petService.getById(petId);
+                checkService.checkStatus(pet.getStatus());
+                pet.setStatus(ADOPTED);
+                edit.getPet().setStatus(FREE);
                 edit.setPet(pet);
             }
 
-            Shelter shelterOne = edit.getVolunteer().getShelter();
-            Shelter shelterTwo = edit.getPet().getShelter();
-
-            edit.setId(parent.getId());
-            checkService.checkParent(edit.getFirstName(), edit.getLastName(), edit.getPhoneNumber(), shelterOne, shelterTwo, edit, getAll());
-            edit.setPhoneNumber(checkService.changePhoneNumber(phoneNumber));
             log.info("ИЗМЕНЕНЫ ДАННЫЕ УСЫНОВИТЕЛЯ {}", id);
             return repository.save(edit);
         }
