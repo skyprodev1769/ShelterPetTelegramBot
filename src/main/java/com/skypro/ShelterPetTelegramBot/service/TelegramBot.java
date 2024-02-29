@@ -2,6 +2,7 @@ package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
+import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
@@ -39,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
@@ -498,11 +498,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             String data = String.format("%s\nПриют - %s\n", pet.getName(), pet.getShelter().getAddress());
 
-            if (pet.getType() == DOG) {
-                dogs.append(data).append("\n");
+            if (pet.getStatus() == PetStatus.FREE) {
 
-            } else {
-                cats.append(data).append("\n");
+                if (pet.getType() == DOG) {
+                    dogs.append(data).append("\n");
+
+                } else {
+                    cats.append(data).append("\n");
+                }
             }
         }
 
@@ -549,11 +552,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         for (Shelter shelter : shelterService.getAll()) {
 
-            if (shelter.getType() == CAT) {
-                cats.append(shelter.getAddress()).append("\n");
+            if (shelter.getType() == DOG) {
+                dogs.append(shelter.getAddress()).append("\n");
 
             } else {
-                dogs.append(shelter.getAddress()).append("\n");
+                cats.append(shelter.getAddress()).append("\n");
             }
         }
 

@@ -48,14 +48,14 @@ public class VolunteerServiceImpl implements VolunteerService {
         checkService.checkVolunteerAlreadyAdded(getAll(), phoneNumber);
         volunteer.setPhoneNumber(phoneNumber);
 
-        log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР {} {} {} {}", firstName, lastName, phoneNumber, shelterId);
+        log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР: \"имя\" - {}; \"фамилия\" - {}; \"номер телефона\" - {}; \"ID приюта для животных\" - {}", firstName, lastName, phoneNumber, shelterId);
         return repository.save(volunteer);
     }
 
     @Override
     public Volunteer getById(Long id) {
         checkService.checkValue(id);
-        log.info("ПОЛУЧЕН ВОЛОНТЕР {}", id);
+        log.info("ПОЛУЧЕН ВОЛОНТЕР ПО ID - {}", id);
         return repository.findById(id).orElseThrow(VolunteerNotFoundException::new);
     }
 
@@ -67,21 +67,21 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         if (firstName != null) {
             checkService.checkName(firstName);
-            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ {}", firstName);
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}", firstName);
             return repository.getAllByFirstNameContainsIgnoreCase(firstName);
 
         } else if (lastName != null) {
             checkService.checkName(lastName);
-            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ {}", lastName);
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {}", lastName);
             return repository.getAllByLastNameContainsIgnoreCase(lastName);
 
         } else if (phoneNumber != null) {
-            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО НОМЕРУ ТЕЛЕФОНА {}", phoneNumber);
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО НОМЕРУ ТЕЛЕФОНА - {}", phoneNumber);
             return repository.getAllByPhoneNumberContains(phoneNumber);
 
         } else if (shelterId != null) {
             checkService.checkValue(shelterId);
-            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО id ПРИЮТА ДЛЯ ЖИВОТНЫХ {}", shelterId);
+            log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
             return repository.getAllByShelterId(shelterId);
 
         } else {
@@ -115,26 +115,26 @@ public class VolunteerServiceImpl implements VolunteerService {
             if (firstName != null) {
                 checkService.checkName(firstName);
                 edit.setFirstName(firstName);
-                log.info("ИЗМЕНЕНО ИМЯ ВОЛОНТЕРА {} НА {}", id, firstName);
+                log.info("ИЗМЕНЕНО ИМЯ ВОЛОНТЕРА ПО ID - {} НА \"имя\" - {}", id, firstName);
             }
 
             if (lastName != null) {
                 checkService.checkName(lastName);
                 edit.setLastName(lastName);
-                log.info("ИЗМЕНЕНА ФАМИЛИЯ ВОЛОНТЕРА {} НА {}", id, lastName);
+                log.info("ИЗМЕНЕНА ФАМИЛИЯ ВОЛОНТЕРА ПО ID - {} НА \"фамилию\" - {}", id, lastName);
             }
 
             if (phoneNumber != null) {
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
                 checkService.checkVolunteerAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
-                log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА ВОЛОНТЕРА {} НА {}", id, phoneNumber);
+                log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА ВОЛОНТЕРА ПО ID - {} НА \"номер телефона\" - {}", id, phoneNumber);
             }
 
             if (shelterId != null) {
                 Shelter shelter = shelterService.getById(shelterId);
                 edit.setShelter(shelter);
-                log.info("ИЗМЕНЕН ПРИЮТ ВОЛОНТЕРА {} НА {}", id, shelterId);
+                log.info("ИЗМЕНЕН ПРИЮТ ВОЛОНТЕРА ПО ID - {} НА \"ID приюта для животных\" - {}", id, shelterId);
             }
 
             return repository.save(edit);
@@ -145,7 +145,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     public Volunteer delete(Long id) {
         Volunteer volunteer = getById(id);
         repository.delete(volunteer);
-        log.info("УДАЛЕН ВОЛОНТЕР {}", id);
+        log.info("УДАЛЕН ВОЛОНТЕР ПО ID - {}", id);
         return volunteer;
     }
 }

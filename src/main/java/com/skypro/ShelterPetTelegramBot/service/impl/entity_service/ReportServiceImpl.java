@@ -48,7 +48,8 @@ public class ReportServiceImpl implements ReportService {
                                                String behavior) throws IOException {
 
         Parent parent = parentRepository.getByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(parentFirstName, parentLastName);
-        Path filePath = Path.of(avatarsDir, parent.getLastName() + "_" + parent.getLastName() + "." + getExtensions(Objects.requireNonNull(photo.getOriginalFilename())));
+        String firstPartNameFile = parent.getFirstName() + "_" + parent.getLastName() + "_" + parent.getPet().getName();
+        Path filePath = Path.of(avatarsDir, firstPartNameFile + "." + getExtensions(Objects.requireNonNull(photo.getOriginalFilename())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
 
@@ -62,7 +63,6 @@ public class ReportServiceImpl implements ReportService {
         }
 
         Report report = findReport(parentFirstName, parentLastName);
-        report.setParent(parent);
         report.setFilePath(filePath.toString());
         report.setFileSize(photo.getSize());
         report.setMediaType(photo.getContentType());
@@ -70,6 +70,8 @@ public class ReportServiceImpl implements ReportService {
         report.setPetDiet(diet);
         report.setPetHealth(health);
         report.setPetBehavior(behavior);
+        report.setParent(parent);
+        report.setPet(parent.getPet());
         reportRepository.save(report);
 
         return ResponseEntity.ok().build();

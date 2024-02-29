@@ -55,14 +55,14 @@ public class ParentServiceImpl implements ParentService {
         checkService.checkStatus(pet.getStatus());
         pet.setStatus(ADOPTED);
 
-        log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ {} {} {} {}", firstName, lastName, phoneNumber, petName);
+        log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ: \"имя\" - {}; \"фамилия\" - {}; \"номер телефона\" - {}; \"имя животного\" - {}", firstName, lastName, phoneNumber, petName);
         return parentRepository.save(parent);
     }
 
     @Override
     public Parent getById(Long id) {
         checkService.checkValue(id);
-        log.info("ПОЛУЧЕН УСЫНОВИТЕЛЬ {}", id);
+        log.info("ПОЛУЧЕН УСЫНОВИТЕЛЬ ПО ID - {}", id);
         return parentRepository.findById(id).orElseThrow(ParentNotFoundException::new);
     }
 
@@ -71,16 +71,16 @@ public class ParentServiceImpl implements ParentService {
 
         if (firstName != null) {
             checkService.checkName(firstName);
-            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ {}", firstName);
+            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {}", firstName);
             return parentRepository.getAllByFirstNameContainsIgnoreCase(firstName);
 
         } else if (lastName != null) {
             checkService.checkName(lastName);
-            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ {}", lastName);
+            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ - {}", lastName);
             return parentRepository.getAllByLastNameContainsIgnoreCase(lastName);
 
         } else if (phoneNumber != null) {
-            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО НОМЕРУ ТЕЛЕФОНА {}", phoneNumber);
+            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО НОМЕРУ ТЕЛЕФОНА - {}", phoneNumber);
             return parentRepository.getAllByPhoneNumberContains(phoneNumber);
 
         } else {
@@ -114,20 +114,20 @@ public class ParentServiceImpl implements ParentService {
             if (firstName != null) {
                 checkService.checkName(firstName);
                 edit.setFirstName(firstName);
-                log.info("ИЗМЕНЕНО ИМЯ УСЫНОВИТЕЛЯ {} НА {}", id, firstName);
+                log.info("ИЗМЕНЕНО ИМЯ УСЫНОВИТЕЛЯ ПО ID - {} НА \"имя\" - {}", id, firstName);
             }
 
             if (lastName != null) {
                 checkService.checkName(lastName);
                 edit.setLastName(lastName);
-                log.info("ИЗМЕНЕНА ФАМИЛИЯ УСЫНОВИТЕЛЯ {} НА {}", id, lastName);
+                log.info("ИЗМЕНЕНА ФАМИЛИЯ УСЫНОВИТЕЛЯ ПО ID - {} НА \"фамилию\" - {}", id, lastName);
             }
 
             if (phoneNumber != null) {
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
                 checkService.checkParentAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
-                log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА УСЫНОВИТЕЛЯ {} НА {}", id, phoneNumber);
+                log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА УСЫНОВИТЕЛЯ ПО ID - {} НА \"номер телефона\" - {}", id, phoneNumber);
             }
 
             if (petName != null) {
@@ -136,7 +136,7 @@ public class ParentServiceImpl implements ParentService {
                 pet.setStatus(ADOPTED);
                 edit.getPet().setStatus(FREE);
                 edit.setPet(pet);
-                log.info("ИЗМЕНЕНО ЖИВОТНОЕ УСЫНОВИТЕЛЯ {} НА {}", id, petName);
+                log.info("ИЗМЕНЕНО ЖИВОТНОЕ УСЫНОВИТЕЛЯ ПО ID - {} НА \"имя животного\" - {}", id, petName);
             }
 
             return parentRepository.save(edit);
@@ -147,7 +147,7 @@ public class ParentServiceImpl implements ParentService {
     public Parent delete(Long id) {
         Parent parent = getById(id);
         parentRepository.delete(parent);
-        log.info("УДАЛЕН УСЫНОВИТЕЛЬ {}", id);
+        log.info("УДАЛЕН УСЫНОВИТЕЛЬ ПО ID - {}", id);
         return parent;
     }
 }

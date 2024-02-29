@@ -33,14 +33,14 @@ public class ShelterServiceImpl implements ShelterService {
         Shelter shelter = new Shelter(type, address);
         checkService.checkShelter(address, shelter, getAll());
 
-        log.info("ДОБАВЛЕН НОВЫЙ ПРИЮТ {} {}", type, address);
+        log.info("ДОБАВЛЕН НОВЫЙ ПРИЮТ: \"тип\" - {}; \"адрес\" - {}", type, address);
         return repository.save(shelter);
     }
 
     @Override
     public Shelter getById(Long id) {
         checkService.checkValue(id);
-        log.info("ПОЛУЧЕН ПРИЮТ {}", id);
+        log.info("ПОЛУЧЕН ПРИЮТ ПО ID - {}", id);
         return repository.findById(id).orElseThrow(ShelterNotFoundException::new);
     }
 
@@ -48,12 +48,12 @@ public class ShelterServiceImpl implements ShelterService {
     public Collection<Shelter> getAllByParameters(PetType type, String address) {
 
         if (type != null) {
-            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ {}", type);
+            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ - {}", type);
             return repository.getAllByType(type);
 
         } else if (address != null) {
             checkService.checkAddress(address);
-            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО АДРЕСУ {}", address);
+            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО АДРЕСУ - {}", address);
             return repository.getAllByAddressContainsIgnoreCase(address);
 
         } else {
@@ -82,13 +82,13 @@ public class ShelterServiceImpl implements ShelterService {
 
             if (type != null) {
                 edit.setType(type);
-                log.info("ИЗМЕНЕН ТИП ПРИЮТА {} НА {}", id, type);
+                log.info("ИЗМЕНЕН ТИП ПРИЮТА ПО ID - {} НА \"тип\" - {}", id, type);
             }
 
             if (address != null) {
                 checkService.checkAddress(address);
                 edit.setAddress(address);
-                log.info("ИЗМЕНЕН АДРЕС ПРИЮТА {} НА {}", id, address);
+                log.info("ИЗМЕНЕН АДРЕС ПРИЮТА ПО ID - {} НА \"адрес\" - {}", id, address);
                 checkService.checkShelterAlreadyAdded(getAll(), edit);
             }
 
@@ -100,7 +100,7 @@ public class ShelterServiceImpl implements ShelterService {
     public Shelter delete(Long id) {
         Shelter shelter = getById(id);
         repository.delete(shelter);
-        log.info("УДАЛЕН ПРИЮТ {}", id);
+        log.info("УДАЛЕН ПРИЮТ ПО ID - {}", id);
         return shelter;
     }
 }

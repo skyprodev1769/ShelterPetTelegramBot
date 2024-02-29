@@ -46,14 +46,14 @@ public class PetServiceImpl implements PetService {
         Pet pet = new Pet(type, status, name, shelter);
         checkService.checkPet(type, shelter.getType(), name, pet, getAll());
 
-        log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ {} {} {} {}", type, status, name, shelterId);
+        log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ: \"тип\" - {}; \"статус\" - {}; \"имя\" - {}; \"ID приюта для животных\" - {}", type, status, name, shelterId);
         return repository.save(pet);
     }
 
     @Override
     public Pet getById(Long id) {
         checkService.checkValue(id);
-        log.info("ПОЛУЧЕНО ЖИВОТНОЕ {}", id);
+        log.info("ПОЛУЧЕНО ЖИВОТНОЕ ПО ID - {}", id);
         return repository.findById(id).orElseThrow(PetNotFoundException::new);
     }
 
@@ -64,21 +64,21 @@ public class PetServiceImpl implements PetService {
                                               Long shelterId) {
 
         if (type != null) {
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ {}", type);
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}", type);
             return repository.getAllByType(type);
 
         } else if (status != null) {
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ {}", status);
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}", status);
             return repository.getAllByStatus(status);
 
         } else if (name != null) {
             checkService.checkName(name);
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ {}", name);
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {}", name);
             return repository.getAllByNameContainsIgnoreCase(name);
 
         } else if (shelterId != null) {
             checkService.checkValue(shelterId);
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ {}", shelterId);
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
             return repository.getAllByShelterId(shelterId);
 
         } else {
@@ -107,25 +107,25 @@ public class PetServiceImpl implements PetService {
 
             if (type != null) {
                 edit.setType(type);
-                log.info("ИЗМЕНЕН ТИП ЖИВОТНОГО {} НА {}", id, type);
+                log.info("ИЗМЕНЕН ТИП ЖИВОТНОГО ПО ID - {} НА \"тип\" - {}", id, type);
             }
 
             if (status != null) {
                 edit.setStatus(status);
-                log.info("ИЗМЕНЕН СТАТУС ЖИВОТНОГО {} НА {}", id, status);
+                log.info("ИЗМЕНЕН СТАТУС ЖИВОТНОГО ПО ID - {} НА \"статус\" - {}", id, status);
             }
 
             if (name != null) {
                 checkService.checkName(name);
                 edit.setName(name);
                 checkService.checkPetAlreadyAdded(getAll(), edit);
-                log.info("ИЗМЕНЕНО ИМЯ ЖИВОТНОГО {} НА {}", id, name);
+                log.info("ИЗМЕНЕНО ИМЯ ЖИВОТНОГО ПО ID - {} НА \"имя\" - {}", id, name);
             }
 
             if (shelterId != null) {
                 Shelter shelter = shelterService.getById(shelterId);
                 edit.setShelter(shelter);
-                log.info("ИЗМЕНЕН ПРИЮТ ЖИВОТНОГО {} НА {}", id, shelterId);
+                log.info("ИЗМЕНЕН ID ПРИЮТА ДЛЯ ЖИВОТНОГО ПО ID - {} НА \"ID приюта для животных\" - {}", id, shelterId);
             }
 
             checkService.checkTypes(edit.getType(), edit.getShelter().getType());
@@ -137,7 +137,7 @@ public class PetServiceImpl implements PetService {
     public Pet delete(Long id) {
         Pet pet = getById(id);
         repository.delete(pet);
-        log.info("УДАЛЕНО ЖИВОТНОЕ {}", id);
+        log.info("УДАЛЕНО ЖИВОТНОЕ ПО ID - {}", id);
         return pet;
     }
 }
