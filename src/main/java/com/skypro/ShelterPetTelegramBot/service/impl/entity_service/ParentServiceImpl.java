@@ -69,22 +69,45 @@ public class ParentServiceImpl implements ParentService {
     @Override
     public Collection<Parent> getAllByParameters(String firstName, String lastName, String phoneNumber) {
 
-        if (firstName != null) {
-            checkService.checkName(firstName);
-            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {}", firstName);
-            return parentRepository.getAllByFirstNameContainsIgnoreCase(firstName);
-
-        } else if (lastName != null) {
-            checkService.checkName(lastName);
-            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ - {}", lastName);
-            return parentRepository.getAllByLastNameContainsIgnoreCase(lastName);
-
-        } else if (phoneNumber != null) {
-            log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО НОМЕРУ ТЕЛЕФОНА - {}", phoneNumber);
-            return parentRepository.getAllByPhoneNumberContains(phoneNumber);
+        if (firstName == null & lastName == null & phoneNumber == null) {
+            return getAll();
 
         } else {
-            return getAll();
+
+            if (firstName != null & lastName == null & phoneNumber == null) {
+                checkService.checkName(firstName);
+                log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {}", firstName);
+                return parentRepository.getAllByFirstNameContainsIgnoreCase(firstName);
+
+            } else if (firstName == null & lastName != null & phoneNumber == null) {
+                checkService.checkName(lastName);
+                log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ - {}", lastName);
+                return parentRepository.getAllByLastNameContainsIgnoreCase(lastName);
+
+            } else if (firstName == null & lastName == null & phoneNumber != null) {
+                log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО НОМЕРУ ТЕЛЕФОНА - {}", phoneNumber);
+                return parentRepository.getAllByPhoneNumberContains(phoneNumber);
+
+            } else if (firstName != null & lastName != null & phoneNumber == null) {
+                checkService.checkFullName(firstName, lastName);
+                log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {} И ФАМИЛИИ - {}", firstName, lastName);
+                return parentRepository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(firstName, lastName);
+
+            } else if (firstName != null & lastName == null) {
+                checkService.checkName(firstName);
+                log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, phoneNumber);
+                return parentRepository.getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContains(firstName, phoneNumber);
+
+            } else if (firstName == null) {
+                checkService.checkName(lastName);
+                log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", lastName, phoneNumber);
+                return parentRepository.getAllByLastNameContainsIgnoreCaseAndPhoneNumberContains(lastName, phoneNumber);
+
+            } else {
+                checkService.checkFullName(firstName, lastName);
+                log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, lastName, phoneNumber);
+                return parentRepository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(firstName, lastName, phoneNumber);
+            }
         }
     }
 

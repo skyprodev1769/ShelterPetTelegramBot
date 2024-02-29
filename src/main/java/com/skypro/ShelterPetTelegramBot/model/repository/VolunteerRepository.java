@@ -20,4 +20,26 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
     Collection<Volunteer> getAllByPhoneNumberContains(String phoneNumber);
 
     Collection<Volunteer> getAllByShelterId(Long shelterId);
+
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(String firstName, String lastName);
+
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContains(String firstName, String phoneNumber);
+
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndShelterId(String firstName, Long shelterId);
+
+    Collection<Volunteer> getAllByLastNameContainsIgnoreCaseAndPhoneNumberContains(String lastName, String phoneNumber);
+
+    Collection<Volunteer> getAllByLastNameContainsIgnoreCaseAndShelterId(String lastName, Long shelterId);
+
+    Collection<Volunteer> getAllByPhoneNumberContainsAndShelterId(String phoneNumber, Long shelterId);
+
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(String firstName, String lastName, String phoneNumber);
+
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndShelterId(String firstName, String lastName, Long shelterId);
+
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(String firstName, String phoneNumber, Long shelterId);
+
+    Collection<Volunteer> getAllByLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(String lastName, String phoneNumber, Long shelterId);
+
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(String firstName, String lastName, String phoneNumber, Long shelterId);
 }

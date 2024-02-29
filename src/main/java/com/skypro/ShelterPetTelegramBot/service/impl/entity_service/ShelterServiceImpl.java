@@ -47,17 +47,25 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public Collection<Shelter> getAllByParameters(PetType type, String address) {
 
-        if (type != null) {
-            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ - {}", type);
-            return repository.getAllByType(type);
-
-        } else if (address != null) {
-            checkService.checkAddress(address);
-            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО АДРЕСУ - {}", address);
-            return repository.getAllByAddressContainsIgnoreCase(address);
+        if (type == null & address == null) {
+            return getAll();
 
         } else {
-            return getAll();
+
+            if (type != null & address == null) {
+                log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ - {}", type);
+                return repository.getAllByType(type);
+
+            } else if (type == null) {
+                checkService.checkAddress(address);
+                log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО АДРЕСУ - {}", address);
+                return repository.getAllByAddressContainsIgnoreCase(address);
+
+            } else {
+                checkService.checkAddress(address);
+                log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ - {} И ПО АДРЕСУ - {}", type, address);
+                return repository.getAllByTypeAndAddressContainsIgnoreCase(type, address);
+            }
         }
     }
 

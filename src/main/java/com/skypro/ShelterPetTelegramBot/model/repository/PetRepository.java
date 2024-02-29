@@ -25,4 +25,26 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     Collection<Pet> getAllByNameContainsIgnoreCase(String name);
 
     Collection<Pet> getAllByShelterId(Long shelterId);
+
+    Collection<Pet> getAllByTypeAndStatus(PetType type, PetStatus status);
+
+    Collection<Pet> getAllByTypeAndNameContainsIgnoreCase(PetType type, String name);
+
+    Collection<Pet> getAllByTypeAndShelterId(PetType type, Long shelterId);
+
+    Collection<Pet> getAllByStatusAndNameContainsIgnoreCase(PetStatus status, String name);
+
+    Collection<Pet> getAllByStatusAndShelterId(PetStatus status, Long shelterId);
+
+    Collection<Pet> getAllByNameContainsIgnoreCaseAndShelterId(String name, Long shelterId);
+
+    Collection<Pet> getAllByTypeAndStatusAndNameContainsIgnoreCase(PetType type, PetStatus status, String name);
+
+    Collection<Pet> getAllByTypeAndStatusAndShelterId(PetType type, PetStatus status, Long shelterId);
+
+    Collection<Pet> getAllByTypeAndNameContainsIgnoreCaseAndShelterId(PetType type, String name, Long shelterId);
+
+    Collection<Pet> getAllByStatusAndNameContainsIgnoreCaseAndShelterId(PetStatus status, String name, Long shelterId);
+
+    Collection<Pet> getAllByTypeAndStatusAndNameContainsIgnoreCaseAndShelterId(PetType type, PetStatus status, String name, Long shelterId);
 }

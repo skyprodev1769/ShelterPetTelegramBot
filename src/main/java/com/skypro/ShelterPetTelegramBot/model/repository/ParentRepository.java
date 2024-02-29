@@ -20,4 +20,13 @@ public interface ParentRepository extends JpaRepository<Parent, Long> {
     Collection<Parent> getAllByLastNameContainsIgnoreCase(String lastName);
 
     Collection<Parent> getAllByPhoneNumberContains(String phoneNumber);
+
+    Collection<Parent> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(String firstName, String lastName);
+
+    Collection<Parent> getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContains(String firstName, String phoneNumber);
+
+    Collection<Parent> getAllByLastNameContainsIgnoreCaseAndPhoneNumberContains(String lastName, String phoneNumber);
+
+    Collection<Parent> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(String firstName, String lastName, String phoneNumber);
+
 }

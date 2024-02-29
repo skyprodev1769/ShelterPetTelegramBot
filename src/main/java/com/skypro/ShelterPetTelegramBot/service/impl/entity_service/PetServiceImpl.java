@@ -63,26 +63,87 @@ public class PetServiceImpl implements PetService {
                                               String name,
                                               Long shelterId) {
 
-        if (type != null) {
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}", type);
-            return repository.getAllByType(type);
-
-        } else if (status != null) {
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}", status);
-            return repository.getAllByStatus(status);
-
-        } else if (name != null) {
-            checkService.checkName(name);
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {}", name);
-            return repository.getAllByNameContainsIgnoreCase(name);
-
-        } else if (shelterId != null) {
-            checkService.checkValue(shelterId);
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
-            return repository.getAllByShelterId(shelterId);
+        if (type == null & status == null & name == null & shelterId == null) {
+            return getAll();
 
         } else {
-            return getAll();
+
+            if (type != null & status == null & name == null & shelterId == null) {
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}", type);
+                return repository.getAllByType(type);
+
+            } else if (type == null & status != null & name == null & shelterId == null) {
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}", status);
+                return repository.getAllByStatus(status);
+
+            } else if (type == null & status == null & name != null & shelterId == null) {
+                checkService.checkName(name);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {}", name);
+                return repository.getAllByNameContainsIgnoreCase(name);
+
+            } else if (type == null & status == null & name == null & shelterId != null) {
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
+                return repository.getAllByShelterId(shelterId);
+
+            } else if (type != null & status != null & name == null & shelterId == null) {
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И СТАТУСУ - {}", type, status);
+                return repository.getAllByTypeAndStatus(type, status);
+
+            } else if (type != null & status == null & name != null & shelterId == null) {
+                checkService.checkName(name);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И ИМЕНИ - {}", type, name);
+                return repository.getAllByTypeAndNameContainsIgnoreCase(type, name);
+
+            } else if (type != null & status == null & name == null & shelterId != null) {
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, shelterId);
+                return repository.getAllByTypeAndShelterId(type, shelterId);
+
+            } else if (type == null & status != null & name != null & shelterId == null) {
+                checkService.checkName(name);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {} И ИМЕНИ - {}", status, name);
+                return repository.getAllByStatusAndNameContainsIgnoreCase(status, name);
+
+            } else if (type == null & status != null & name == null & shelterId != null) {
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", status, shelterId);
+                return repository.getAllByStatusAndShelterId(status, shelterId);
+
+            } else if (type == null & status == null & name != null & shelterId != null) {
+                checkService.checkName(name);
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", name, shelterId);
+                return repository.getAllByNameContainsIgnoreCaseAndShelterId(name, shelterId);
+
+            } else if (type != null & status != null & name != null & shelterId == null) {
+                checkService.checkName(name);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {} И ИМЕНИ - {}", type, status, name);
+                return repository.getAllByTypeAndStatusAndNameContainsIgnoreCase(type, status, name);
+
+            } else if (type != null & status != null & name == null) {
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, status, shelterId);
+                return repository.getAllByTypeAndStatusAndShelterId(type, status, shelterId);
+
+            } else if (type != null & status == null) {
+                checkService.checkName(name);
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, name, shelterId);
+                return repository.getAllByTypeAndNameContainsIgnoreCaseAndShelterId(type, name, shelterId);
+
+            } else if (type == null) {
+                checkService.checkName(name);
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", status, name, shelterId);
+                return repository.getAllByStatusAndNameContainsIgnoreCaseAndShelterId(status, name, shelterId);
+
+            } else {
+                checkService.checkName(name);
+                checkService.checkValue(shelterId);
+                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, status, name, shelterId);
+                return repository.getAllByTypeAndStatusAndNameContainsIgnoreCaseAndShelterId(type, status, name, shelterId);
+            }
         }
     }
 

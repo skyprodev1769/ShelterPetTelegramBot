@@ -17,4 +17,6 @@ public interface ShelterRepository extends JpaRepository<Shelter, Long> {
     Collection<Shelter> getAllByType(PetType type);
 
     Collection<Shelter> getAllByAddressContainsIgnoreCase(String address);
+
+    Collection<Shelter> getAllByTypeAndAddressContainsIgnoreCase(PetType type, String address);
 }
