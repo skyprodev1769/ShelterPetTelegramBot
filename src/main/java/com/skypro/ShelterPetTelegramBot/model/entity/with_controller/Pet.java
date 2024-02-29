@@ -22,12 +22,12 @@ public class Pet {
     @Column(name = "type")
     private PetType type;
 
-    @Column(name = "name")
-    private String name;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "condition")
     private PetStatus status;
+
+    @Column(name = "name")
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "shelter_id")
@@ -36,10 +36,10 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(PetType type, String name, PetStatus status, Shelter shelter) {
+    public Pet(PetType type, PetStatus status, String name, Shelter shelter) {
         this.type = type;
-        this.name = name;
         this.status = status;
+        this.name = name;
         this.shelter = shelter;
     }
 }

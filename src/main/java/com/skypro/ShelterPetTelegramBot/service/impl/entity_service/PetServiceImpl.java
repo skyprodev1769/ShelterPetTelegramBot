@@ -27,18 +27,26 @@ public class PetServiceImpl implements PetService {
     private final CheckService checkService;
     private final ShelterService shelterService;
 
-    public PetServiceImpl(PetRepository repository, CheckService checkService, ShelterService shelterService) {
+    public PetServiceImpl(PetRepository repository,
+                          CheckService checkService,
+                          ShelterService shelterService) {
+
         this.repository = repository;
         this.checkService = checkService;
         this.shelterService = shelterService;
     }
 
     @Override
-    public Pet add(PetType type, String name, PetStatus status, Long shelterId) {
+    public Pet add(PetType type,
+                   PetStatus status,
+                   String name,
+                   Long shelterId) {
+
         Shelter shelter = shelterService.getById(shelterId);
-        Pet pet = new Pet(type, name, status, shelter);
+        Pet pet = new Pet(type, status, name, shelter);
         checkService.checkPet(type, shelter.getType(), name, pet, getAll());
-        log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ {} {} {}", type, name, shelterId);
+
+        log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ {} {} {} {}", type, status, name, shelterId);
         return repository.save(pet);
     }
 
@@ -50,16 +58,23 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Collection<Pet> getAllByParameters(String name, PetType type, PetStatus status, Long shelterId) {
+    public Collection<Pet> getAllByParameters(PetType type,
+                                              PetStatus status,
+                                              String name,
+                                              Long shelterId) {
 
-        if (name != null) {
+        if (type != null) {
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ {}", type);
+            return repository.getAllByType(type);
+
+        } else if (status != null) {
+            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ {}", status);
+            return repository.getAllByStatus(status);
+
+        } else if (name != null) {
             checkService.checkName(name);
             log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ {}", name);
             return repository.getAllByNameContainsIgnoreCase(name);
-
-        } else if (type != null) {
-            log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ {}", type);
-            return repository.getAllByType(type);
 
         } else if (shelterId != null) {
             checkService.checkValue(shelterId);
@@ -78,33 +93,42 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet edit(Long id, PetType type, String name, PetStatus status, Long shelterId) {
+    public Pet edit(Long id, PetType type, PetStatus status, String name, Long shelterId) {
 
         Pet pet = getById(id);
 
-        if (type == null & name == null & status == null & shelterId == null) {
+        if (type == null & status == null & name == null & shelterId == null) {
             return pet;
 
         } else {
 
-            Pet edit = new Pet(pet.getType(), pet.getName(), pet.getStatus(), pet.getShelter());
+            Pet edit = new Pet(pet.getType(), pet.getStatus(), pet.getName(), pet.getShelter());
+            edit.setId(pet.getId());
 
             if (type != null) {
                 edit.setType(type);
+                log.info("ИЗМЕНЕН ТИП ЖИВОТНОГО {} НА {}", id, type);
+            }
+
+            if (status != null) {
+                edit.setStatus(status);
+                log.info("ИЗМЕНЕН СТАТУС ЖИВОТНОГО {} НА {}", id, status);
             }
 
             if (name != null) {
+                checkService.checkName(name);
                 edit.setName(name);
+                checkService.checkPetAlreadyAdded(getAll(), edit);
+                log.info("ИЗМЕНЕНО ИМЯ ЖИВОТНОГО {} НА {}", id, name);
             }
 
             if (shelterId != null) {
                 Shelter shelter = shelterService.getById(shelterId);
                 edit.setShelter(shelter);
+                log.info("ИЗМЕНЕН ПРИЮТ ЖИВОТНОГО {} НА {}", id, shelterId);
             }
 
-            edit.setId(pet.getId());
-            checkService.checkPet(edit.getType(), edit.getShelter().getType(), edit.getName(), edit, getAll());
-            log.info("ИЗМЕНЕНЫ ДАННЫЕ ЖИВОТНОГО {}", id);
+            checkService.checkTypes(edit.getType(), edit.getShelter().getType());
             return repository.save(edit);
         }
     }

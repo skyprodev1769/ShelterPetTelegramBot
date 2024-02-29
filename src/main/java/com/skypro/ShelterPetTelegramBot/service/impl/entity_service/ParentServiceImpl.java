@@ -2,18 +2,20 @@ package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.ParentController;
 import com.skypro.ShelterPetTelegramBot.exception.parent.ParentNotFoundException;
+import com.skypro.ShelterPetTelegramBot.exception.pet.PetNotFoundException;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.repository.ParentRepository;
+import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ParentService;
-import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.*;
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOPTED;
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
 
 /**
  * Класс {@link ParentServiceImpl}
@@ -23,45 +25,45 @@ import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.*;
 @Service
 public class ParentServiceImpl implements ParentService {
 
-    private final ParentRepository repository;
+    private final ParentRepository parentRepository;
+    private final PetRepository petRepository;
     private final CheckService checkService;
-    private final PetService petService;
 
-    public ParentServiceImpl(ParentRepository repository,
-                             CheckService checkService,
-                             PetService petService) {
+    public ParentServiceImpl(ParentRepository parentRepository,
+                             PetRepository petRepository,
+                             CheckService checkService) {
 
-        this.repository = repository;
+        this.parentRepository = parentRepository;
+        this.petRepository = petRepository;
         this.checkService = checkService;
-        this.petService = petService;
     }
 
     @Override
     public Parent add(String firstName,
                       String lastName,
                       String phoneNumber,
-                      Long petId) {
+                      String petName) {
 
-        Pet pet = petService.getById(petId);
+        Pet pet = petRepository.getByNameContainsIgnoreCase(petName).orElseThrow(PetNotFoundException::new);
         Parent parent = new Parent(firstName, lastName, phoneNumber, pet);
         checkService.checkFullName(firstName, lastName);
 
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-        checkService.checkPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
+        checkService.checkParentAlreadyAdded(getAll(), phoneNumber);
         parent.setPhoneNumber(phoneNumber);
 
         checkService.checkStatus(pet.getStatus());
         pet.setStatus(ADOPTED);
 
-        log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ {} {} {} {}", firstName, lastName, phoneNumber, petId);
-        return repository.save(parent);
+        log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ {} {} {} {}", firstName, lastName, phoneNumber, petName);
+        return parentRepository.save(parent);
     }
 
     @Override
     public Parent getById(Long id) {
         checkService.checkValue(id);
         log.info("ПОЛУЧЕН УСЫНОВИТЕЛЬ {}", id);
-        return repository.findById(id).orElseThrow(ParentNotFoundException::new);
+        return parentRepository.findById(id).orElseThrow(ParentNotFoundException::new);
     }
 
     @Override
@@ -70,16 +72,16 @@ public class ParentServiceImpl implements ParentService {
         if (firstName != null) {
             checkService.checkName(firstName);
             log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ {}", firstName);
-            return repository.getAllByFirstNameContainsIgnoreCase(firstName);
+            return parentRepository.getAllByFirstNameContainsIgnoreCase(firstName);
 
         } else if (lastName != null) {
             checkService.checkName(lastName);
             log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ФАМИЛИИ {}", lastName);
-            return repository.getAllByLastNameContainsIgnoreCase(lastName);
+            return parentRepository.getAllByLastNameContainsIgnoreCase(lastName);
 
         } else if (phoneNumber != null) {
             log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО НОМЕРУ ТЕЛЕФОНА {}", phoneNumber);
-            return repository.getAllByPhoneNumberContains(phoneNumber);
+            return parentRepository.getAllByPhoneNumberContains(phoneNumber);
 
         } else {
             return getAll();
@@ -89,7 +91,7 @@ public class ParentServiceImpl implements ParentService {
     @Override
     public Collection<Parent> getAll() {
         log.info("ПОЛУЧЕНЫ ВСЕ УСЫНОВИТЕЛИ");
-        return repository.findAll();
+        return parentRepository.findAll();
     }
 
     @Override
@@ -97,11 +99,11 @@ public class ParentServiceImpl implements ParentService {
                        String firstName,
                        String lastName,
                        String phoneNumber,
-                       Long petId) {
+                       String petName) {
 
         Parent parent = getById(id);
 
-        if (firstName == null & lastName == null & phoneNumber == null & petId == null) {
+        if (firstName == null & lastName == null & phoneNumber == null & petName == null) {
             return parent;
 
         } else {
@@ -112,36 +114,39 @@ public class ParentServiceImpl implements ParentService {
             if (firstName != null) {
                 checkService.checkName(firstName);
                 edit.setFirstName(firstName);
+                log.info("ИЗМЕНЕНО ИМЯ УСЫНОВИТЕЛЯ {} НА {}", id, firstName);
             }
 
             if (lastName != null) {
                 checkService.checkName(lastName);
                 edit.setLastName(lastName);
+                log.info("ИЗМЕНЕНА ФАМИЛИЯ УСЫНОВИТЕЛЯ {} НА {}", id, lastName);
             }
 
             if (phoneNumber != null) {
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-                checkService.checkPhoneNumberParentAlreadyAdded(getAll(), phoneNumber);
+                checkService.checkParentAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
+                log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА УСЫНОВИТЕЛЯ {} НА {}", id, phoneNumber);
             }
 
-            if (petId != null) {
-                Pet pet = petService.getById(petId);
+            if (petName != null) {
+                Pet pet = petRepository.getByNameContainsIgnoreCase(petName).orElseThrow(PetNotFoundException::new);
                 checkService.checkStatus(pet.getStatus());
                 pet.setStatus(ADOPTED);
                 edit.getPet().setStatus(FREE);
                 edit.setPet(pet);
+                log.info("ИЗМЕНЕНО ЖИВОТНОЕ УСЫНОВИТЕЛЯ {} НА {}", id, petName);
             }
 
-            log.info("ИЗМЕНЕНЫ ДАННЫЕ УСЫНОВИТЕЛЯ {}", id);
-            return repository.save(edit);
+            return parentRepository.save(edit);
         }
     }
 
     @Override
     public Parent delete(Long id) {
         Parent parent = getById(id);
-        repository.delete(parent);
+        parentRepository.delete(parent);
         log.info("УДАЛЕН УСЫНОВИТЕЛЬ {}", id);
         return parent;
     }

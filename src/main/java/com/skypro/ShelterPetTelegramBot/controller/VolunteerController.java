@@ -59,6 +59,13 @@ public class VolunteerController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -103,6 +110,13 @@ public class VolunteerController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_VOLUNTEER_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -130,6 +144,13 @@ public class VolunteerController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_ALL_VOLUNTEERS_BY_PARAMETERS_CODE_400)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -160,6 +181,13 @@ public class VolunteerController {
                             content = @Content(
                                     array = @ArraySchema(schema = @Schema(implementation = Volunteer.class)),
                                     examples = @ExampleObject(EXAMPLE_ARRAYS_VOLUNTEERS)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -193,6 +221,13 @@ public class VolunteerController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_EDIT_VOLUNTEER_CODE_404)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -240,6 +275,13 @@ public class VolunteerController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_VOLUNTEER_CODE_404)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }

@@ -38,7 +38,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Добавление нового приюта для животных",
+            summary = "Добавление нового животного",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -61,6 +61,13 @@ public class PetController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -69,15 +76,16 @@ public class PetController {
     public Pet add(@Parameter(description = "Тип животного")
                    @RequestParam(name = "Тип") PetType type,
 
+                   @Parameter(description = "Статус животного")
+                   @RequestParam(name = "Статус") PetStatus status,
+
                    @Parameter(description = "Имя животного")
                    @RequestParam(name = "Имя") String name,
-
-                   PetStatus status,
 
                    @Parameter(description = "id приюта для животных")
                    @RequestParam(name = "id") Long shelterId) {
 
-        return service.add(type, name, status, shelterId);
+        return service.add(type, status, name, shelterId);
     }
 
     @Operation(
@@ -104,6 +112,13 @@ public class PetController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_PET_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -116,7 +131,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Получение списка животных по имени, типу животных или id приюта для животных",
+            summary = "Получение списка животных по имени, статусу, типу или id приюта для животных",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -132,23 +147,31 @@ public class PetController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_ALL_PETS_BY_PARAMETERS_CODE_400)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
 
     @GetMapping
-    public Collection<Pet> getAllByParameters(@Parameter(description = "Имя животного")
-                                              @RequestParam(required = false, name = "Имя") String name,
-
-                                              @Parameter(description = "Тип животного")
+    public Collection<Pet> getAllByParameters(@Parameter(description = "Тип животного")
                                               @RequestParam(required = false, name = "Тип") PetType type,
 
-                                              PetStatus status,
+                                              @Parameter(description = "Статус животного")
+                                              @RequestParam(required = false, name = "Статус") PetStatus status,
+
+                                              @Parameter(description = "Имя животного")
+                                              @RequestParam(required = false, name = "Имя") String name,
 
                                               @Parameter(description = "id приюта для животных")
                                               @RequestParam(required = false, name = "id") Long shelterId) {
 
-        return service.getAllByParameters(name, type, status, shelterId);
+        return service.getAllByParameters(type, status, name, shelterId);
     }
 
     @Operation(
@@ -160,6 +183,13 @@ public class PetController {
                             content = @Content(
                                     array = @ArraySchema(schema = @Schema(implementation = Pet.class)),
                                     examples = @ExampleObject(EXAMPLE_ARRAYS_PETS)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -194,6 +224,13 @@ public class PetController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_EDIT_PET_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -205,19 +242,20 @@ public class PetController {
                     @Parameter(description = "Тип животного")
                     @RequestParam(required = false, name = "Тип") PetType type,
 
+                    @Parameter(description = "Статус животного")
+                    @RequestParam(required = false, name = "Статус") PetStatus status,
+
                     @Parameter(description = "Имя животного")
                     @RequestParam(required = false, name = "Имя") String name,
-
-                    PetStatus status,
 
                     @Parameter(description = "id приюта для животных")
                     @RequestParam(required = false, name = "id") Long shelterId) {
 
-        return service.edit(id, type, name, status, shelterId);
+        return service.edit(id, type, status, name, shelterId);
     }
 
     @Operation(
-            summary = "Удаление приюта для животных по id",
+            summary = "Удаление животного по id",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -239,6 +277,13 @@ public class PetController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_PET_CODE_404)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }

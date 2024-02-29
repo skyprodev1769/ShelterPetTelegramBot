@@ -53,6 +53,13 @@ public class ShelterController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_ADD_SHELTER_CODE_400)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -91,6 +98,13 @@ public class ShelterController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -103,7 +117,7 @@ public class ShelterController {
     }
 
     @Operation(
-            summary = "Получение списка приютов для животных по адресу или типу животных",
+            summary = "Получение списка приютов для животных по типу или адресу",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -119,18 +133,25 @@ public class ShelterController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_ALL_SHELTERS_BY_PARAMETERS_CODE_400)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
 
     @GetMapping
-    public Collection<Shelter> getAllByParameters(@Parameter(description = "Адрес приюта для животных")
-                                                  @RequestParam(required = false, name = "Адрес") String address,
+    public Collection<Shelter> getAllByParameters(@Parameter(description = "Тип животного")
+                                                  @RequestParam(required = false, name = "Тип") PetType type,
 
-                                                  @Parameter(description = "Тип животного")
-                                                  @RequestParam(required = false, name = "Тип") PetType type) {
+                                                  @Parameter(description = "Адрес приюта для животных")
+                                                  @RequestParam(required = false, name = "Адрес") String address) {
 
-        return service.getAllByParameters(address, type);
+        return service.getAllByParameters(type, address);
     }
 
     @Operation(
@@ -142,6 +163,13 @@ public class ShelterController {
                             content = @Content(
                                     array = @ArraySchema(schema = @Schema(implementation = Shelter.class)),
                                     examples = @ExampleObject(EXAMPLE_ARRAYS_SHELTERS)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -175,6 +203,13 @@ public class ShelterController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -216,6 +251,13 @@ public class ShelterController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }

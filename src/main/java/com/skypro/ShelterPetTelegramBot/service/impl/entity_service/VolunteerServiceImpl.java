@@ -45,7 +45,7 @@ public class VolunteerServiceImpl implements VolunteerService {
         checkService.checkFullName(firstName, lastName);
 
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-        checkService.checkPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
+        checkService.checkVolunteerAlreadyAdded(getAll(), phoneNumber);
         volunteer.setPhoneNumber(phoneNumber);
 
         log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР {} {} {} {}", firstName, lastName, phoneNumber, shelterId);
@@ -115,25 +115,28 @@ public class VolunteerServiceImpl implements VolunteerService {
             if (firstName != null) {
                 checkService.checkName(firstName);
                 edit.setFirstName(firstName);
+                log.info("ИЗМЕНЕНО ИМЯ ВОЛОНТЕРА {} НА {}", id, firstName);
             }
 
             if (lastName != null) {
                 checkService.checkName(lastName);
                 edit.setLastName(lastName);
+                log.info("ИЗМЕНЕНА ФАМИЛИЯ ВОЛОНТЕРА {} НА {}", id, lastName);
             }
 
             if (phoneNumber != null) {
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-                checkService.checkPhoneNumberVolunteerAlreadyAdded(getAll(), phoneNumber);
+                checkService.checkVolunteerAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
+                log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА ВОЛОНТЕРА {} НА {}", id, phoneNumber);
             }
 
             if (shelterId != null) {
                 Shelter shelter = shelterService.getById(shelterId);
                 edit.setShelter(shelter);
+                log.info("ИЗМЕНЕН ПРИЮТ ВОЛОНТЕРА {} НА {}", id, shelterId);
             }
 
-            log.info("ИЗМЕНЕНЫ ДАННЫЕ ВОЛОНТЕРА {}", id);
             return repository.save(edit);
         }
     }
@@ -142,7 +145,6 @@ public class VolunteerServiceImpl implements VolunteerService {
     public Volunteer delete(Long id) {
         Volunteer volunteer = getById(id);
         repository.delete(volunteer);
-
         log.info("УДАЛЕН ВОЛОНТЕР {}", id);
         return volunteer;
     }

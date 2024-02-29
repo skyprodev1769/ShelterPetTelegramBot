@@ -52,25 +52,19 @@ public interface CheckService {
                       Collection<Shelter> shelters);
 
     /**
-     * Метод проверяет вводимое значение на корректность
+     * Метод проверяет вводимый статус животного
      *
-     * @param value <i> является проверяемым значением </i>
+     * @param status <i> является проверяемым статусом животного </i>
      */
-    void checkValue(Long value);
+    void checkStatus(PetStatus status);
 
     /**
-     * Метод проверяет вводимое имя на корректность
+     * Метод проверяет вводимый тип животного на соответствие
      *
-     * @param name <i> является проверяемым именем </i>
+     * @param typeOne <i> является проверяемым типом животного </i> <br>
+     * @param typeTwo <i> является проверяющим типом приюта для животных </i>
      */
-    void checkName(String name);
-
-    /**
-     * Метод проверяет вводимый адрес на корректность
-     *
-     * @param address <i> является проверяемым адресом </i>
-     */
-    void checkAddress(String address);
+    void checkTypes(PetType typeOne, PetType typeTwo);
 
     /**
      * Метод изменяет переданный номер телефона под заданный формат
@@ -87,19 +81,25 @@ public interface CheckService {
     void checkPhoneNumber(String phoneNumber);
 
     /**
-     * Метод проверяет вводимый статус животного
+     * Метод проверяет вводимое имя на корректность
      *
-     * @param status <i> является проверяемым статусом животного </i>
+     * @param name <i> является проверяемым именем </i>
      */
-    void checkStatus(PetStatus status);
+    void checkName(String name);
 
     /**
-     * Метод проверяет вводимый тип животного на соответствие
+     * Метод проверяет вводимый адрес на корректность
      *
-     * @param typeOne <i> является проверяемым типом животного </i> <br>
-     * @param typeTwo <i> является проверяющим типом приюта для животных </i>
+     * @param address <i> является проверяемым адресом </i>
      */
-    void checkTypes(PetType typeOne, PetType typeTwo);
+    void checkAddress(String address);
+
+    /**
+     * Метод проверяет вводимое значение на корректность
+     *
+     * @param value <i> является проверяемым значением </i>
+     */
+    void checkValue(Long value);
 
     /**
      * Метод проверяет вводимый номер телефона усыновителя на наличие идентичной записи в БД
@@ -107,7 +107,7 @@ public interface CheckService {
      * @param parents     <i> является списком усыновителей </i> <br>
      * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
-    void checkPhoneNumberParentAlreadyAdded(Collection<Parent> parents, String phoneNumber);
+    void checkParentAlreadyAdded(Collection<Parent> parents, String phoneNumber);
 
     /**
      * Метод проверяет вводимый номер телефона волонтера на наличие идентичной записи в БД
@@ -115,16 +115,7 @@ public interface CheckService {
      * @param volunteers  <i> является списком волонтеров </i> <br>
      * @param phoneNumber <i> является проверяемым номером телефона </i>
      */
-    void checkPhoneNumberVolunteerAlreadyAdded(Collection<Volunteer> volunteers, String phoneNumber);
-
-    /**
-     * Метод проверяет приют на наличие идентичной записи в БД
-     *
-     * @param shelters <i> является списком всех приютов </i> <br>
-     * @param shelter  <i> является проверяемым приютом </i>
-     */
-
-    void checkShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter);
+    void checkVolunteerAlreadyAdded(Collection<Volunteer> volunteers, String phoneNumber);
 
     /**
      * Метод проверяет животное на наличие идентичной записи в БД
@@ -133,4 +124,12 @@ public interface CheckService {
      * @param pet  <i> является проверяемым животным </i>
      */
     void checkPetAlreadyAdded(Collection<Pet> pets, Pet pet);
+
+    /**
+     * Метод проверяет приют на наличие идентичной записи в БД
+     *
+     * @param shelters <i> является списком всех приютов </i> <br>
+     * @param shelter  <i> является проверяемым приютом </i>
+     */
+    void checkShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter);
 }

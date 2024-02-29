@@ -58,6 +58,13 @@ public class ParentController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_ADD_PARENT_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -72,10 +79,10 @@ public class ParentController {
                       @Parameter(description = "Номер телефона усыновителя")
                       @RequestParam(name = "Номер") String phoneNumber,
 
-                      @Parameter(description = "id животного")
-                      @RequestParam(name = "id") Long petId) {
+                      @Parameter(description = "Имя животного")
+                      @RequestParam(name = "Животное") String petName) {
 
-        return service.add(firstName, lastName, phoneNumber, petId);
+        return service.add(firstName, lastName, phoneNumber, petName);
     }
 
     @Operation(
@@ -102,6 +109,13 @@ public class ParentController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_PARENT_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -114,7 +128,7 @@ public class ParentController {
     }
 
     @Operation(
-            summary = "Получение списка усыновителей по имени, фамилии, номеру телефона или id волонтера",
+            summary = "Получение списка усыновителей по имени, фамилии или номеру телефона",
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -129,6 +143,13 @@ public class ParentController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_ALL_PARENTS_BY_PARAMETERS_CODE_400)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -156,6 +177,13 @@ public class ParentController {
                             content = @Content(
                                     array = @ArraySchema(schema = @Schema(implementation = Parent.class)),
                                     examples = @ExampleObject(EXAMPLE_ARRAYS_PARENTS)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }
@@ -190,6 +218,13 @@ public class ParentController {
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_EDIT_PARENT_CODE_404)
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
+                            )
                     )
             }
     )
@@ -207,10 +242,10 @@ public class ParentController {
                        @Parameter(description = "Номер телефона усыновителя")
                        @RequestParam(required = false, name = "Номер") String phoneNumber,
 
-                       @Parameter(description = "id животного")
-                       @RequestParam(required = false, name = "id") Long petId) {
+                       @Parameter(description = "Имя животного")
+                       @RequestParam(required = false, name = "Животное") String petName) {
 
-        return service.edit(id, firstName, lastName, phoneNumber, petId);
+        return service.edit(id, firstName, lastName, phoneNumber, petName);
     }
 
     @Operation(
@@ -236,6 +271,13 @@ public class ParentController {
                             description = ERROR,
                             content = @Content(
                                     examples = @ExampleObject(EXAMPLE_GET_BY_ID_PARENT_CODE_404)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = CODE_500,
+                            description = ERROR,
+                            content = @Content(
+                                    examples = @ExampleObject(ERROR_SERVER)
                             )
                     )
             }

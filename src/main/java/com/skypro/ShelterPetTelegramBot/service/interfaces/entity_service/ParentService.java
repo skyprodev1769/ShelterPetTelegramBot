@@ -17,12 +17,12 @@ public interface ParentService {
      * @param firstName   <i> является именем нового усыновителя </i> <br>
      * @param lastName    <i> является фамилией нового усыновителя </i> <br>
      * @param phoneNumber <i> является номером телефона нового усыновителя </i> <br>
-     * @param petId       <i> является идентификатором животного </i>
+     * @param petName     <i> является именем животного </i>
      */
     Parent add(String firstName,
                String lastName,
                String phoneNumber,
-               Long petId);
+               String petName);
 
     /**
      * Метод находит усыновителя из БД по id
@@ -54,13 +54,13 @@ public interface ParentService {
      * @param firstName   <i> является новым именем усыновителя </i> <br>
      * @param lastName    <i> является новой фамилией усыновителя </i> <br>
      * @param phoneNumber <i> является новым номером телефона усыновителя </i> <br>
-     * @param petId       <i> является новым идентификатором животного </i>
+     * @param petName     <i> является именем нового животного </i>
      */
     Parent edit(Long id,
                 String firstName,
                 String lastName,
                 String phoneNumber,
-                Long petId);
+                String petName);
 
     /**
      * Метод удаляет усыновителя из БД

@@ -10,7 +10,7 @@ public class VolunteerControllerDoc {
                       "id": 1,
                       "firstName": "Иван",
                       "lastName": "Иванов",
-                      "phoneNumber": "89999999999",
+                      "phoneNumber": "+7-999-999-99-99",
                       "shelter": {
                         "id": 1,
                         "type": "DOG",
@@ -25,7 +25,7 @@ public class VolunteerControllerDoc {
                         "id": 1,
                         "firstName": "Иван",
                         "lastName": "Иванов",
-                        "phoneNumber": "89999999999",
+                        "phoneNumber": "+7-999-999-99-99",
                         "shelter": {
                           "id": 1,
                           "type": "DOG",

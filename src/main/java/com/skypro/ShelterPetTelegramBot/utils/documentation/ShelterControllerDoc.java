@@ -26,7 +26,7 @@ public class ShelterControllerDoc {
 
     public static final String EXAMPLE_ADD_SHELTER_CODE_400 =
             "1.Передан некорректный адрес.\n" + INVALIDE_INPUT + "\n\n" +
-                    "2.Данный приют уже был добавлен ранее.\n" + SHELTER_ALREADY_ADDED;
+                    "2.Данный адрес уже был добавлен ранее.\n" + SHELTER_ALREADY_ADDED;
 
     public static final String EXAMPLE_GET_BY_ID_SHELTER_CODE_400 =
             "1.Передан некорректный id приюта.\n" + INVALIDE_INPUT;
@@ -40,5 +40,5 @@ public class ShelterControllerDoc {
     public static final String EXAMPLE_EDIT_SHELTER_CODE_400 =
             "1.Передан некорректный id.\n" +
                     "2.Передан некорректный адрес.\n" + INVALIDE_INPUT + "\n\n" +
-                    "3.Данный приют уже был добавлен ранее.\n" + SHELTER_ALREADY_ADDED;
+                    "3.Данный адрес уже был добавлен ранее.\n" + SHELTER_ALREADY_ADDED;
 }

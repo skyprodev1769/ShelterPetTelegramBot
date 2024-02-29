@@ -32,6 +32,7 @@ public class ShelterServiceImpl implements ShelterService {
     public Shelter add(PetType type, String address) {
         Shelter shelter = new Shelter(type, address);
         checkService.checkShelter(address, shelter, getAll());
+
         log.info("ДОБАВЛЕН НОВЫЙ ПРИЮТ {} {}", type, address);
         return repository.save(shelter);
     }
@@ -44,16 +45,16 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    public Collection<Shelter> getAllByParameters(String address, PetType type) {
+    public Collection<Shelter> getAllByParameters(PetType type, String address) {
 
-        if (address != null) {
+        if (type != null) {
+            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ {}", type);
+            return repository.getAllByType(type);
+
+        } else if (address != null) {
             checkService.checkAddress(address);
             log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО АДРЕСУ {}", address);
             return repository.getAllByAddressContainsIgnoreCase(address);
-
-        } else if (type != null) {
-            log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ {}", type);
-            return repository.getAllByType(type);
 
         } else {
             return getAll();
@@ -77,18 +78,20 @@ public class ShelterServiceImpl implements ShelterService {
         } else {
 
             Shelter edit = new Shelter(shelter.getType(), shelter.getAddress());
+            edit.setId(shelter.getId());
 
             if (type != null) {
                 edit.setType(type);
+                log.info("ИЗМЕНЕН ТИП ПРИЮТА {} НА {}", id, type);
             }
 
             if (address != null) {
+                checkService.checkAddress(address);
                 edit.setAddress(address);
+                log.info("ИЗМЕНЕН АДРЕС ПРИЮТА {} НА {}", id, address);
+                checkService.checkShelterAlreadyAdded(getAll(), edit);
             }
 
-            edit.setId(shelter.getId());
-            checkService.checkShelter(edit.getAddress(), edit, getAll());
-            log.info("ИЗМЕНЕНЫ ДАННЫЕ ПРИЮТА {}", id);
             return repository.save(edit);
         }
     }
