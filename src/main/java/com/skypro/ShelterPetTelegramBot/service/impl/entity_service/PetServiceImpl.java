@@ -43,8 +43,13 @@ public class PetServiceImpl implements PetService {
                    Long shelterId) {
 
         Shelter shelter = shelterService.getById(shelterId);
+
+        checkService.checkName(name);
+        checkService.checkTypes(type, shelter.getType());
+
         Pet pet = new Pet(type, status, name, shelter);
-        checkService.checkPet(type, shelter.getType(), name, pet, getAll());
+
+        checkService.checkPetAlreadyAdded(getAll(), pet);
 
         log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ: \"тип\" - {}; \"статус\" - {}; \"имя\" - {}; \"ID приюта для животных\" - {}", type, status, name, shelterId);
         return repository.save(pet);

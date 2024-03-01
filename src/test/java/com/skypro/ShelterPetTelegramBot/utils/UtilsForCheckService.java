@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot;
+package com.skypro.ShelterPetTelegramBot.utils;
 
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
@@ -11,12 +11,12 @@ import java.util.Collection;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
 
-public class Utils {
+public class UtilsForCheckService {
 
     public static final String INCORRECT_STRING = "abc";
     public static final String LONG_PHONE_NUMBER = "899999999999";
 
-    public static final String CORRECT_ADDRESS = "г. Астана, ул. Планерная, д. 1, стр. 1";
+    public static final String CORRECT_ADDRESS = "г. Астана, ул. Планерная, д.1, стр.1";
     public static final String CORRECT_NAME = "Бобик";
     public static final String CORRECT_FIRST_NAME = "Иван";
     public static final String CORRECT_LAST_NAME = "Иванов";

@@ -40,9 +40,9 @@ public class VolunteerServiceImpl implements VolunteerService {
                          String phoneNumber,
                          Long shelterId) {
 
+        checkService.checkFullName(firstName, lastName);
         Shelter shelter = shelterService.getById(shelterId);
         Volunteer volunteer = new Volunteer(firstName, lastName, phoneNumber, shelter);
-        checkService.checkFullName(firstName, lastName);
 
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
         volunteer.setPhoneNumber(phoneNumber);

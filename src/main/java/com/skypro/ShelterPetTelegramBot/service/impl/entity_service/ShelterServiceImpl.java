@@ -30,8 +30,9 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     public Shelter add(PetType type, String address) {
+        checkService.checkAddress(address);
         Shelter shelter = new Shelter(type, address);
-        checkService.checkShelter(address, shelter, getAll());
+        checkService.checkShelterAlreadyAdded(getAll(), shelter);
 
         log.info("ДОБАВЛЕН НОВЫЙ ПРИЮТ: \"тип\" - {}; \"адрес\" - {}", type, address);
         return repository.save(shelter);

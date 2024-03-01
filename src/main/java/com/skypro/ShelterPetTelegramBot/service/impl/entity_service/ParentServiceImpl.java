@@ -44,9 +44,9 @@ public class ParentServiceImpl implements ParentService {
                       String phoneNumber,
                       String petName) {
 
+        checkService.checkFullName(firstName, lastName);
         Pet pet = petRepository.getByNameContainsIgnoreCase(petName).orElseThrow(PetNotFoundException::new);
         Parent parent = new Parent(firstName, lastName, phoneNumber, pet);
-        checkService.checkFullName(firstName, lastName);
 
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
         parent.setPhoneNumber(phoneNumber);

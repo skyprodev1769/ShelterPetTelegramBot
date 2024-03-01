@@ -26,32 +26,6 @@ public interface CheckService {
                        String lastName);
 
     /**
-     * Метод выполняет комплексную проверку животного
-     *
-     * @param typeOne <i> является проверяемым типом животного </i> <br>
-     * @param typeTwo <i> является проверяющим типом приюта для животных </i> <br>
-     * @param name    <i> является проверяемым именем </i> <br>
-     * @param pet     <i> является проверяемым животным </i> <br>
-     * @param pets    <i> является списком всех животных </i>
-     */
-    void checkPet(PetType typeOne,
-                  PetType typeTwo,
-                  String name,
-                  Pet pet,
-                  Collection<Pet> pets);
-
-    /**
-     * Метод выполняет комплексную проверку приюта
-     *
-     * @param address  <i> является проверяемым адресом </i> <br>
-     * @param shelter  <i> является проверяемым приютом </i> <br>
-     * @param shelters <i> является списком всех приютов </i>
-     */
-    void checkShelter(String address,
-                      Shelter shelter,
-                      Collection<Shelter> shelters);
-
-    /**
      * Метод проверяет вводимый статус животного
      *
      * @param status <i> является проверяемым статусом животного </i>
