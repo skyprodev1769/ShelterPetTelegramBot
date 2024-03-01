@@ -476,7 +476,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER_BUTTON -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ВОЛОНТЕРОВ", chatId, userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
                 answer = String.valueOf(sendListVolunteers(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
             }

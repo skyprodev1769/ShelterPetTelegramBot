@@ -49,8 +49,8 @@ public class ParentServiceImpl implements ParentService {
         checkService.checkFullName(firstName, lastName);
 
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-        checkService.checkParentAlreadyAdded(getAll(), phoneNumber);
         parent.setPhoneNumber(phoneNumber);
+        checkService.checkParentAlreadyAdded(getAll(), parent);
 
         checkService.checkStatus(pet.getStatus());
         pet.setStatus(ADOPTED);
@@ -148,8 +148,8 @@ public class ParentServiceImpl implements ParentService {
 
             if (phoneNumber != null) {
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-                checkService.checkParentAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
+                checkService.checkParentAlreadyAdded(getAll(), edit);
                 log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА УСЫНОВИТЕЛЯ ПО ID - {} НА \"номер телефона\" - {}", id, phoneNumber);
             }
 

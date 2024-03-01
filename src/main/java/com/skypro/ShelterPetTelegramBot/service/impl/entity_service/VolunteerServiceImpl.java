@@ -45,8 +45,8 @@ public class VolunteerServiceImpl implements VolunteerService {
         checkService.checkFullName(firstName, lastName);
 
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-        checkService.checkVolunteerAlreadyAdded(getAll(), phoneNumber);
         volunteer.setPhoneNumber(phoneNumber);
+        checkService.checkVolunteerAlreadyAdded(getAll(), volunteer);
 
         log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР: \"имя\" - {}; \"фамилия\" - {}; \"номер телефона\" - {}; \"ID приюта для животных\" - {}", firstName, lastName, phoneNumber, shelterId);
         return repository.save(volunteer);
@@ -190,8 +190,8 @@ public class VolunteerServiceImpl implements VolunteerService {
 
             if (phoneNumber != null) {
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-                checkService.checkVolunteerAlreadyAdded(getAll(), phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
+                checkService.checkVolunteerAlreadyAdded(getAll(), edit);
                 log.info("ИЗМЕНЕН НОМЕР ТЕЛЕФОНА ВОЛОНТЕРА ПО ID - {} НА \"номер телефона\" - {}", id, phoneNumber);
             }
 

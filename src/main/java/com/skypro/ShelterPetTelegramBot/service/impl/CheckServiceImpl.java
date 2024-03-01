@@ -58,17 +58,19 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public void checkStatus(PetStatus status) {
+    public boolean checkStatus(PetStatus status) {
         if (!status.equals(FREE)) {
             throw new PetStatusException();
         }
+        return true;
     }
 
     @Override
-    public void checkTypes(PetType typeOne, PetType typeTwo) {
+    public boolean checkTypes(PetType typeOne, PetType typeTwo) {
         if (!typeOne.equals(typeTwo)) {
             throw new DifferentTypesException();
         }
+        return true;
     }
 
     @Override
@@ -85,72 +87,80 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public void checkPhoneNumber(String phoneNumber) {
+    public boolean checkPhoneNumber(String phoneNumber) {
         if (phoneNumber == null
                 || phoneNumber.isBlank()
                 || !phoneNumber.matches("[0-9]{11}")) {
             throw new InvalideNumberException();
         }
+        return true;
     }
 
     @Override
-    public void checkName(String name) {
+    public boolean checkName(String name) {
         if (name == null
                 || name.isBlank()
                 || !name.matches("[а-яА-Я -]+")) {
             throw new InvalideInputException();
         }
+        return true;
     }
 
     @Override
-    public void checkAddress(String address) {
+    public boolean checkAddress(String address) {
         if (address == null
                 || address.isBlank()
                 || !address.matches("[0-9а-яА-Я -,.]+")) {
             throw new InvalideInputException();
         }
+        return true;
     }
 
     @Override
-    public void checkValue(Long value) {
+    public boolean checkValue(Long value) {
         if (value == null || value <= 0) {
             throw new InvalideInputException();
         }
+        return true;
     }
 
     @Override
-    public void checkParentAlreadyAdded(Collection<Parent> parents, String phoneNumber) {
+    public boolean checkParentAlreadyAdded(Collection<Parent> parents, Parent parent) {
         for (Parent element : parents) {
-            if (element.getPhoneNumber().equals(phoneNumber)) {
+            if (element.getPhoneNumber().equals(parent.getPhoneNumber())) {
                 throw new ParentAlreadyAddedException();
             }
         }
+        return true;
     }
 
     @Override
-    public void checkPetAlreadyAdded(Collection<Pet> pets, Pet pet) {
+    public boolean checkPetAlreadyAdded(Collection<Pet> pets, Pet pet) {
         for (Pet element : pets) {
             if (element.getName().equalsIgnoreCase(pet.getName())) {
                 throw new PetAlreadyAddedException();
             }
         }
+        return true;
     }
 
     @Override
-    public void checkVolunteerAlreadyAdded(Collection<Volunteer> volunteers, String phoneNumber) {
+    public boolean checkVolunteerAlreadyAdded(Collection<Volunteer> volunteers, Volunteer volunteer) {
         for (Volunteer element : volunteers) {
-            if (element.getPhoneNumber().equals(phoneNumber)) {
+            if (element.getPhoneNumber().equals(volunteer.getPhoneNumber())) {
                 throw new VolunteerAlreadyAddedException();
             }
         }
+        return true;
     }
 
     @Override
-    public void checkShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter) {
+    public boolean checkShelterAlreadyAdded(Collection<Shelter> shelters, Shelter shelter) {
         for (Shelter element : shelters) {
             if (element.getAddress().equalsIgnoreCase(shelter.getAddress())) {
                 throw new ShelterAlreadyAddedException();
             }
         }
+        return true;
     }
 }
