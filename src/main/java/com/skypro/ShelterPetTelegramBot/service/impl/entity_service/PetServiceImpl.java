@@ -42,9 +42,9 @@ public class PetServiceImpl implements PetService {
                    String name,
                    Long shelterId) {
 
-        Shelter shelter = shelterService.getById(shelterId);
-
         checkService.checkName(name);
+
+        Shelter shelter = shelterService.getById(shelterId);
         checkService.checkTypes(type, shelter.getType());
 
         Pet pet = new Pet(type, status, name, shelter);

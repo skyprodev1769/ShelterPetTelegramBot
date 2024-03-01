@@ -448,8 +448,8 @@ class VolunteerServiceImplTest {
                         ID_VOLUNTEER_DOG_SHELTER,
                         INCORRECT_STRING,
                         INCORRECT_STRING,
-                        PHONE_NUMBER_VOLUNTEER_CAT_SHELTER,
-                        ID_CAT_SHELTER));
+                        null,
+                        null));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -472,14 +472,14 @@ class VolunteerServiceImplTest {
         assertThrows(InvalideNumberException.class,
                 () -> volunteerService.edit(
                         ID_VOLUNTEER_DOG_SHELTER,
-                        FIRST_NAME_VOLUNTEER_CAT_SHELTER,
-                        LAST_NAME_VOLUNTEER_CAT_SHELTER,
+                        null,
+                        null,
                         INCORRECT_STRING,
-                        ID_CAT_SHELTER));
+                        null));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
-        verify(checkService, times(2)).checkName(anyString());
+        verify(checkService, times(0)).checkName(anyString());
         verify(checkService, times(1)).checkPhoneNumber(anyString());
         verify(shelterService, times(0)).getById(anyLong());
         verify(checkService, times(0)).validatePhoneNumber(anyString());
@@ -498,14 +498,14 @@ class VolunteerServiceImplTest {
         assertThrows(VolunteerAlreadyAddedException.class,
                 () -> volunteerService.edit(
                         ID_VOLUNTEER_DOG_SHELTER,
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
+                        null,
+                        null,
                         PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
-                        ID_DOG_SHELTER));
+                        null));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
-        verify(checkService, times(2)).checkName(anyString());
+        verify(checkService, times(0)).checkName(anyString());
         verify(checkService, times(1)).checkPhoneNumber(anyString());
         verify(shelterService, times(0)).getById(anyLong());
         verify(checkService, times(1)).validatePhoneNumber(anyString());

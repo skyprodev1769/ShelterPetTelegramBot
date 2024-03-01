@@ -200,7 +200,7 @@ class ShelterServiceImplTest {
                 .thenThrow(InvalideInputException.class);
 
         assertThrows(InvalideInputException.class,
-                () -> shelterService.edit(ID_DOG_SHELTER, CAT, INCORRECT_ADDRESS));
+                () -> shelterService.edit(ID_DOG_SHELTER, null, INCORRECT_ADDRESS));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -217,7 +217,7 @@ class ShelterServiceImplTest {
                 .thenThrow(ShelterAlreadyAddedException.class);
 
         assertThrows(ShelterAlreadyAddedException.class,
-                () -> shelterService.edit(ID_DOG_SHELTER, DOG, ADDRESS_DOG_SHELTER));
+                () -> shelterService.edit(ID_DOG_SHELTER, null, ADDRESS_DOG_SHELTER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
