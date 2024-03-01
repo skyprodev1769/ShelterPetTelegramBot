@@ -17,12 +17,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static com.skypro.ShelterPetTelegramBot.utils.UtilsForCheckService.*;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOPTED;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
+import static com.skypro.ShelterPetTelegramBot.utils.UtilsForCheckService.*;
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.Codes.CODE_400;
 import static org.junit.jupiter.api.Assertions.*;
 

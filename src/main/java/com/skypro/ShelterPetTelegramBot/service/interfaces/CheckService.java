@@ -17,15 +17,6 @@ import java.util.Collection;
 public interface CheckService {
 
     /**
-     * Метод выполняет комплексную проверку имени и фамилии
-     *
-     * @param firstName <i> является проверяемым именем </i> <br>
-     * @param lastName  <i> является проверяемым именем </i>
-     */
-    void checkFullName(String firstName,
-                       String lastName);
-
-    /**
      * Метод проверяет вводимый статус животного
      *
      * @param status <i> является проверяемым статусом животного </i>

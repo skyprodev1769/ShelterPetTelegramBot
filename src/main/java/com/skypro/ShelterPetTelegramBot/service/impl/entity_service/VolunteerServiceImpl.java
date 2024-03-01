@@ -40,12 +40,14 @@ public class VolunteerServiceImpl implements VolunteerService {
                          String phoneNumber,
                          Long shelterId) {
 
-        checkService.checkFullName(firstName, lastName);
+        checkService.checkName(firstName);
+        checkService.checkName(lastName);
+        checkService.checkPhoneNumber(phoneNumber);
+
         Shelter shelter = shelterService.getById(shelterId);
+        phoneNumber = checkService.validatePhoneNumber(phoneNumber);
         Volunteer volunteer = new Volunteer(firstName, lastName, phoneNumber, shelter);
 
-        phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-        volunteer.setPhoneNumber(phoneNumber);
         checkService.checkVolunteerAlreadyAdded(getAll(), volunteer);
 
         log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР: \"имя\" - {}; \"фамилия\" - {}; \"номер телефона\" - {}; \"ID приюта для животных\" - {}", firstName, lastName, phoneNumber, shelterId);
@@ -90,7 +92,8 @@ public class VolunteerServiceImpl implements VolunteerService {
                 return repository.getAllByShelterId(shelterId);
 
             } else if (firstName != null & lastName != null & phoneNumber == null & shelterId == null) {
-                checkService.checkFullName(firstName, lastName);
+                checkService.checkName(firstName);
+                checkService.checkName(lastName);
                 log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {} И ФАМИЛИИ - {}", firstName, lastName);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(firstName, lastName);
 
@@ -122,12 +125,14 @@ public class VolunteerServiceImpl implements VolunteerService {
                 return repository.getAllByPhoneNumberContainsAndShelterId(phoneNumber, shelterId);
 
             } else if (firstName != null & lastName != null & phoneNumber != null & shelterId == null) {
-                checkService.checkFullName(firstName, lastName);
+                checkService.checkName(firstName);
+                checkService.checkName(lastName);
                 log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, lastName, phoneNumber);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(firstName, lastName, phoneNumber);
 
             } else if (firstName != null & lastName != null & phoneNumber == null) {
-                checkService.checkFullName(firstName, lastName);
+                checkService.checkName(firstName);
+                checkService.checkName(lastName);
                 checkService.checkValue(shelterId);
                 log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, lastName, shelterId);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndShelterId(firstName, lastName, shelterId);
@@ -145,7 +150,8 @@ public class VolunteerServiceImpl implements VolunteerService {
                 return repository.getAllByLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(lastName, phoneNumber, shelterId);
 
             } else {
-                checkService.checkFullName(firstName, lastName);
+                checkService.checkName(firstName);
+                checkService.checkName(lastName);
                 checkService.checkValue(shelterId);
                 log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {}, НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, lastName, phoneNumber, shelterId);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(firstName, lastName, phoneNumber, shelterId);
@@ -189,6 +195,7 @@ public class VolunteerServiceImpl implements VolunteerService {
             }
 
             if (phoneNumber != null) {
+                checkService.checkPhoneNumber(phoneNumber);
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
                 checkService.checkVolunteerAlreadyAdded(getAll(), edit);

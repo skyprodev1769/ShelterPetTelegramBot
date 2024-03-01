@@ -31,14 +31,6 @@ import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE
 public class CheckServiceImpl implements CheckService {
 
     @Override
-    public void checkFullName(String firstName,
-                              String lastName) {
-
-        checkName(firstName);
-        checkName(lastName);
-    }
-
-    @Override
     public boolean checkStatus(PetStatus status) {
         if (!status.equals(FREE)) {
             log.info("СТАТУС {} НЕ СООТВЕТСТВУЕТ", status);
@@ -54,14 +46,12 @@ public class CheckServiceImpl implements CheckService {
             log.info("ТИПЫ {} И {} РАЗНЫЕ", typeTwo, typeTwo);
             throw new DifferentTypesException();
         }
-        log.info("ТИПЫ {} И {} ОДИНАКОВЫЕ", typeTwo, typeTwo);
+        log.info("ТИПЫ {} И {} ОДИНАКОВЫЕ", typeOne, typeTwo);
         return true;
     }
 
     @Override
     public String validatePhoneNumber(String phoneNumber) {
-        checkPhoneNumber(phoneNumber);
-
         String first = phoneNumber.substring(0, 1).replace(phoneNumber.charAt(0), '7');
         String second = phoneNumber.substring(1, 4);
         String third = phoneNumber.substring(4, 7);

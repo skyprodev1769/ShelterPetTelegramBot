@@ -44,16 +44,18 @@ public class ParentServiceImpl implements ParentService {
                       String phoneNumber,
                       String petName) {
 
-        checkService.checkFullName(firstName, lastName);
-        Pet pet = petRepository.getByNameContainsIgnoreCase(petName).orElseThrow(PetNotFoundException::new);
-        Parent parent = new Parent(firstName, lastName, phoneNumber, pet);
-
+        checkService.checkName(firstName);
+        checkService.checkName(lastName);
+        checkService.checkPhoneNumber(phoneNumber);
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
-        parent.setPhoneNumber(phoneNumber);
-        checkService.checkParentAlreadyAdded(getAll(), parent);
 
+        Pet pet = petRepository.getByNameContainsIgnoreCase(petName).orElseThrow(PetNotFoundException::new);
         checkService.checkStatus(pet.getStatus());
         pet.setStatus(ADOPTED);
+
+        Parent parent = new Parent(firstName, lastName, phoneNumber, pet);
+
+        checkService.checkParentAlreadyAdded(getAll(), parent);
 
         log.info("ДОБАВЛЕН НОВЫЙ УСЫНОВИТЕЛЬ: \"имя\" - {}; \"фамилия\" - {}; \"номер телефона\" - {}; \"имя животного\" - {}", firstName, lastName, phoneNumber, petName);
         return parentRepository.save(parent);
@@ -89,7 +91,8 @@ public class ParentServiceImpl implements ParentService {
                 return parentRepository.getAllByPhoneNumberContains(phoneNumber);
 
             } else if (firstName != null & lastName != null & phoneNumber == null) {
-                checkService.checkFullName(firstName, lastName);
+                checkService.checkName(firstName);
+                checkService.checkName(lastName);
                 log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {} И ФАМИЛИИ - {}", firstName, lastName);
                 return parentRepository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(firstName, lastName);
 
@@ -104,7 +107,8 @@ public class ParentServiceImpl implements ParentService {
                 return parentRepository.getAllByLastNameContainsIgnoreCaseAndPhoneNumberContains(lastName, phoneNumber);
 
             } else {
-                checkService.checkFullName(firstName, lastName);
+                checkService.checkName(firstName);
+                checkService.checkName(lastName);
                 log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, lastName, phoneNumber);
                 return parentRepository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(firstName, lastName, phoneNumber);
             }
@@ -147,6 +151,7 @@ public class ParentServiceImpl implements ParentService {
             }
 
             if (phoneNumber != null) {
+                checkService.checkPhoneNumber(phoneNumber);
                 phoneNumber = checkService.validatePhoneNumber(phoneNumber);
                 edit.setPhoneNumber(phoneNumber);
                 checkService.checkParentAlreadyAdded(getAll(), edit);
