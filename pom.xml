@@ -25,6 +25,7 @@
         <telegram.version>6.9.7.0</telegram.version>
         <jaxb.version>2.3.1</jaxb.version>
         <swagger.version>2.3.0</swagger.version>
+        <h2.version>2.2.224</h2.version>
     </properties>
 
     <dependencies>
@@ -70,6 +71,13 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -33,7 +33,7 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long> {
 
     Collection<Volunteer> getAllByPhoneNumberContainsAndShelterId(String phoneNumber, Long shelterId);
 
-    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(String firstName, String lastName, String phoneNumber);
+    Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContains(String firstName, String lastName, String phoneNumber);
 
     Collection<Volunteer> getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndShelterId(String firstName, String lastName, Long shelterId);
 

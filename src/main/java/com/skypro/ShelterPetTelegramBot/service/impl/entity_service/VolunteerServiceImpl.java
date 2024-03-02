@@ -128,7 +128,7 @@ public class VolunteerServiceImpl implements VolunteerService {
                 checkService.checkName(firstName);
                 checkService.checkName(lastName);
                 log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, lastName, phoneNumber);
-                return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(firstName, lastName, phoneNumber);
+                return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContains(firstName, lastName, phoneNumber);
 
             } else if (firstName != null & lastName != null & phoneNumber == null) {
                 checkService.checkName(firstName);

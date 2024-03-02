@@ -16,5 +16,6 @@ public class UtilsForShelterService {
         return List.of(SHELTER);
     }
 
+    public static final String NEW_ADDRESS = "г. Астана, ул. Ленина, д.13, стр.4";
     public static final String INCORRECT_ADDRESS = "abc";
 }

@@ -196,7 +196,7 @@ class VolunteerServiceImplTest {
         when(repository.getAllByPhoneNumberContainsAndShelterId(anyString(), anyLong()))
                 .thenReturn(getVolunteers());
 
-        when(repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(anyString(), anyString(), anyString()))
+        when(repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContains(anyString(), anyString(), anyString()))
                 .thenReturn(getVolunteers());
 
         when(repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndShelterId(anyString(), anyString(), anyLong()))
@@ -328,7 +328,7 @@ class VolunteerServiceImplTest {
         verify(repository, times(1)).getAllByLastNameContainsIgnoreCaseAndPhoneNumberContains(anyString(), anyString());
         verify(repository, times(1)).getAllByLastNameContainsIgnoreCaseAndShelterId(anyString(), anyLong());
         verify(repository, times(1)).getAllByPhoneNumberContainsAndShelterId(anyString(), anyLong());
-        verify(repository, times(1)).getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(anyString(), anyString(), anyString());
+        verify(repository, times(1)).getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContains(anyString(), anyString(), anyString());
         verify(repository, times(1)).getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndShelterId(anyString(), anyString(), anyLong());
         verify(repository, times(1)).getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(anyString(), anyString(), anyLong());
         verify(repository, times(1)).getAllByLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(anyString(), anyString(), anyLong());
@@ -373,7 +373,7 @@ class VolunteerServiceImplTest {
         verify(repository, times(0)).getAllByLastNameContainsIgnoreCaseAndPhoneNumberContains(anyString(), anyString());
         verify(repository, times(0)).getAllByLastNameContainsIgnoreCaseAndShelterId(anyString(), anyLong());
         verify(repository, times(0)).getAllByPhoneNumberContainsAndShelterId(anyString(), anyLong());
-        verify(repository, times(0)).getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(anyString(), anyString(), anyString());
+        verify(repository, times(0)).getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContains(anyString(), anyString(), anyString());
         verify(repository, times(0)).getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndShelterId(anyString(), anyString(), anyLong());
         verify(repository, times(0)).getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(anyString(), anyString(), anyLong());
         verify(repository, times(0)).getAllByLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(anyString(), anyString(), anyLong());

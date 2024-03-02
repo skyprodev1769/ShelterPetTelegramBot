@@ -1,9 +1,12 @@
 package com.skypro.ShelterPetTelegramBot.utils;
 
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 
 import java.util.List;
 
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
+import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.NEW_ADDRESS;
 import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.SHELTER;
 
 public class UtilsForVolunteerService {
@@ -22,6 +25,14 @@ public class UtilsForVolunteerService {
     public static List<Volunteer> getVolunteers() {
         return List.of(VOLUNTEER);
     }
+
+    public static final String NEW_FIRST_NAME = "Петр";
+    public static final String NEW_LAST_NAME = "Петров";
+    public static final String NEW_PHONE_NUMBER = "85555555555";
+    public static final String NEW_VALID_PHONE_NUMBER = "+7-555-555-55-55";
+    public static final Shelter NEW_SHELTER = new Shelter(CAT, NEW_ADDRESS);
+
+    public static final String NUMBER_FOR_SEARCH = "999";
 
     public static final String INCORRECT_STRING = "abc";
 }
