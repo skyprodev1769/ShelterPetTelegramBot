@@ -51,6 +51,7 @@ public class ParentControllerDoc {
                     "2.Передана некорректная фамилия.\n" +
                     "3.Передана некорректное имя животного.\n" + INVALIDE_INPUT + "\n\n" +
                     "4.Передан некорректный номер телефона.\n" + INVALIDE_NUMBER + "\n\n" +
+                    "5.Статус животного не позволяет его усыновить.\n" + PET_STATUS + "\n\n" +
                     "5.Данный номер телефона уже был добавлен ранее.\n" + PARENT_ALREADY_ADDED;
 
     public static final String EXAMPLE_ADD_PARENT_CODE_404 =
@@ -72,7 +73,8 @@ public class ParentControllerDoc {
                     "3.Передана некорректная фамилия.\n" +
                     "4.Передана некорректное имя животного.\n" + INVALIDE_INPUT + "\n\n" +
                     "5.Передан некорректный номер телефона.\n" + INVALIDE_NUMBER + "\n\n" +
-                    "6.Данный номер телефона уже был добавлен ранее.\n" + PARENT_ALREADY_ADDED;
+                    "6.Статус животного не позволяет его усыновить.\n" + PET_STATUS + "\n\n" +
+                    "7.Данный номер телефона уже был добавлен ранее.\n" + PARENT_ALREADY_ADDED;
 
     public static final String EXAMPLE_EDIT_PARENT_CODE_404 =
             "1.Усыновитель с данным id еще не был добавлен.\n" + PARENT_NOT_FOUND + "\n\n" +
