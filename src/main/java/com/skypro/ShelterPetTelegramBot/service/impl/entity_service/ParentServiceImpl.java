@@ -46,6 +46,7 @@ public class ParentServiceImpl implements ParentService {
 
         checkService.checkName(firstName);
         checkService.checkName(lastName);
+        checkService.checkName(petName);
         checkService.checkPhoneNumber(phoneNumber);
         phoneNumber = checkService.validatePhoneNumber(phoneNumber);
 
@@ -159,6 +160,7 @@ public class ParentServiceImpl implements ParentService {
             }
 
             if (petName != null) {
+                checkService.checkName(petName);
                 Pet pet = petRepository.getByNameContainsIgnoreCase(petName).orElseThrow(PetNotFoundException::new);
                 checkService.checkStatus(pet.getStatus());
                 pet.setStatus(ADOPTED);

@@ -171,9 +171,21 @@ public class PetServiceImpl implements PetService {
             Pet edit = new Pet(pet.getType(), pet.getStatus(), pet.getName(), pet.getShelter());
             edit.setId(pet.getId());
 
-            if (type != null) {
+            if (type != null && shelterId == null) {
+                checkService.checkTypes(type, edit.getShelter().getType());
+            }
+
+            if (type == null && shelterId != null) {
+                Shelter shelter = shelterService.getById(shelterId);
+                checkService.checkTypes(edit.getType(), shelter.getType());
+            }
+
+            if (type != null && shelterId != null) {
+                Shelter shelter = shelterService.getById(shelterId);
+                checkService.checkTypes(type, shelter.getType());
                 edit.setType(type);
-                log.info("ИЗМЕНЕН ТИП ЖИВОТНОГО ПО ID - {} НА \"тип\" - {}", id, type);
+                edit.setShelter(shelter);
+                log.info("ИЗМЕНЕН ТИП ЖИВОТНОГО И ID ПРИЮТА ДЛЯ ЖИВОТНОГО ПО ID - {} НА \"тип\" - {} И \"ID приюта для животных\" - {}", id, type, shelterId);
             }
 
             if (status != null) {
@@ -188,13 +200,6 @@ public class PetServiceImpl implements PetService {
                 log.info("ИЗМЕНЕНО ИМЯ ЖИВОТНОГО ПО ID - {} НА \"имя\" - {}", id, name);
             }
 
-            if (shelterId != null) {
-                Shelter shelter = shelterService.getById(shelterId);
-                edit.setShelter(shelter);
-                log.info("ИЗМЕНЕН ID ПРИЮТА ДЛЯ ЖИВОТНОГО ПО ID - {} НА \"ID приюта для животных\" - {}", id, shelterId);
-            }
-
-            checkService.checkTypes(edit.getType(), edit.getShelter().getType());
             return repository.save(edit);
         }
     }

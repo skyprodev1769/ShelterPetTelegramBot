@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,18 +38,12 @@ class ShelterServiceImplTest {
         shelterService = new ShelterServiceImpl(repository, checkService);
     }
 
-    private void getShelter() {
-        when(repository.findById(anyLong()))
-                .thenReturn(Optional.of(DOG_SHELTER));
-    }
-
     @Test
     public void add_success() {
-        when(repository.save(any(Shelter.class)))
-                .thenReturn(CAT_SHELTER);
+        saveShelter();
 
-        assertEquals(CAT_SHELTER,
-                shelterService.add(CAT, ADDRESS_CAT_SHELTER));
+        assertEquals(SHELTER,
+                shelterService.add(DOG, ADDRESS));
 
         verify(checkService, times(1)).checkAddress(anyString());
         verify(repository, times(1)).findAll();
@@ -60,11 +53,10 @@ class ShelterServiceImplTest {
 
     @Test
     public void add_InvalideInputException() {
-        when(checkService.checkAddress(anyString()))
-                .thenThrow(InvalideInputException.class);
+        checkAddressException();
 
         assertThrows(InvalideInputException.class,
-                () -> shelterService.add(CAT, INCORRECT_ADDRESS));
+                () -> shelterService.add(DOG, INCORRECT_ADDRESS));
 
         verify(checkService, times(1)).checkAddress(anyString());
         verify(repository, times(0)).findAll();
@@ -74,11 +66,10 @@ class ShelterServiceImplTest {
 
     @Test
     public void add_ShelterAlreadyAddedException() {
-        when(checkService.checkShelterAlreadyAdded(anyCollection(), any(Shelter.class)))
-                .thenThrow(ShelterAlreadyAddedException.class);
+        checkAddedException();
 
         assertThrows(ShelterAlreadyAddedException.class,
-                () -> shelterService.add(DOG, ADDRESS_DOG_SHELTER));
+                () -> shelterService.add(DOG, ADDRESS));
 
         verify(checkService, times(1)).checkAddress(anyString());
         verify(repository, times(1)).findAll();
@@ -90,8 +81,8 @@ class ShelterServiceImplTest {
     public void getById_success() {
         getShelter();
 
-        assertEquals(DOG_SHELTER,
-                shelterService.getById(ID_DOG_SHELTER));
+        assertEquals(SHELTER,
+                shelterService.getById(ID_SHELTER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -115,7 +106,7 @@ class ShelterServiceImplTest {
                 .thenThrow(ShelterNotFoundException.class);
 
         assertThrows(ShelterNotFoundException.class,
-                () -> shelterService.getById(ID_CAT_SHELTER));
+                () -> shelterService.getById(ID_SHELTER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -136,10 +127,10 @@ class ShelterServiceImplTest {
                 shelterService.getAllByParameters(DOG, null));
 
         assertEquals(getShelters(),
-                shelterService.getAllByParameters(null, ADDRESS_DOG_SHELTER));
+                shelterService.getAllByParameters(null, ADDRESS));
 
         assertEquals(getShelters(),
-                shelterService.getAllByParameters(DOG, ADDRESS_DOG_SHELTER));
+                shelterService.getAllByParameters(DOG, ADDRESS));
 
         verify(checkService, times(2)).checkAddress(anyString());
         verify(repository, times(1)).getAllByType(any(PetType.class));
@@ -149,8 +140,7 @@ class ShelterServiceImplTest {
 
     @Test
     public void getAllByParameters_InvalideInputException() {
-        when(checkService.checkAddress(anyString()))
-                .thenThrow(InvalideInputException.class);
+        checkAddressException();
 
         assertThrows(InvalideInputException.class,
                 () -> shelterService.getAllByParameters(null, INCORRECT_ADDRESS));
@@ -178,12 +168,10 @@ class ShelterServiceImplTest {
     @Test
     public void edit_success() {
         getShelter();
+        saveShelter();
 
-        when(repository.save(any(Shelter.class)))
-                .thenReturn(DOG_SHELTER);
-
-        assertEquals(DOG_SHELTER,
-                shelterService.edit(ID_DOG_SHELTER, CAT, ADDRESS_CAT_SHELTER));
+        assertEquals(SHELTER,
+                shelterService.edit(ID_SHELTER, DOG, ADDRESS));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -195,12 +183,10 @@ class ShelterServiceImplTest {
     @Test
     public void edit_InvalideInputException() {
         getShelter();
-
-        when(checkService.checkAddress(anyString()))
-                .thenThrow(InvalideInputException.class);
+        checkAddressException();
 
         assertThrows(InvalideInputException.class,
-                () -> shelterService.edit(ID_DOG_SHELTER, null, INCORRECT_ADDRESS));
+                () -> shelterService.edit(ID_SHELTER, null, INCORRECT_ADDRESS));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -212,12 +198,10 @@ class ShelterServiceImplTest {
     @Test
     public void edit_ShelterAlreadyAddedException() {
         getShelter();
-
-        when(checkService.checkShelterAlreadyAdded(anyCollection(), any(Shelter.class)))
-                .thenThrow(ShelterAlreadyAddedException.class);
+        checkAddedException();
 
         assertThrows(ShelterAlreadyAddedException.class,
-                () -> shelterService.edit(ID_DOG_SHELTER, null, ADDRESS_DOG_SHELTER));
+                () -> shelterService.edit(ID_SHELTER, null, ADDRESS));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -230,11 +214,31 @@ class ShelterServiceImplTest {
     public void delete_success() {
         getShelter();
 
-        assertEquals(DOG_SHELTER,
-                shelterService.delete(ID_DOG_SHELTER));
+        assertEquals(SHELTER,
+                shelterService.delete(ID_SHELTER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).delete(any(Shelter.class));
+    }
+
+    private void getShelter() {
+        when(repository.findById(anyLong()))
+                .thenReturn(Optional.of(SHELTER));
+    }
+
+    private void saveShelter() {
+        when(repository.save(any(Shelter.class)))
+                .thenReturn(SHELTER);
+    }
+
+    private void checkAddressException() {
+        when(checkService.checkAddress(anyString()))
+                .thenThrow(InvalideInputException.class);
+    }
+
+    private void checkAddedException() {
+        when(checkService.checkShelterAlreadyAdded(anyCollection(), any(Shelter.class)))
+                .thenThrow(ShelterAlreadyAddedException.class);
     }
 }

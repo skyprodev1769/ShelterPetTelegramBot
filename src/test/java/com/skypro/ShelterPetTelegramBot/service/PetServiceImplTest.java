@@ -20,10 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOPTED;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
+import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.utils.UtilsForPetService.*;
-import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.*;
+import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.ID_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.SHELTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
@@ -46,25 +47,17 @@ class PetServiceImplTest {
         petService = new PetServiceImpl(repository, checkService, shelterService);
     }
 
-    private void getPet() {
-        when(repository.findById(anyLong()))
-                .thenReturn(Optional.of(DOG));
-    }
-
     @Test
     public void add_success() {
-        when(shelterService.getById(anyLong()))
-                .thenReturn(CAT_SHELTER);
+        getShelter();
+        savePet();
 
-        when(repository.save(any(Pet.class)))
-                .thenReturn(CAT);
-
-        assertEquals(CAT,
+        assertEquals(PET_DOG,
                 petService.add(
-                        PetType.CAT,
+                        DOG,
                         FREE,
-                        NAME_CAT,
-                        ID_CAT_SHELTER));
+                        NAME,
+                        ID_SHELTER));
 
         verify(checkService, times(1)).checkName(anyString());
         verify(shelterService, times(1)).getById(anyLong());
@@ -76,15 +69,14 @@ class PetServiceImplTest {
 
     @Test
     public void add_InvalideInputException() {
-        when(checkService.checkName(anyString()))
-                .thenThrow(InvalideInputException.class);
+        checkNameException();
 
         assertThrows(InvalideInputException.class,
                 () -> petService.add(
-                        PetType.CAT,
+                        DOG,
                         FREE,
                         INCORRECT_NAME,
-                        ID_CAT_SHELTER));
+                        ID_SHELTER));
 
         verify(checkService, times(1)).checkName(anyString());
         verify(shelterService, times(0)).getById(anyLong());
@@ -96,18 +88,15 @@ class PetServiceImplTest {
 
     @Test
     public void add_DifferentTypesException() {
-        when(shelterService.getById(anyLong()))
-                .thenReturn(DOG_SHELTER);
-
-        when(checkService.checkTypes(any(PetType.class), any(PetType.class)))
-                .thenThrow(DifferentTypesException.class);
+        getShelter();
+        checkTypesException();
 
         assertThrows(DifferentTypesException.class,
                 () -> petService.add(
-                        PetType.CAT,
+                        DOG,
                         FREE,
-                        NAME_CAT,
-                        ID_DOG_SHELTER));
+                        NAME,
+                        ID_SHELTER));
 
         verify(checkService, times(1)).checkName(anyString());
         verify(shelterService, times(1)).getById(anyLong());
@@ -119,18 +108,15 @@ class PetServiceImplTest {
 
     @Test
     public void add_PetAlreadyAddedException() {
-        when(shelterService.getById(anyLong()))
-                .thenReturn(CAT_SHELTER);
-
-        when(checkService.checkPetAlreadyAdded(anyCollection(), any(Pet.class)))
-                .thenThrow(PetAlreadyAddedException.class);
+        getShelter();
+        checkAddedException();
 
         assertThrows(PetAlreadyAddedException.class,
                 () -> petService.add(
-                        PetType.DOG,
+                        DOG,
                         FREE,
-                        NAME_DOG,
-                        ID_DOG_SHELTER));
+                        NAME,
+                        ID_SHELTER));
 
         verify(checkService, times(1)).checkName(anyString());
         verify(shelterService, times(1)).getById(anyLong());
@@ -144,8 +130,8 @@ class PetServiceImplTest {
     public void getById_success() {
         getPet();
 
-        assertEquals(DOG,
-                petService.getById(ID_DOG));
+        assertEquals(PET_DOG,
+                petService.getById(ID_PET));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -153,8 +139,7 @@ class PetServiceImplTest {
 
     @Test
     public void getById_InvalideInputException() {
-        when(checkService.checkValue(anyLong()))
-                .thenThrow(InvalideInputException.class);
+        checkValueException();
 
         assertThrows(InvalideInputException.class,
                 () -> petService.getById(0L));
@@ -169,7 +154,7 @@ class PetServiceImplTest {
                 .thenThrow(PetNotFoundException.class);
 
         assertThrows(PetNotFoundException.class,
-                () -> petService.getById(ID_CAT));
+                () -> petService.getById(ID_PET));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -224,7 +209,7 @@ class PetServiceImplTest {
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         null,
                         null,
                         null));
@@ -240,7 +225,7 @@ class PetServiceImplTest {
                 petService.getAllByParameters(
                         null,
                         null,
-                        NAME_CAT,
+                        NAME,
                         null));
 
         assertEquals(getPets(),
@@ -248,34 +233,34 @@ class PetServiceImplTest {
                         null,
                         null,
                         null,
-                        ID_CAT_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         FREE,
                         null,
                         null));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         null,
-                        NAME_CAT,
+                        NAME,
                         null));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         null,
                         null,
-                        ID_CAT_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
                         null,
                         FREE,
-                        NAME_CAT,
+                        NAME,
                         null));
 
         assertEquals(getPets(),
@@ -283,49 +268,49 @@ class PetServiceImplTest {
                         null,
                         FREE,
                         null,
-                        ID_CAT_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
                         null,
                         null,
-                        NAME_CAT,
-                        ID_CAT_SHELTER));
+                        NAME,
+                        ID_SHELTER));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         FREE,
-                        NAME_CAT,
+                        NAME,
                         null));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         FREE,
                         null,
-                        ID_CAT_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         null,
-                        NAME_CAT,
-                        ID_CAT_SHELTER));
+                        NAME,
+                        ID_SHELTER));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
                         null,
                         FREE,
-                        NAME_CAT,
-                        ID_CAT_SHELTER));
+                        NAME,
+                        ID_SHELTER));
 
         assertEquals(getPets(),
                 petService.getAllByParameters(
-                        PetType.CAT,
+                        DOG,
                         FREE,
-                        NAME_CAT,
-                        ID_CAT_SHELTER));
+                        NAME,
+                        ID_SHELTER));
 
         verify(checkService, times(8)).checkName(anyString());
         verify(checkService, times(8)).checkValue(anyLong());
@@ -348,11 +333,8 @@ class PetServiceImplTest {
 
     @Test
     public void getAllByParameters_InvalideInputException() {
-        when(checkService.checkName(anyString()))
-                .thenThrow(InvalideInputException.class);
-
-        when(checkService.checkValue(anyLong()))
-                .thenThrow(InvalideInputException.class);
+        checkNameException();
+        checkValueException();
 
         assertThrows(InvalideInputException.class,
                 () -> petService.getAllByParameters(
@@ -401,20 +383,16 @@ class PetServiceImplTest {
     @Test
     public void edit_success() {
         getPet();
+        getShelter();
+        savePet();
 
-        when(shelterService.getById(anyLong()))
-                .thenReturn(DOG_SHELTER);
-
-        when(repository.save(any(Pet.class)))
-                .thenReturn(DOG);
-
-        assertEquals(DOG,
+        assertEquals(PET_DOG,
                 petService.edit(
-                        ID_DOG,
-                        PetType.DOG,
-                        ADOPTED,
-                        NAME_DOG,
-                        ID_DOG_SHELTER));
+                        ID_PET,
+                        DOG,
+                        FREE,
+                        NAME,
+                        ID_SHELTER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -429,13 +407,11 @@ class PetServiceImplTest {
     @Test
     public void edit_InvalideInputException() {
         getPet();
-
-        when(checkService.checkName(anyString()))
-                .thenThrow(InvalideInputException.class);
+        checkNameException();
 
         assertThrows(InvalideInputException.class,
                 () -> petService.edit(
-                        ID_DOG,
+                        ID_PET,
                         null,
                         null,
                         INCORRECT_NAME,
@@ -454,20 +430,16 @@ class PetServiceImplTest {
     @Test
     public void edit_DifferentTypesException() {
         getPet();
-
-        when(shelterService.getById(anyLong()))
-                .thenReturn(DOG_SHELTER);
-
-        when(checkService.checkTypes(any(PetType.class), any(PetType.class)))
-                .thenThrow(DifferentTypesException.class);
+        getShelter();
+        checkTypesException();
 
         assertThrows(DifferentTypesException.class,
                 () -> petService.edit(
-                        ID_DOG,
-                        PetType.CAT,
+                        ID_PET,
+                        DOG,
                         null,
                         null,
-                        ID_DOG_SHELTER));
+                        ID_SHELTER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -482,16 +454,14 @@ class PetServiceImplTest {
     @Test
     public void edit_PetAlreadyAddedException() {
         getPet();
-
-        when(checkService.checkPetAlreadyAdded(anyCollection(), any(Pet.class)))
-                .thenThrow(PetAlreadyAddedException.class);
+        checkAddedException();
 
         assertThrows(PetAlreadyAddedException.class,
                 () -> petService.edit(
-                        ID_DOG,
+                        ID_PET,
                         null,
                         null,
-                        NAME_DOG,
+                        NAME,
                         null));
 
         verify(checkService, times(1)).checkValue(anyLong());
@@ -508,11 +478,46 @@ class PetServiceImplTest {
     public void delete_success() {
         getPet();
 
-        assertEquals(DOG,
-                petService.delete(ID_DOG));
+        assertEquals(PET_DOG,
+                petService.delete(ID_PET));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).delete(any(Pet.class));
+    }
+
+    private void getPet() {
+        when(repository.findById(anyLong()))
+                .thenReturn(Optional.of(PET_DOG));
+    }
+
+    private void getShelter() {
+        when(shelterService.getById(anyLong()))
+                .thenReturn(SHELTER);
+    }
+
+    private void savePet() {
+        when(repository.save(any(Pet.class)))
+                .thenReturn(PET_DOG);
+    }
+
+    private void checkNameException() {
+        when(checkService.checkName(anyString()))
+                .thenThrow(InvalideInputException.class);
+    }
+
+    private void checkValueException() {
+        when(checkService.checkValue(anyLong()))
+                .thenThrow(InvalideInputException.class);
+    }
+
+    private void checkTypesException() {
+        when(checkService.checkTypes(any(PetType.class), any(PetType.class)))
+                .thenThrow(DifferentTypesException.class);
+    }
+
+    private void checkAddedException() {
+        when(checkService.checkPetAlreadyAdded(anyCollection(), any(Pet.class)))
+                .thenThrow(PetAlreadyAddedException.class);
     }
 }

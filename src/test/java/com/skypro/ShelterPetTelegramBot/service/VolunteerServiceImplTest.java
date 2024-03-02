@@ -18,8 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.ID_CAT_SHELTER;
-import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.ID_DOG_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.ID_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.UtilsForVolunteerService.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,25 +42,17 @@ class VolunteerServiceImplTest {
         volunteerService = new VolunteerServiceImpl(repository, checkService, shelterService);
     }
 
-    private void getVolunteer() {
-        when(repository.findById(anyLong()))
-                .thenReturn(Optional.of(VOLUNTEER_DOG_SHELTER));
-    }
-
     @Test
     public void add_success() {
-        when(checkService.validatePhoneNumber(anyString()))
-                .thenReturn(VALID_PHONE_NUMBER_VOLUNTEER_CAT_SHELTER);
+        validatePhoneNumber();
+        saveVolunteer();
 
-        when(repository.save(any(Volunteer.class)))
-                .thenReturn(VOLUNTEER_CAT_SHELTER);
-
-        assertEquals(VOLUNTEER_CAT_SHELTER,
+        assertEquals(VOLUNTEER,
                 volunteerService.add(
-                        FIRST_NAME_VOLUNTEER_CAT_SHELTER,
-                        LAST_NAME_VOLUNTEER_CAT_SHELTER,
-                        PHONE_NUMBER_VOLUNTEER_CAT_SHELTER,
-                        ID_CAT_SHELTER));
+                        FIRST_NAME,
+                        LAST_NAME,
+                        PHONE_NUMBER,
+                        ID_SHELTER));
 
         verify(checkService, times(2)).checkName(anyString());
         verify(checkService, times(1)).checkPhoneNumber(anyString());
@@ -74,22 +65,21 @@ class VolunteerServiceImplTest {
 
     @Test
     public void add_InvalideInputException() {
-        when(checkService.checkName(anyString()))
-                .thenThrow(InvalideInputException.class);
+        checkNameException();
 
         assertThrows(InvalideInputException.class,
                 () -> volunteerService.add(
                         INCORRECT_STRING,
-                        LAST_NAME_VOLUNTEER_CAT_SHELTER,
-                        PHONE_NUMBER_VOLUNTEER_CAT_SHELTER,
-                        ID_CAT_SHELTER));
+                        LAST_NAME,
+                        PHONE_NUMBER,
+                        ID_SHELTER));
 
         assertThrows(InvalideInputException.class,
                 () -> volunteerService.add(
-                        FIRST_NAME_VOLUNTEER_CAT_SHELTER,
+                        FIRST_NAME,
                         INCORRECT_STRING,
-                        PHONE_NUMBER_VOLUNTEER_CAT_SHELTER,
-                        ID_CAT_SHELTER));
+                        PHONE_NUMBER,
+                        ID_SHELTER));
 
         verify(checkService, times(2)).checkName(anyString());
         verify(checkService, times(0)).checkPhoneNumber(anyString());
@@ -102,15 +92,14 @@ class VolunteerServiceImplTest {
 
     @Test
     public void add_InvalideNumberException() {
-        when(checkService.checkPhoneNumber(anyString()))
-                .thenThrow(InvalideNumberException.class);
+        checkPhoneNumberException();
 
         assertThrows(InvalideNumberException.class,
                 () -> volunteerService.add(
-                        FIRST_NAME_VOLUNTEER_CAT_SHELTER,
-                        LAST_NAME_VOLUNTEER_CAT_SHELTER,
+                        FIRST_NAME,
+                        LAST_NAME,
                         INCORRECT_STRING,
-                        ID_CAT_SHELTER));
+                        ID_SHELTER));
 
         verify(checkService, times(2)).checkName(anyString());
         verify(checkService, times(1)).checkPhoneNumber(anyString());
@@ -123,15 +112,14 @@ class VolunteerServiceImplTest {
 
     @Test
     public void add_VolunteerAlreadyAddedException() {
-        when(checkService.checkVolunteerAlreadyAdded(anyCollection(), any(Volunteer.class)))
-                .thenThrow(VolunteerAlreadyAddedException.class);
+        checkAddedException();
 
         assertThrows(VolunteerAlreadyAddedException.class,
                 () -> volunteerService.add(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
-                        PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
-                        ID_DOG_SHELTER));
+                        FIRST_NAME,
+                        LAST_NAME,
+                        PHONE_NUMBER,
+                        ID_SHELTER));
 
         verify(checkService, times(2)).checkName(anyString());
         verify(checkService, times(1)).checkPhoneNumber(anyString());
@@ -146,8 +134,8 @@ class VolunteerServiceImplTest {
     public void getById_success() {
         getVolunteer();
 
-        assertEquals(VOLUNTEER_DOG_SHELTER,
-                volunteerService.getById(ID_VOLUNTEER_DOG_SHELTER));
+        assertEquals(VOLUNTEER,
+                volunteerService.getById(ID_VOLUNTEER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -155,8 +143,7 @@ class VolunteerServiceImplTest {
 
     @Test
     public void getById_InvalideInputException() {
-        when(checkService.checkValue(anyLong()))
-                .thenThrow(InvalideInputException.class);
+        checkValueException();
 
         assertThrows(InvalideInputException.class,
                 () -> volunteerService.getById(0L));
@@ -171,7 +158,7 @@ class VolunteerServiceImplTest {
                 .thenThrow(VolunteerNotFoundException.class);
 
         assertThrows(VolunteerNotFoundException.class,
-                () -> volunteerService.getById(ID_VOLUNTEER_CAT_SHELTER));
+                () -> volunteerService.getById(ID_VOLUNTEER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -226,7 +213,7 @@ class VolunteerServiceImplTest {
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
+                        FIRST_NAME,
                         null,
                         null,
                         null));
@@ -234,7 +221,7 @@ class VolunteerServiceImplTest {
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
                         null,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
+                        LAST_NAME,
                         null,
                         null));
 
@@ -242,7 +229,7 @@ class VolunteerServiceImplTest {
                 volunteerService.getAllByParameters(
                         null,
                         null,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
+                        VALID_PHONE_NUMBER,
                         null));
 
         assertEquals(getVolunteers(),
@@ -250,84 +237,84 @@ class VolunteerServiceImplTest {
                         null,
                         null,
                         null,
-                        ID_DOG_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
+                        FIRST_NAME,
+                        LAST_NAME,
                         null,
                         null));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
+                        FIRST_NAME,
                         null,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
+                        VALID_PHONE_NUMBER,
                         null));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
+                        FIRST_NAME,
                         null,
                         null,
-                        ID_DOG_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
                         null,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
+                        LAST_NAME,
+                        VALID_PHONE_NUMBER,
                         null));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
                         null,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
+                        LAST_NAME,
                         null,
-                        ID_DOG_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
                         null,
                         null,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
-                        ID_DOG_SHELTER));
+                        VALID_PHONE_NUMBER,
+                        ID_SHELTER));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
+                        FIRST_NAME,
+                        LAST_NAME,
+                        VALID_PHONE_NUMBER,
                         null));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
+                        FIRST_NAME,
+                        LAST_NAME,
                         null,
-                        ID_DOG_SHELTER));
+                        ID_SHELTER));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
+                        FIRST_NAME,
                         null,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
-                        ID_DOG_SHELTER));
+                        VALID_PHONE_NUMBER,
+                        ID_SHELTER));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
                         null,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
-                        ID_DOG_SHELTER));
+                        LAST_NAME,
+                        VALID_PHONE_NUMBER,
+                        ID_SHELTER));
 
         assertEquals(getVolunteers(),
                 volunteerService.getAllByParameters(
-                        FIRST_NAME_VOLUNTEER_DOG_SHELTER,
-                        LAST_NAME_VOLUNTEER_DOG_SHELTER,
-                        VALID_PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
-                        ID_DOG_SHELTER));
+                        FIRST_NAME,
+                        LAST_NAME,
+                        VALID_PHONE_NUMBER,
+                        ID_SHELTER));
 
         verify(checkService, times(16)).checkName(anyString());
         verify(checkService, times(8)).checkValue(anyLong());
@@ -350,11 +337,8 @@ class VolunteerServiceImplTest {
 
     @Test
     public void getAllByParameters_InvalideInputException() {
-        when(checkService.checkName(anyString()))
-                .thenThrow(InvalideInputException.class);
-
-        when(checkService.checkValue(anyLong()))
-                .thenThrow(InvalideInputException.class);
+        checkNameException();
+        checkValueException();
 
         assertThrows(InvalideInputException.class,
                 () -> volunteerService.getAllByParameters(
@@ -410,20 +394,16 @@ class VolunteerServiceImplTest {
     @Test
     public void edit_success() {
         getVolunteer();
+        validatePhoneNumber();
+        saveVolunteer();
 
-        when(checkService.validatePhoneNumber(anyString()))
-                .thenReturn(VALID_PHONE_NUMBER_VOLUNTEER_CAT_SHELTER);
-
-        when(repository.save(any(Volunteer.class)))
-                .thenReturn(VOLUNTEER_DOG_SHELTER);
-
-        assertEquals(VOLUNTEER_DOG_SHELTER,
+        assertEquals(VOLUNTEER,
                 volunteerService.edit(
-                        ID_VOLUNTEER_DOG_SHELTER,
-                        FIRST_NAME_VOLUNTEER_CAT_SHELTER,
-                        LAST_NAME_VOLUNTEER_CAT_SHELTER,
-                        PHONE_NUMBER_VOLUNTEER_CAT_SHELTER,
-                        ID_CAT_SHELTER));
+                        ID_VOLUNTEER,
+                        FIRST_NAME,
+                        LAST_NAME,
+                        PHONE_NUMBER,
+                        ID_SHELTER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
@@ -439,21 +419,27 @@ class VolunteerServiceImplTest {
     @Test
     public void edit_InvalideInputException() {
         getVolunteer();
-
-        when(checkService.checkName(anyString()))
-                .thenThrow(InvalideInputException.class);
+        checkNameException();
 
         assertThrows(InvalideInputException.class,
                 () -> volunteerService.edit(
-                        ID_VOLUNTEER_DOG_SHELTER,
+                        ID_VOLUNTEER,
                         INCORRECT_STRING,
+                        null,
+                        null,
+                        null));
+
+        assertThrows(InvalideInputException.class,
+                () -> volunteerService.edit(
+                        ID_VOLUNTEER,
+                        null,
                         INCORRECT_STRING,
                         null,
                         null));
 
-        verify(checkService, times(1)).checkValue(anyLong());
-        verify(repository, times(1)).findById(anyLong());
-        verify(checkService, times(1)).checkName(anyString());
+        verify(checkService, times(2)).checkValue(anyLong());
+        verify(repository, times(2)).findById(anyLong());
+        verify(checkService, times(2)).checkName(anyString());
         verify(checkService, times(0)).checkPhoneNumber(anyString());
         verify(shelterService, times(0)).getById(anyLong());
         verify(checkService, times(0)).validatePhoneNumber(anyString());
@@ -465,13 +451,11 @@ class VolunteerServiceImplTest {
     @Test
     public void edit_InvalideNumberException() {
         getVolunteer();
-
-        when(checkService.checkPhoneNumber(anyString()))
-                .thenThrow(InvalideNumberException.class);
+        checkPhoneNumberException();
 
         assertThrows(InvalideNumberException.class,
                 () -> volunteerService.edit(
-                        ID_VOLUNTEER_DOG_SHELTER,
+                        ID_VOLUNTEER,
                         null,
                         null,
                         INCORRECT_STRING,
@@ -491,16 +475,14 @@ class VolunteerServiceImplTest {
     @Test
     public void edit_VolunteerAlreadyAddedException() {
         getVolunteer();
-
-        when(checkService.checkVolunteerAlreadyAdded(anyCollection(),any(Volunteer.class)))
-                .thenThrow(VolunteerAlreadyAddedException.class);
+        checkAddedException();
 
         assertThrows(VolunteerAlreadyAddedException.class,
                 () -> volunteerService.edit(
-                        ID_VOLUNTEER_DOG_SHELTER,
+                        ID_VOLUNTEER,
                         null,
                         null,
-                        PHONE_NUMBER_VOLUNTEER_DOG_SHELTER,
+                        PHONE_NUMBER,
                         null));
 
         verify(checkService, times(1)).checkValue(anyLong());
@@ -518,11 +500,46 @@ class VolunteerServiceImplTest {
     public void delete_success() {
         getVolunteer();
 
-        assertEquals(VOLUNTEER_DOG_SHELTER,
-                volunteerService.delete(ID_VOLUNTEER_DOG_SHELTER));
+        assertEquals(VOLUNTEER,
+                volunteerService.delete(ID_VOLUNTEER));
 
         verify(checkService, times(1)).checkValue(anyLong());
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).delete(any(Volunteer.class));
+    }
+
+    private void getVolunteer() {
+        when(repository.findById(anyLong()))
+                .thenReturn(Optional.of(VOLUNTEER));
+    }
+
+    private void validatePhoneNumber() {
+        when(checkService.validatePhoneNumber(anyString()))
+                .thenReturn(VALID_PHONE_NUMBER);
+    }
+
+    private void saveVolunteer() {
+        when(repository.save(any(Volunteer.class)))
+                .thenReturn(VOLUNTEER);
+    }
+
+    private void checkNameException() {
+        when(checkService.checkName(anyString()))
+                .thenThrow(InvalideInputException.class);
+    }
+
+    private void checkPhoneNumberException() {
+        when(checkService.checkPhoneNumber(anyString()))
+                .thenThrow(InvalideNumberException.class);
+    }
+
+    private void checkAddedException() {
+        when(checkService.checkVolunteerAlreadyAdded(anyCollection(), any(Volunteer.class)))
+                .thenThrow(VolunteerAlreadyAddedException.class);
+    }
+
+    private void checkValueException() {
+        when(checkService.checkValue(anyLong()))
+                .thenThrow(InvalideInputException.class);
     }
 }
