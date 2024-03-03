@@ -111,7 +111,7 @@ public class ParentServiceImpl implements ParentService {
                 checkService.checkName(firstName);
                 checkService.checkName(lastName);
                 log.info("ПОЛУЧЕНЫ УСЫНОВИТЕЛИ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, lastName, phoneNumber);
-                return parentRepository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumber(firstName, lastName, phoneNumber);
+                return parentRepository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContains(firstName, lastName, phoneNumber);
             }
         }
     }

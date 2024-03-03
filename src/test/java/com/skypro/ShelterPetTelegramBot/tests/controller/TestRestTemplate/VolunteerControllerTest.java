@@ -1,23 +1,26 @@
-package com.skypro.ShelterPetTelegramBot.controller.TestRestTemplate;
+package com.skypro.ShelterPetTelegramBot.tests.controller.TestRestTemplate;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.controller.VolunteerController;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+
+import java.util.stream.Stream;
 
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
-import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.*;
-import static com.skypro.ShelterPetTelegramBot.utils.UtilsForVolunteerService.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -62,29 +65,26 @@ class VolunteerControllerTest {
         assertEquals(VOLUNTEER, actual);
     }
 
-    @Test
-    void add_InvalideInputException() {
-        addShelter();
-
+    @ParameterizedTest
+    @MethodSource("provideParamsForName")
+    void add_InvalideInputException(String name) {
         String actual_1 = this.template.postForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
+                        + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + SHELTER.getId(),
+                        + "&id=" + ID,
                 VOLUNTEER,
                 String.class);
 
         String actual_2 = this.template.postForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
-                        + "&Фамилия=" + INCORRECT_STRING
+                        + "&Фамилия=" + name
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + SHELTER.getId(),
+                        + "&id=" + ID,
                 VOLUNTEER,
                 String.class);
-
-        deleteShelter(SHELTER.getId());
 
         assertNotNull(actual_1);
         assertNotNull(actual_2);
@@ -93,23 +93,51 @@ class VolunteerControllerTest {
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
     }
 
-    @Test
-    void add_InvalideNumberException() {
-        addShelter();
-
+    @ParameterizedTest
+    @MethodSource("provideParamsForId")
+    void add_InvalideInputException(Long id) {
         String actual = this.template.postForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
-                        + "&Номер=" + INCORRECT_STRING
-                        + "&id=" + SHELTER.getId(),
+                        + "&Номер=" + PHONE_NUMBER
+                        + "&id=" + id,
                 VOLUNTEER,
                 String.class);
 
-        deleteShelter(SHELTER.getId());
+        assertNotNull(actual);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForPhoneNumber")
+    void add_InvalideNumberException(String number) {
+        String actual = this.template.postForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + number
+                        + "&id=" + ID,
+                VOLUNTEER,
+                String.class);
 
         assertNotNull(actual);
         assertEquals(exception(BAD_REQUEST, INVALIDE_NUMBER), actual);
+    }
+
+    @Test
+    void add_ShelterNotFoundException() {
+        String actual = this.template.postForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
+                        + "&id=" + ID,
+                VOLUNTEER,
+                String.class);
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, SHELTER_NOT_FOUND), actual);
     }
 
     @Test
@@ -149,10 +177,11 @@ class VolunteerControllerTest {
         assertEquals(VOLUNTEER, actual);
     }
 
-    @Test
-    void getById_InvalideInputException() {
+    @ParameterizedTest
+    @MethodSource("provideParamsForId")
+    void getById_InvalideInputException(Long id) {
         String actual = this.template.getForObject("http://localhost:" + port
-                        + "/volunteer/" + 0L,
+                        + "/volunteer/" + id,
                 String.class);
 
         assertNotNull(actual);
@@ -162,7 +191,7 @@ class VolunteerControllerTest {
     @Test
     void getById_VolunteerNotFoundException() {
         String actual = this.template.getForObject("http://localhost:" + port
-                        + "/volunteer/" + ID_SHELTER,
+                        + "/volunteer/" + ID,
                 String.class);
 
         assertNotNull(actual);
@@ -302,115 +331,112 @@ class VolunteerControllerTest {
         assertTrueForCollection(actual_15);
     }
 
-    @Test
-    void getAllByParameters_InvalideInputException() {
-        addShelter();
-
+    @ParameterizedTest
+    @MethodSource("provideParamsForName")
+    void getAllByParameters_InvalideInputException(String name) {
         String actual_1 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING,
+                        + "?Имя=" + name,
                 String.class);
 
         String actual_2 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Фамилия=" + INCORRECT_STRING,
+                        + "?Фамилия=" + name,
                 String.class);
 
         String actual_3 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
+                        + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME,
                 String.class);
 
         String actual_4 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
-                        + "&Фамилия=" + INCORRECT_STRING,
+                        + "&Фамилия=" + name,
                 String.class);
 
         String actual_5 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
+                        + "?Имя=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_6 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
-                        + "&id=" + SHELTER.getId(),
+                        + "?Имя=" + name
+                        + "&id=" + ID,
                 String.class);
 
         String actual_7 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Фамилия=" + INCORRECT_STRING
+                        + "?Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_8 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Фамилия=" + INCORRECT_STRING
-                        + "&id=" + SHELTER.getId(),
+                        + "?Фамилия=" + name
+                        + "&id=" + ID,
                 String.class);
 
         String actual_9 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
-                        + "&Фамилия=" + LAST_NAME
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_10 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + FIRST_NAME
-                        + "&Фамилия=" + INCORRECT_STRING
+                        + "?Имя=" + name
+                        + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_11 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
+                        + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&id=" + ID,
                 String.class);
 
         String actual_12 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
-                        + "&Фамилия=" + INCORRECT_STRING
-                        + "&id=" + SHELTER.getId(),
+                        + "&Фамилия=" + name
+                        + "&id=" + ID,
                 String.class);
 
         String actual_13 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
+                        + "?Имя=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&id=" + ID,
                 String.class);
 
         String actual_14 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Фамилия=" + INCORRECT_STRING
+                        + "?Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&id=" + ID,
                 String.class);
 
         String actual_15 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + INCORRECT_STRING
+                        + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&id=" + ID,
                 String.class);
 
         String actual_16 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
-                        + "&Фамилия=" + INCORRECT_STRING
+                        + "&Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&id=" + ID,
                 String.class);
-
-        deleteShelter(SHELTER.getId());
 
         assertNotNull(actual_1);
         assertNotNull(actual_2);
@@ -445,6 +471,80 @@ class VolunteerControllerTest {
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_14);
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_15);
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_16);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForId")
+    void getAllByParameters_InvalideInputException(Long id) {
+        String actual_1 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?id=" + id,
+                String.class);
+
+        String actual_2 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&id=" + id,
+                String.class);
+
+        String actual_3 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME
+                        + "&id=" + id,
+                String.class);
+
+        String actual_4 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Номер=" + NUMBER_FOR_SEARCH
+                        + "&id=" + id,
+                String.class);
+
+        String actual_5 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&id=" + id,
+                String.class);
+
+        String actual_6 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
+                        + "&id=" + id,
+                String.class);
+
+        String actual_7 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
+                        + "&id=" + id,
+                String.class);
+
+        String actual_8 = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
+                        + "&id=" + id,
+                String.class);
+
+        assertNotNull(actual_1);
+        assertNotNull(actual_2);
+        assertNotNull(actual_3);
+        assertNotNull(actual_4);
+        assertNotNull(actual_5);
+        assertNotNull(actual_6);
+        assertNotNull(actual_7);
+        assertNotNull(actual_8);
+
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_1);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_3);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_4);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_5);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_6);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_7);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_8);
     }
 
     @Test
@@ -544,21 +644,22 @@ class VolunteerControllerTest {
         assertEquals(expected_4, actual_4);
     }
 
-    @Test
-    void edit_InvalideInputException() {
+    @ParameterizedTest
+    @MethodSource("provideParamsForName")
+    void edit_InvalideInputException(String name) {
         addShelter();
         addVolunteer();
 
         String actual_1 = this.template.exchange("http://localhost:" + port
                         + "/volunteer/" + VOLUNTEER.getId()
-                        + "?Имя=" + INCORRECT_STRING,
+                        + "?Имя=" + name,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
 
         String actual_2 = this.template.exchange("http://localhost:" + port
                         + "/volunteer/" + VOLUNTEER.getId()
-                        + "?Фамилия=" + INCORRECT_STRING,
+                        + "?Фамилия=" + name,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -573,14 +674,35 @@ class VolunteerControllerTest {
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
     }
 
-    @Test
-    void edit_InvalideNumberException() {
+    @ParameterizedTest
+    @MethodSource("provideParamsForId")
+    void edit_InvalideInputException(Long id) {
         addShelter();
         addVolunteer();
 
         String actual = this.template.exchange("http://localhost:" + port
                         + "/volunteer/" + VOLUNTEER.getId()
-                        + "?Номер=" + INCORRECT_STRING,
+                        + "?id=" + id,
+                HttpMethod.PUT,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        deleteVolunteer(VOLUNTEER.getId());
+        deleteShelter(SHELTER.getId());
+
+        assertNotNull(actual);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForPhoneNumber")
+    void edit_InvalideNumberException(String number) {
+        addShelter();
+        addVolunteer();
+
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId()
+                        + "?Номер=" + number,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -593,16 +715,32 @@ class VolunteerControllerTest {
     }
 
     @Test
+    void edit_ShelterNotFoundException() {
+        addShelter();
+        addVolunteer();
+
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId()
+                        + "?id=" + ID,
+                HttpMethod.PUT,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        deleteVolunteer(VOLUNTEER.getId());
+        deleteShelter(SHELTER.getId());
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, SHELTER_NOT_FOUND), actual);
+    }
+
+    @Test
     void edit_VolunteerAlreadyAddedException() {
         addShelter();
         addVolunteer();
 
         String actual = this.template.exchange("http://localhost:" + port
                         + "/volunteer/" + VOLUNTEER.getId()
-                        + "?Имя=" + FIRST_NAME
-                        + "&Фамилия=" + LAST_NAME
-                        + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + SHELTER.getId(),
+                        + "?Номер=" + PHONE_NUMBER,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -620,7 +758,7 @@ class VolunteerControllerTest {
         addVolunteer();
 
         Volunteer actual = this.template.exchange("http://localhost:" + port
-                        + "/volunteer/" + SHELTER.getId(),
+                        + "/volunteer/" + VOLUNTEER.getId(),
                 HttpMethod.DELETE,
                 HttpEntity.EMPTY,
                 Volunteer.class).getBody();
@@ -629,6 +767,31 @@ class VolunteerControllerTest {
 
         assertNotNull(actual);
         assertEquals(VOLUNTEER, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForId")
+    void delete_InvalideInputException(Long id) {
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + id,
+                HttpMethod.DELETE,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        assertNotNull(actual);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual);
+    }
+
+    @Test
+    void delete_VolunteerNotFoundException() {
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + ID,
+                HttpMethod.DELETE,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, VOLUNTEER_NOT_FOUND), actual);
     }
 
     private void addShelter() {
@@ -650,10 +813,6 @@ class VolunteerControllerTest {
         volunteerController.delete(id);
     }
 
-    private String exception(HttpStatus status, String message) {
-        return String.format("Code: %s. Error: %s", status, message);
-    }
-
     private void assertTrueForCollection(String actual) {
         assertTrue(actual.contains(VOLUNTEER.getId().toString()));
         assertTrue(actual.contains(VOLUNTEER.getFirstName()));
@@ -662,5 +821,30 @@ class VolunteerControllerTest {
         assertTrue(actual.contains(VOLUNTEER.getShelter().getId().toString()));
         assertTrue(actual.contains(VOLUNTEER.getShelter().getType().toString()));
         assertTrue(actual.contains(VOLUNTEER.getShelter().getAddress()));
+    }
+
+    private static Stream<Arguments> provideParamsForPhoneNumber() {
+        return Stream.of(
+                Arguments.of((Object) null),
+                Arguments.of(EMPTY),
+                Arguments.of(SHORT_PHONE_NUMBER),
+                Arguments.of(LONG_PHONE_NUMBER),
+                Arguments.of(INCORRECT_STRING)
+        );
+    }
+
+    private static Stream<Arguments> provideParamsForName() {
+        return Stream.of(
+                Arguments.of((Object) null),
+                Arguments.of(EMPTY),
+                Arguments.of(INCORRECT_STRING)
+        );
+    }
+
+    private static Stream<Arguments> provideParamsForId() {
+        return Stream.of(
+                Arguments.of(ZERO),
+                Arguments.of(INCORRECT_ID)
+        );
     }
 }

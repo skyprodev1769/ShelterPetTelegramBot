@@ -1,21 +1,25 @@
-package com.skypro.ShelterPetTelegramBot.controller.TestRestTemplate;
+package com.skypro.ShelterPetTelegramBot.tests.controller.TestRestTemplate;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+
+import java.util.stream.Stream;
 
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
-import static com.skypro.ShelterPetTelegramBot.utils.UtilsForShelterService.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -52,12 +56,13 @@ class ShelterControllerTest {
         assertEquals(SHELTER, actual);
     }
 
-    @Test
-    void add_InvalideInputException() {
+    @ParameterizedTest
+    @MethodSource("provideParamsForAddress")
+    void add_InvalideInputException(String address) {
         String actual = this.template.postForObject("http://localhost:" + port
                         + "/shelter"
                         + "?Тип=" + DOG
-                        + "&Адрес=" + INCORRECT_ADDRESS,
+                        + "&Адрес=" + address,
                 SHELTER,
                 String.class);
 
@@ -96,10 +101,11 @@ class ShelterControllerTest {
         assertEquals(SHELTER, actual);
     }
 
-    @Test
-    void getById_InvalideInputException() {
+    @ParameterizedTest
+    @MethodSource("provideParamsId")
+    void getById_InvalideInputException(Long id) {
         String actual = this.template.getForObject("http://localhost:" + port
-                        + "/shelter/" + 0L,
+                        + "/shelter/" + id,
                 String.class);
 
         assertNotNull(actual);
@@ -109,7 +115,7 @@ class ShelterControllerTest {
     @Test
     void getById_ShelterNotFoundException() {
         String actual = this.template.getForObject("http://localhost:" + port
-                        + "/shelter/" + ID_SHELTER,
+                        + "/shelter/" + ID,
                 String.class);
 
         assertNotNull(actual);
@@ -147,17 +153,18 @@ class ShelterControllerTest {
         asserTrueForCollection(actual_3);
     }
 
-    @Test
-    void getAllByParameters_InvalideInputException() {
+    @ParameterizedTest
+    @MethodSource("provideParamsForAddress")
+    void getAllByParameters_InvalideInputException(String address) {
         String actual_1 = this.template.getForObject("http://localhost:" + port
                         + "/shelter"
-                        + "?Адрес=" + INCORRECT_ADDRESS,
+                        + "?Адрес=" + address,
                 String.class);
 
         String actual_2 = this.template.getForObject("http://localhost:" + port
                         + "/shelter"
                         + "?Тип=" + DOG
-                        + "&Адрес=" + INCORRECT_ADDRESS,
+                        + "&Адрес=" + address,
                 String.class);
 
         assertNotNull(actual_1);
@@ -220,13 +227,14 @@ class ShelterControllerTest {
         assertEquals(expected_2, actual_2);
     }
 
-    @Test
-    void edit_InvalideInputException() {
+    @ParameterizedTest
+    @MethodSource("provideParamsForAddress")
+    void edit_InvalideInputException(String address) {
         addShelter();
 
         String actual = this.template.exchange("http://localhost:" + port
                         + "/shelter/" + SHELTER.getId()
-                        + "?Адрес=" + INCORRECT_ADDRESS,
+                        + "?Адрес=" + address,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -277,13 +285,24 @@ class ShelterControllerTest {
         shelterController.delete(id);
     }
 
-    private String exception(HttpStatus status, String message) {
-        return String.format("Code: %s. Error: %s", status, message);
-    }
-
     private void asserTrueForCollection(String actual) {
         assertTrue(actual.contains(SHELTER.getId().toString()));
         assertTrue(actual.contains(SHELTER.getType().toString()));
         assertTrue(actual.contains(SHELTER.getAddress()));
+    }
+
+    private static Stream<Arguments> provideParamsForAddress() {
+        return Stream.of(
+                null,
+                Arguments.of(EMPTY),
+                Arguments.of(INCORRECT_STRING)
+        );
+    }
+
+    private static Stream<Arguments> provideParamsId() {
+        return Stream.of(
+                Arguments.of(ZERO),
+                Arguments.of(INCORRECT_ID)
+        );
     }
 }
