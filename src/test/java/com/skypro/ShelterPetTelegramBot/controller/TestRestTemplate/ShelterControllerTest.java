@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.tests.controller.TestRestTemplate;
+package com.skypro.ShelterPetTelegramBot.controller.TestRestTemplate;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -102,7 +102,7 @@ class ShelterControllerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideParamsId")
+    @MethodSource("provideParamsForId")
     void getById_InvalideInputException(Long id) {
         String actual = this.template.getForObject("http://localhost:" + port
                         + "/shelter/" + id,
@@ -192,39 +192,21 @@ class ShelterControllerTest {
     void edit_success() {
         addShelter();
 
-        Shelter expected_1 = new Shelter(CAT, ADDRESS);
-        expected_1.setId(SHELTER.getId());
+        Shelter expected = new Shelter(CAT, NEW_ADDRESS);
+        expected.setId(SHELTER.getId());
 
-        Shelter actual_1 = this.template.exchange("http://localhost:" + port
+        Shelter actual = this.template.exchange("http://localhost:" + port
                         + "/shelter/" + SHELTER.getId()
-                        + "?Тип=" + CAT,
+                        + "?Тип=" + CAT
+                        + "&Адрес=" + NEW_ADDRESS,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 Shelter.class).getBody();
 
         deleteShelter(SHELTER.getId());
 
-//======================================================================================================================
-
-        addShelter();
-
-        Shelter expected_2 = new Shelter(DOG, NEW_ADDRESS);
-        expected_2.setId(SHELTER.getId());
-
-        Shelter actual_2 = this.template.exchange("http://localhost:" + port
-                        + "/shelter/" + SHELTER.getId()
-                        + "?Адрес=" + NEW_ADDRESS,
-                HttpMethod.PUT,
-                HttpEntity.EMPTY,
-                Shelter.class).getBody();
-
-        deleteShelter(SHELTER.getId());
-
-        assertNotNull(actual_1);
-        assertNotNull(actual_2);
-
-        assertEquals(expected_1, actual_1);
-        assertEquals(expected_2, actual_2);
+        assertNotNull(actual);
+        assertEquals(expected, actual);
     }
 
     @ParameterizedTest
@@ -263,6 +245,18 @@ class ShelterControllerTest {
     }
 
     @Test
+    void edit_ShelterNotFoundException() {
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/shelter/" + ID,
+                HttpMethod.PUT,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, SHELTER_NOT_FOUND), actual);
+    }
+
+    @Test
     void delete_success() {
         addShelter();
 
@@ -274,6 +268,31 @@ class ShelterControllerTest {
 
         assertNotNull(actual);
         assertEquals(SHELTER, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForId")
+    void delete_InvalideInputException(Long id) {
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/shelter/" + id,
+                HttpMethod.DELETE,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        assertNotNull(actual);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual);
+    }
+
+    @Test
+    void delete_ShelterNotFoundException() {
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/shelter/" + ID,
+                HttpMethod.DELETE,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, SHELTER_NOT_FOUND), actual);
     }
 
     private void addShelter() {
@@ -299,7 +318,7 @@ class ShelterControllerTest {
         );
     }
 
-    private static Stream<Arguments> provideParamsId() {
+    private static Stream<Arguments> provideParamsForId() {
         return Stream.of(
                 Arguments.of(ZERO),
                 Arguments.of(INCORRECT_ID)

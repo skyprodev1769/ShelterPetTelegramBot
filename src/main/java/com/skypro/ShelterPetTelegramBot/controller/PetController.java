@@ -83,7 +83,7 @@ public class PetController {
                    @RequestParam(name = "Имя") String name,
 
                    @Parameter(description = "id приюта для животных")
-                   @RequestParam(name = "id") Long shelterId) {
+                   @RequestParam(name = "Приют") Long shelterId) {
 
         return service.add(type, status, name, shelterId);
     }
@@ -169,7 +169,7 @@ public class PetController {
                                               @RequestParam(required = false, name = "Имя") String name,
 
                                               @Parameter(description = "id приюта для животных")
-                                              @RequestParam(required = false, name = "id") Long shelterId) {
+                                              @RequestParam(required = false, name = "Приют") Long shelterId) {
 
         return service.getAllByParameters(type, status, name, shelterId);
     }
@@ -249,7 +249,7 @@ public class PetController {
                     @RequestParam(required = false, name = "Имя") String name,
 
                     @Parameter(description = "id приюта для животных")
-                    @RequestParam(required = false, name = "id") Long shelterId) {
+                    @RequestParam(required = false, name = "Приют") Long shelterId) {
 
         return service.edit(id, type, status, name, shelterId);
     }

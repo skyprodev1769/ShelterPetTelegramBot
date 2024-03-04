@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.tests.controller.TestRestTemplate;
+package com.skypro.ShelterPetTelegramBot.controller.TestRestTemplate;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.controller.VolunteerController;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -52,7 +52,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 VOLUNTEER,
                 Volunteer.class);
 
@@ -73,7 +73,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 VOLUNTEER,
                 String.class);
 
@@ -82,7 +82,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + name
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 VOLUNTEER,
                 String.class);
 
@@ -101,7 +101,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 VOLUNTEER,
                 String.class);
 
@@ -117,7 +117,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + number
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 VOLUNTEER,
                 String.class);
 
@@ -132,7 +132,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 VOLUNTEER,
                 String.class);
 
@@ -150,7 +150,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + PHONE_NUMBER
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 VOLUNTEER,
                 String.class);
 
@@ -220,7 +220,7 @@ class VolunteerControllerTest {
 
         String actual_4 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?id=" + SHELTER.getId(),
+                        + "?Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_5 = this.template.getForObject("http://localhost:" + port
@@ -238,7 +238,7 @@ class VolunteerControllerTest {
         String actual_7 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_8 = this.template.getForObject("http://localhost:" + port
@@ -250,13 +250,13 @@ class VolunteerControllerTest {
         String actual_9 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + LAST_NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_10 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_11 = this.template.getForObject("http://localhost:" + port
@@ -270,21 +270,21 @@ class VolunteerControllerTest {
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_13 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_14 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_15 = this.template.getForObject("http://localhost:" + port
@@ -292,7 +292,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         deleteVolunteer(VOLUNTEER.getId());
@@ -365,7 +365,7 @@ class VolunteerControllerTest {
         String actual_6 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + name
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_7 = this.template.getForObject("http://localhost:" + port
@@ -377,7 +377,7 @@ class VolunteerControllerTest {
         String actual_8 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + name
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_9 = this.template.getForObject("http://localhost:" + port
@@ -398,28 +398,28 @@ class VolunteerControllerTest {
                         + "/volunteer"
                         + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_12 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + name
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_13 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_14 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_15 = this.template.getForObject("http://localhost:" + port
@@ -427,7 +427,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_16 = this.template.getForObject("http://localhost:" + port
@@ -435,7 +435,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         assertNotNull(actual_1);
@@ -478,46 +478,46 @@ class VolunteerControllerTest {
     void getAllByParameters_InvalideInputException(Long id) {
         String actual_1 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?id=" + id,
+                        + "?Приют=" + id,
                 String.class);
 
         String actual_2 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_3 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + LAST_NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_4 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_5 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_6 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_7 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_8 = this.template.getForObject("http://localhost:" + port
@@ -525,7 +525,7 @@ class VolunteerControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         assertNotNull(actual_1);
@@ -571,60 +571,16 @@ class VolunteerControllerTest {
         Long id = shelterController.add(CAT, NEW_ADDRESS).getId();
         NEW_SHELTER.setId(id);
 
-        Volunteer expected_1 = new Volunteer(NEW_FIRST_NAME, LAST_NAME, VALID_PHONE_NUMBER, SHELTER);
-        expected_1.setId(VOLUNTEER.getId());
+        Volunteer expected = new Volunteer(NEW_FIRST_NAME, NEW_LAST_NAME, NEW_VALID_PHONE_NUMBER, NEW_SHELTER);
+        expected.setId(VOLUNTEER.getId());
 
-        Volunteer actual_1 = this.template.exchange("http://localhost:" + port
+        Volunteer actual = this.template.exchange("http://localhost:" + port
                         + "/volunteer/" + VOLUNTEER.getId()
-                        + "?Имя=" + NEW_FIRST_NAME,
-                HttpMethod.PUT,
-                HttpEntity.EMPTY,
-                Volunteer.class).getBody();
+                        + "?Имя=" + NEW_FIRST_NAME
+                        + "&Фамилия=" + NEW_LAST_NAME
+                        + "&Номер=" + NEW_PHONE_NUMBER
+                        + "&Приют=" + NEW_SHELTER.getId(),
 
-        deleteVolunteer(VOLUNTEER.getId());
-
-//======================================================================================================================
-
-        addVolunteer();
-
-        Volunteer expected_2 = new Volunteer(FIRST_NAME, NEW_LAST_NAME, VALID_PHONE_NUMBER, SHELTER);
-        expected_2.setId(VOLUNTEER.getId());
-
-        Volunteer actual_2 = this.template.exchange("http://localhost:" + port
-                        + "/volunteer/" + VOLUNTEER.getId()
-                        + "?Фамилия=" + NEW_LAST_NAME,
-                HttpMethod.PUT,
-                HttpEntity.EMPTY,
-                Volunteer.class).getBody();
-
-        deleteVolunteer(VOLUNTEER.getId());
-
-//======================================================================================================================
-
-        addVolunteer();
-
-        Volunteer expected_3 = new Volunteer(FIRST_NAME, LAST_NAME, NEW_VALID_PHONE_NUMBER, SHELTER);
-        expected_3.setId(VOLUNTEER.getId());
-
-        Volunteer actual_3 = this.template.exchange("http://localhost:" + port
-                        + "/volunteer/" + VOLUNTEER.getId()
-                        + "?Номер=" + NEW_PHONE_NUMBER,
-                HttpMethod.PUT,
-                HttpEntity.EMPTY,
-                Volunteer.class).getBody();
-
-        deleteVolunteer(VOLUNTEER.getId());
-
-//======================================================================================================================
-
-        addVolunteer();
-
-        Volunteer expected_4 = new Volunteer(FIRST_NAME, LAST_NAME, VALID_PHONE_NUMBER, NEW_SHELTER);
-        expected_4.setId(VOLUNTEER.getId());
-
-        Volunteer actual_4 = this.template.exchange("http://localhost:" + port
-                        + "/volunteer/" + VOLUNTEER.getId()
-                        + "?id=" + NEW_SHELTER.getId(),
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 Volunteer.class).getBody();
@@ -633,15 +589,8 @@ class VolunteerControllerTest {
         deleteShelter(NEW_SHELTER.getId());
         deleteShelter(SHELTER.getId());
 
-        assertNotNull(actual_1);
-        assertNotNull(actual_2);
-        assertNotNull(actual_3);
-        assertNotNull(actual_4);
-
-        assertEquals(expected_1, actual_1);
-        assertEquals(expected_2, actual_2);
-        assertEquals(expected_3, actual_3);
-        assertEquals(expected_4, actual_4);
+        assertNotNull(actual);
+        assertEquals(expected, actual);
     }
 
     @ParameterizedTest
@@ -682,7 +631,7 @@ class VolunteerControllerTest {
 
         String actual = this.template.exchange("http://localhost:" + port
                         + "/volunteer/" + VOLUNTEER.getId()
-                        + "?id=" + id,
+                        + "?Приют=" + id,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -721,7 +670,7 @@ class VolunteerControllerTest {
 
         String actual = this.template.exchange("http://localhost:" + port
                         + "/volunteer/" + VOLUNTEER.getId()
-                        + "?id=" + ID,
+                        + "?Приют=" + ID,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -731,6 +680,18 @@ class VolunteerControllerTest {
 
         assertNotNull(actual);
         assertEquals(exception(NOT_FOUND, SHELTER_NOT_FOUND), actual);
+    }
+
+    @Test
+    void edit_VolunteerNotFoundException() {
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + ID,
+                HttpMethod.PUT,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, VOLUNTEER_NOT_FOUND), actual);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.tests.service;
+package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.Utils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

@@ -1,5 +1,6 @@
-package com.skypro.ShelterPetTelegramBot.tests.service;
+package com.skypro.ShelterPetTelegramBot.service;
 
+import com.skypro.ShelterPetTelegramBot.Utils;
 import com.skypro.ShelterPetTelegramBot.exception.DifferentTypesException;
 import com.skypro.ShelterPetTelegramBot.exception.InvalideInputException;
 import com.skypro.ShelterPetTelegramBot.exception.InvalideNumberException;
@@ -10,6 +11,7 @@ import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterAlreadyAddedExc
 import com.skypro.ShelterPetTelegramBot.exception.volunteer.VolunteerAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.service.impl.CheckServiceImpl;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,7 +23,6 @@ import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOP
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.Codes.CODE_400;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +43,7 @@ class CheckServiceImplTest {
                 () -> service.checkStatus(ADOPTED)
         );
 
-        assertEquals(exception(CODE_400, PET_STATUS), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, PET_STATUS), actual.getMessage());
     }
 
     @Test
@@ -57,12 +58,12 @@ class CheckServiceImplTest {
                 () -> service.checkTypes(DOG, CAT)
         );
 
-        assertEquals(exception(CODE_400, DIFFERENT_TYPES), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, DIFFERENT_TYPES), actual.getMessage());
     }
 
     @Test
     void checkPhoneNumber_success() {
-        assertTrue(service.checkPhoneNumber(PHONE_NUMBER));
+        assertTrue(service.checkPhoneNumber(Utils.PHONE_NUMBER));
     }
 
     @ParameterizedTest
@@ -73,18 +74,18 @@ class CheckServiceImplTest {
                 () -> service.checkPhoneNumber(phoneNumber)
         );
 
-        assertEquals(exception(CODE_400, INVALIDE_NUMBER), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, INVALIDE_NUMBER), actual.getMessage());
     }
 
     @Test
     void validatePhoneNumber_success() {
-        String actual = service.validatePhoneNumber(PHONE_NUMBER);
-        assertEquals(VALID_PHONE_NUMBER, actual);
+        String actual = service.validatePhoneNumber(Utils.PHONE_NUMBER);
+        Assertions.assertEquals(Utils.VALID_PHONE_NUMBER, actual);
     }
 
     @Test
     void checkName_success() {
-        assertTrue(service.checkName(NAME));
+        assertTrue(service.checkName(Utils.NAME));
     }
 
     @ParameterizedTest
@@ -95,12 +96,12 @@ class CheckServiceImplTest {
                 () -> service.checkName(name)
         );
 
-        assertEquals(exception(CODE_400, INVALIDE_INPUT), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, INVALIDE_INPUT), actual.getMessage());
     }
 
     @Test
     void checkAddress_success() {
-        assertTrue(service.checkAddress(ADDRESS));
+        assertTrue(service.checkAddress(Utils.ADDRESS));
     }
 
     @ParameterizedTest
@@ -111,12 +112,12 @@ class CheckServiceImplTest {
                 () -> service.checkAddress(address)
         );
 
-        assertEquals(exception(CODE_400, INVALIDE_INPUT), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, INVALIDE_INPUT), actual.getMessage());
     }
 
     @Test
     void checkValue_success() {
-        assertTrue(service.checkValue(ID));
+        assertTrue(service.checkValue(Utils.ID));
     }
 
     @ParameterizedTest
@@ -127,92 +128,92 @@ class CheckServiceImplTest {
                 () -> service.checkValue(value)
         );
 
-        assertEquals(exception(CODE_400, INVALIDE_INPUT), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, INVALIDE_INPUT), actual.getMessage());
     }
 
     @Test
     void checkParentAlreadyAdded_success() {
-        assertTrue(service.checkParentAlreadyAdded(EMPTY_PARENTS, PARENT));
+        assertTrue(service.checkParentAlreadyAdded(Utils.EMPTY_PARENTS, Utils.PARENT));
     }
 
     @Test
     void checkParentAlreadyAdded_ParentAlreadyAddedException() {
         Exception actual = assertThrows(
                 ParentAlreadyAddedException.class,
-                () -> service.checkParentAlreadyAdded(PARENTS, PARENT)
+                () -> service.checkParentAlreadyAdded(Utils.PARENTS, Utils.PARENT)
         );
 
-        assertEquals(exception(CODE_400, PARENT_ALREADY_ADDED), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, PARENT_ALREADY_ADDED), actual.getMessage());
     }
 
     @Test
     void checkPetAlreadyAdded_success() {
-        assertTrue(service.checkPetAlreadyAdded(EMPTY_PETS, PET));
+        assertTrue(service.checkPetAlreadyAdded(Utils.EMPTY_PETS, Utils.PET));
     }
 
     @Test
     void checkPetAlreadyAdded_PetAlreadyAddedException() {
         Exception actual = assertThrows(
                 PetAlreadyAddedException.class,
-                () -> service.checkPetAlreadyAdded(PETS, PET)
+                () -> service.checkPetAlreadyAdded(Utils.PETS, Utils.PET)
         );
 
-        assertEquals(exception(CODE_400, PET_ALREADY_ADDED), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, PET_ALREADY_ADDED), actual.getMessage());
     }
 
     @Test
     void checkVolunteerAlreadyAdded_success() {
-        assertTrue(service.checkVolunteerAlreadyAdded(EMPTY_VOLUNTEERS, VOLUNTEER));
+        assertTrue(service.checkVolunteerAlreadyAdded(Utils.EMPTY_VOLUNTEERS, Utils.VOLUNTEER));
     }
 
     @Test
     void checkVolunteerAlreadyAdded_VolunteerAlreadyAddedException() {
         Exception actual = assertThrows(
                 VolunteerAlreadyAddedException.class,
-                () -> service.checkVolunteerAlreadyAdded(VOLUNTEERS, VOLUNTEER)
+                () -> service.checkVolunteerAlreadyAdded(Utils.VOLUNTEERS, Utils.VOLUNTEER)
         );
 
-        assertEquals(exception(CODE_400, VOLUNTEER_ALREADY_ADDED), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, VOLUNTEER_ALREADY_ADDED), actual.getMessage());
     }
 
     @Test
     void checkShelterAlreadyAdded_success() {
-        assertTrue(service.checkShelterAlreadyAdded(EMPTY_SHELTERS, SHELTER));
+        assertTrue(service.checkShelterAlreadyAdded(Utils.EMPTY_SHELTERS, Utils.SHELTER));
     }
 
     @Test
     void checkShelterAlreadyAdded_ShelterAlreadyAddedException() {
         Exception actual = assertThrows(
                 ShelterAlreadyAddedException.class,
-                () -> service.checkShelterAlreadyAdded(SHELTERS, SHELTER)
+                () -> service.checkShelterAlreadyAdded(Utils.SHELTERS, Utils.SHELTER)
         );
 
-        assertEquals(exception(CODE_400, SHELTER_ALREADY_ADDED), actual.getMessage());
+        Assertions.assertEquals(Utils.exception(CODE_400, SHELTER_ALREADY_ADDED), actual.getMessage());
     }
 
     private static Stream<Arguments> provideParamsForCheckPhoneNumberTest() {
         return Stream.of(
                 Arguments.of((Object) null),
-                Arguments.of(EMPTY),
-                Arguments.of(SHORT_PHONE_NUMBER),
-                Arguments.of(LONG_PHONE_NUMBER),
-                Arguments.of(INCORRECT_STRING)
+                Arguments.of(Utils.EMPTY),
+                Arguments.of(Utils.SHORT_PHONE_NUMBER),
+                Arguments.of(Utils.LONG_PHONE_NUMBER),
+                Arguments.of(Utils.INCORRECT_STRING)
         );
     }
 
     private static Stream<Arguments> provideParamsForCheckNameAndAddressTest() {
         return Stream.of(
                 Arguments.of((Object) null),
-                Arguments.of(EMPTY),
-                Arguments.of(INCORRECT_STRING)
+                Arguments.of(Utils.EMPTY),
+                Arguments.of(Utils.INCORRECT_STRING)
         );
     }
 
     private static Stream<Arguments> provideParamsForCheckValueTest() {
         return Stream.of(
                 Arguments.of((Object) null),
-                Arguments.of(ZERO),
-                Arguments.of(INCORRECT_ID)
+                Arguments.of(Utils.ZERO),
+                Arguments.of(Utils.INCORRECT_ID)
         );
     }
 }

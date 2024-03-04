@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.tests.controller.TestRestTemplate;
+package com.skypro.ShelterPetTelegramBot.controller.TestRestTemplate;
 
 import com.skypro.ShelterPetTelegramBot.controller.PetController;
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
@@ -21,7 +21,7 @@ import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOP
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -54,7 +54,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 PET,
                 Pet.class);
 
@@ -75,7 +75,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + name
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 PET,
                 String.class);
 
@@ -91,7 +91,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 PET,
                 String.class);
 
@@ -106,7 +106,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 PET,
                 String.class);
 
@@ -124,7 +124,7 @@ class PetControllerTest {
                         + "?Тип=" + CAT
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 PET,
                 String.class);
 
@@ -133,7 +133,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + NEW_SHELTER.getId(),
+                        + "&Приют=" + NEW_SHELTER.getId(),
                 PET,
                 String.class);
 
@@ -156,7 +156,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 PET,
                 String.class);
 
@@ -226,7 +226,7 @@ class PetControllerTest {
 
         String actual_4 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
-                        + "?id=" + SHELTER.getId(),
+                        + "?Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_5 = this.template.getForObject("http://localhost:" + port
@@ -244,7 +244,7 @@ class PetControllerTest {
         String actual_7 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Тип=" + DOG
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_8 = this.template.getForObject("http://localhost:" + port
@@ -256,13 +256,13 @@ class PetControllerTest {
         String actual_9 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Статус=" + FREE
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_10 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Имя=" + NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_11 = this.template.getForObject("http://localhost:" + port
@@ -276,21 +276,21 @@ class PetControllerTest {
                         + "/pet"
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_13 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Тип=" + DOG
                         + "&Имя=" + NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_14 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_15 = this.template.getForObject("http://localhost:" + port
@@ -298,7 +298,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + SHELTER.getId(),
+                        + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         deletePet(PET.getId());
@@ -371,7 +371,7 @@ class PetControllerTest {
         String actual_6 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + name
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_7 = this.template.getForObject("http://localhost:" + port
@@ -383,7 +383,7 @@ class PetControllerTest {
         String actual_8 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + name
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_9 = this.template.getForObject("http://localhost:" + port
@@ -404,28 +404,28 @@ class PetControllerTest {
                         + "/volunteer"
                         + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_12 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + name
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_13 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Имя=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_14 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
                         + "?Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_15 = this.template.getForObject("http://localhost:" + port
@@ -433,7 +433,7 @@ class PetControllerTest {
                         + "?Имя=" + name
                         + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         String actual_16 = this.template.getForObject("http://localhost:" + port
@@ -441,7 +441,7 @@ class PetControllerTest {
                         + "?Имя=" + FIRST_NAME
                         + "&Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH
-                        + "&id=" + ID,
+                        + "&Приют=" + ID,
                 String.class);
 
         assertNotNull(actual_1);
@@ -484,46 +484,46 @@ class PetControllerTest {
     void getAllByParameters_InvalideInputException(Long id) {
         String actual_1 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
-                        + "?id=" + id,
+                        + "?Приют=" + id,
                 String.class);
 
         String actual_2 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Тип=" + DOG
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_3 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Статус=" + FREE
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_4 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Имя=" + NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_5 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_6 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Тип=" + DOG
                         + "&Имя=" + NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_7 = this.template.getForObject("http://localhost:" + port
                         + "/pet"
                         + "?Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         String actual_8 = this.template.getForObject("http://localhost:" + port
@@ -531,7 +531,7 @@ class PetControllerTest {
                         + "?Тип=" + DOG
                         + "&Статус=" + FREE
                         + "&Имя=" + NAME
-                        + "&id=" + id,
+                        + "&Приют=" + id,
                 String.class);
 
         assertNotNull(actual_1);
@@ -575,45 +575,15 @@ class PetControllerTest {
         addPet();
         addNewShelter();
 
-        Pet expected_1 = new Pet(CAT, FREE, NAME, NEW_SHELTER);
-        expected_1.setId(PET.getId());
+        Pet expected = new Pet(CAT, ADOPTED, NEW_NAME, NEW_SHELTER);
+        expected.setId(PET.getId());
 
-        Pet actual_1 = this.template.exchange("http://localhost:" + port
+        Pet actual = this.template.exchange("http://localhost:" + port
                         + "/pet/" + PET.getId()
                         + "?Тип=" + CAT
-                        + "&id=" + NEW_SHELTER.getId(),
-                HttpMethod.PUT,
-                HttpEntity.EMPTY,
-                Pet.class).getBody();
-
-        deletePet(PET.getId());
-
-//======================================================================================================================
-
-        addPet();
-
-        Pet expected_2 = new Pet(DOG, ADOPTED, NAME, SHELTER);
-        expected_2.setId(PET.getId());
-
-        Pet actual_2 = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
-                        + "?Статус=" + ADOPTED,
-                HttpMethod.PUT,
-                HttpEntity.EMPTY,
-                Pet.class).getBody();
-
-        deletePet(PET.getId());
-
-//======================================================================================================================
-
-        addPet();
-
-        Pet expected_3 = new Pet(DOG, FREE, NEW_NAME, SHELTER);
-        expected_3.setId(PET.getId());
-
-        Pet actual_3 = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
-                        + "?Имя=" + NEW_NAME,
+                        + "&Статус=" + ADOPTED
+                        + "&Имя=" + NEW_NAME
+                        + "&Приют=" + NEW_SHELTER.getId(),
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 Pet.class).getBody();
@@ -622,13 +592,8 @@ class PetControllerTest {
         deleteShelter(NEW_SHELTER.getId());
         deleteShelter(SHELTER.getId());
 
-        assertNotNull(actual_1);
-        assertNotNull(actual_2);
-        assertNotNull(actual_3);
-
-        assertEquals(expected_1, actual_1);
-        assertEquals(expected_2, actual_2);
-        assertEquals(expected_3, actual_3);
+        assertNotNull(actual);
+        assertEquals(expected, actual);
     }
 
     @ParameterizedTest
@@ -659,7 +624,7 @@ class PetControllerTest {
 
         String actual = this.template.exchange("http://localhost:" + port
                         + "/pet/" + PET.getId()
-                        + "?id=" + id,
+                        + "?Приют=" + id,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -678,7 +643,7 @@ class PetControllerTest {
 
         String actual = this.template.exchange("http://localhost:" + port
                         + "/pet/" + PET.getId()
-                        + "?id=" + ID,
+                        + "?Приют=" + ID,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -691,6 +656,18 @@ class PetControllerTest {
     }
 
     @Test
+    void edit_PetNotFoundException() {
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/pet/" + ID,
+                HttpMethod.PUT,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, PET_NOT_FOUND), actual);
+    }
+
+    @Test
     void edit_DifferentTypesException() {
         addShelter();
         addPet();
@@ -699,7 +676,7 @@ class PetControllerTest {
         String actual = this.template.exchange("http://localhost:" + port
                         + "/pet/" + PET.getId()
                         + "?Тип=" + DOG
-                        + "&id=" + NEW_SHELTER.getId(),
+                        + "&Приют=" + NEW_SHELTER.getId(),
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();

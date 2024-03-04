@@ -81,7 +81,7 @@ public class VolunteerController {
                          @RequestParam(name = "Номер") String phoneNumber,
 
                          @Parameter(description = "id приюта для животных")
-                         @RequestParam(name = "id") Long shelterId) {
+                         @RequestParam(name = "Приют") Long shelterId) {
 
         return service.add(firstName, lastName, phoneNumber, shelterId);
     }
@@ -167,7 +167,7 @@ public class VolunteerController {
                                                     @RequestParam(required = false, name = "Номер") String phoneNumber,
 
                                                     @Parameter(description = "id приюта для животных")
-                                                    @RequestParam(required = false, name = "id") Long shelterId) {
+                                                    @RequestParam(required = false, name = "Приют") Long shelterId) {
 
         return service.getAllByParameters(firstName, lastName, phoneNumber, shelterId);
     }
@@ -247,7 +247,7 @@ public class VolunteerController {
                           @RequestParam(required = false, name = "Номер") String phoneNumber,
 
                           @Parameter(description = "id приюта для животных")
-                          @RequestParam(required = false, name = "id") Long shelterId) {
+                          @RequestParam(required = false, name = "Приют") Long shelterId) {
 
         return service.edit(id, firstName, lastName, phoneNumber, shelterId);
     }
