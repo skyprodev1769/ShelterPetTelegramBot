@@ -23,7 +23,7 @@ public class Pet {
     private PetType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "condition")
+    @Column(name = "status")
     private PetStatus status;
 
     @Column(name = "name")
