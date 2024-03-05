@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.controller.WebMvcTest;
+package com.skypro.ShelterPetTelegramBot.tests.controller.WebMvcTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.ShelterPetTelegramBot.controller.VolunteerController;
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.skypro.ShelterPetTelegramBot.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;

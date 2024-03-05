@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.service;
+package com.skypro.ShelterPetTelegramBot.tests.service;
 
 import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterNotFoundException;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;

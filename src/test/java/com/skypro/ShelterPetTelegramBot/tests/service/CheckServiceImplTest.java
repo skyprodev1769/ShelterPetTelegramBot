@@ -1,6 +1,6 @@
-package com.skypro.ShelterPetTelegramBot.service;
+package com.skypro.ShelterPetTelegramBot.tests.service;
 
-import com.skypro.ShelterPetTelegramBot.Utils;
+import com.skypro.ShelterPetTelegramBot.tests.Utils;
 import com.skypro.ShelterPetTelegramBot.exception.DifferentTypesException;
 import com.skypro.ShelterPetTelegramBot.exception.InvalideInputException;
 import com.skypro.ShelterPetTelegramBot.exception.InvalideNumberException;

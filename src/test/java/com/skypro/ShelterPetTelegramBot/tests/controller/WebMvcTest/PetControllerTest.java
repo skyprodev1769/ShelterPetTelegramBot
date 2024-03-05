@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.controller.WebMvcTest;
+package com.skypro.ShelterPetTelegramBot.tests.controller.WebMvcTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.ShelterPetTelegramBot.controller.PetController;
@@ -27,7 +27,7 @@ import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOP
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;

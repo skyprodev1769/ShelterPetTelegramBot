@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot.controller.TestRestTemplate;
+package com.skypro.ShelterPetTelegramBot.tests.controller.TestRestTemplate;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;

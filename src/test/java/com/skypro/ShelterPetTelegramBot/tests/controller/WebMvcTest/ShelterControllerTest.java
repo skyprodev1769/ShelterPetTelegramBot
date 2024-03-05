@@ -1,7 +1,7 @@
-package com.skypro.ShelterPetTelegramBot.controller.WebMvcTest;
+package com.skypro.ShelterPetTelegramBot.tests.controller.WebMvcTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skypro.ShelterPetTelegramBot.Utils;
+import com.skypro.ShelterPetTelegramBot.tests.Utils;
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;

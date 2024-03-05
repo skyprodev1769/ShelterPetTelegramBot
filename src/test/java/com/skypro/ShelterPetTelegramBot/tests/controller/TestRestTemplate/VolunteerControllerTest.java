@@ -1,8 +1,8 @@
-package com.skypro.ShelterPetTelegramBot.controller.TestRestTemplate;
+package com.skypro.ShelterPetTelegramBot.tests.controller.TestRestTemplate;
 
-import com.skypro.ShelterPetTelegramBot.controller.PetController;
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
+import com.skypro.ShelterPetTelegramBot.controller.VolunteerController;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,31 +17,29 @@ import org.springframework.http.HttpMethod;
 
 import java.util.stream.Stream;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOPTED;
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
-import static com.skypro.ShelterPetTelegramBot.Utils.*;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PetControllerTest {
+class VolunteerControllerTest {
 
     @LocalServerPort
     private int port;
     @Autowired
     private TestRestTemplate template;
     @Autowired
-    private PetController petController;
+    private VolunteerController volunteerController;
     @Autowired
     private ShelterController shelterController;
 
     @Test
     void contextLoads() {
-        Assertions.assertThat(petController).isNotNull();
+        Assertions.assertThat(volunteerController).isNotNull();
         Assertions.assertThat(shelterController).isNotNull();
     }
 
@@ -49,65 +47,93 @@ class PetControllerTest {
     void add_success() {
         addShelter();
 
-        Pet actual = this.template.postForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
+        Volunteer actual = this.template.postForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
                         + "&Приют=" + SHELTER.getId(),
-                PET,
-                Pet.class);
+                VOLUNTEER,
+                Volunteer.class);
 
-        PET.setId(actual.getId());
+        VOLUNTEER.setId(actual.getId());
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
-        assertEquals(PET, actual);
+        assertEquals(VOLUNTEER, actual);
     }
 
     @ParameterizedTest
     @MethodSource("provideParamsForName")
     void add_InvalideInputException(String name) {
-        String actual = this.template.postForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + name
+        String actual_1 = this.template.postForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + name
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
                         + "&Приют=" + ID,
-                PET,
+                VOLUNTEER,
                 String.class);
 
-        assertNotNull(actual);
-        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual);
+        String actual_2 = this.template.postForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + name
+                        + "&Номер=" + PHONE_NUMBER
+                        + "&Приют=" + ID,
+                VOLUNTEER,
+                String.class);
+
+        assertNotNull(actual_1);
+        assertNotNull(actual_2);
+
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_1);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
     }
 
     @ParameterizedTest
     @MethodSource("provideParamsForId")
     void add_InvalideInputException(Long id) {
         String actual = this.template.postForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
                         + "&Приют=" + id,
-                PET,
+                VOLUNTEER,
                 String.class);
 
         assertNotNull(actual);
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual);
     }
 
+    @ParameterizedTest
+    @MethodSource("provideParamsForPhoneNumber")
+    void add_InvalideNumberException(String number) {
+        String actual = this.template.postForObject("http://localhost:" + port
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + number
+                        + "&Приют=" + ID,
+                VOLUNTEER,
+                String.class);
+
+        assertNotNull(actual);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_NUMBER), actual);
+    }
+
     @Test
     void add_ShelterNotFoundException() {
         String actual = this.template.postForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
                         + "&Приют=" + ID,
-                PET,
+                VOLUNTEER,
                 String.class);
 
         assertNotNull(actual);
@@ -115,79 +141,47 @@ class PetControllerTest {
     }
 
     @Test
-    void add_DifferentTypesException() {
+    void add_VolunteerAlreadyAddedException() {
         addShelter();
-        addNewShelter();
-
-        String actual_1 = this.template.postForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + CAT
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
-                        + "&Приют=" + SHELTER.getId(),
-                PET,
-                String.class);
-
-        String actual_2 = this.template.postForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
-                        + "&Приют=" + NEW_SHELTER.getId(),
-                PET,
-                String.class);
-
-        deleteShelter(NEW_SHELTER.getId());
-        deleteShelter(SHELTER.getId());
-
-        assertNotNull(actual_1);
-        assertNotNull(actual_2);
-        assertEquals(exception(BAD_REQUEST, DIFFERENT_TYPES), actual_1);
-        assertEquals(exception(BAD_REQUEST, DIFFERENT_TYPES), actual_2);
-    }
-
-    @Test
-    void add_PetAlreadyAddedException() {
-        addShelter();
-        addPet();
+        addVolunteer();
 
         String actual = this.template.postForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
                         + "&Приют=" + SHELTER.getId(),
-                PET,
+                VOLUNTEER,
                 String.class);
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
-        assertEquals(exception(BAD_REQUEST, PET_ALREADY_ADDED), actual);
+        assertEquals(exception(BAD_REQUEST, VOLUNTEER_ALREADY_ADDED), actual);
     }
 
     @Test
     void getById_success() {
         addShelter();
-        addPet();
+        addVolunteer();
 
-        Pet actual = this.template.getForObject("http://localhost:" + port
-                        + "/pet/" + PET.getId(),
-                Pet.class);
+        Volunteer actual = this.template.getForObject("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId(),
+                Volunteer.class);
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
-        assertEquals(PET, actual);
+        assertEquals(VOLUNTEER, actual);
     }
 
     @ParameterizedTest
     @MethodSource("provideParamsForId")
     void getById_InvalideInputException(Long id) {
         String actual = this.template.getForObject("http://localhost:" + port
-                        + "/pet/" + id,
+                        + "/volunteer/" + id,
                 String.class);
 
         assertNotNull(actual);
@@ -195,113 +189,113 @@ class PetControllerTest {
     }
 
     @Test
-    void getById_PetNotFoundException() {
+    void getById_VolunteerNotFoundException() {
         String actual = this.template.getForObject("http://localhost:" + port
-                        + "/pet/" + ID,
+                        + "/volunteer/" + ID,
                 String.class);
 
         assertNotNull(actual);
-        assertEquals(exception(NOT_FOUND, PET_NOT_FOUND), actual);
+        assertEquals(exception(NOT_FOUND, VOLUNTEER_NOT_FOUND), actual);
     }
 
     @Test
     void getAllByParameters_success() {
         addShelter();
-        addPet();
+        addVolunteer();
 
         String actual_1 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG,
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME,
                 String.class);
 
         String actual_2 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Статус=" + FREE,
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME,
                 String.class);
 
         String actual_3 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Имя=" + NAME,
+                        + "/volunteer"
+                        + "?Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_4 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
+                        + "/volunteer"
                         + "?Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_5 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE,
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME,
                 String.class);
 
         String actual_6 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Имя=" + NAME,
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_7 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
                         + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_8 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Статус=" + FREE
-                        + "&Имя=" + NAME,
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_9 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Статус=" + FREE
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME
                         + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_10 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Имя=" + NAME
+                        + "/volunteer"
+                        + "?Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_11 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME,
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_12 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
                         + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_13 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_14 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Статус=" + FREE
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + SHELTER.getId(),
                 String.class);
 
         String actual_15 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + SHELTER.getId(),
                 String.class);
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual_1);
@@ -388,15 +382,15 @@ class PetControllerTest {
 
         String actual_9 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + name
-                        + "&Фамилия=" + LAST_NAME
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + name
                         + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
         String actual_10 = this.template.getForObject("http://localhost:" + port
                         + "/volunteer"
-                        + "?Имя=" + FIRST_NAME
-                        + "&Фамилия=" + name
+                        + "?Имя=" + name
+                        + "&Фамилия=" + LAST_NAME
                         + "&Номер=" + NUMBER_FOR_SEARCH,
                 String.class);
 
@@ -483,54 +477,54 @@ class PetControllerTest {
     @MethodSource("provideParamsForId")
     void getAllByParameters_InvalideInputException(Long id) {
         String actual_1 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
+                        + "/volunteer"
                         + "?Приют=" + id,
                 String.class);
 
         String actual_2 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
                         + "&Приют=" + id,
                 String.class);
 
         String actual_3 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Статус=" + FREE
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME
                         + "&Приют=" + id,
                 String.class);
 
         String actual_4 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Имя=" + NAME
+                        + "/volunteer"
+                        + "?Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + id,
                 String.class);
 
         String actual_5 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
                         + "&Приют=" + id,
                 String.class);
 
         String actual_6 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + id,
                 String.class);
 
         String actual_7 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Статус=" + FREE
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + id,
                 String.class);
 
         String actual_8 = this.template.getForObject("http://localhost:" + port
-                        + "/pet"
-                        + "?Тип=" + DOG
-                        + "&Статус=" + FREE
-                        + "&Имя=" + NAME
+                        + "/volunteer"
+                        + "?Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + NUMBER_FOR_SEARCH
                         + "&Приют=" + id,
                 String.class);
 
@@ -556,13 +550,13 @@ class PetControllerTest {
     @Test
     void getAll_success() {
         addShelter();
-        addPet();
+        addVolunteer();
 
         String actual = this.template.getForObject("http://localhost:" + port
-                        + "/pet/all",
+                        + "/volunteer/all",
                 String.class);
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
@@ -572,23 +566,26 @@ class PetControllerTest {
     @Test
     void edit_success() {
         addShelter();
-        addPet();
-        addNewShelter();
+        addVolunteer();
 
-        Pet expected = new Pet(CAT, ADOPTED, NEW_NAME, NEW_SHELTER);
-        expected.setId(PET.getId());
+        Long id = shelterController.add(CAT, NEW_ADDRESS).getId();
+        NEW_SHELTER.setId(id);
 
-        Pet actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
-                        + "?Тип=" + CAT
-                        + "&Статус=" + ADOPTED
-                        + "&Имя=" + NEW_NAME
+        Volunteer expected = new Volunteer(NEW_FIRST_NAME, NEW_LAST_NAME, NEW_VALID_PHONE_NUMBER, NEW_SHELTER);
+        expected.setId(VOLUNTEER.getId());
+
+        Volunteer actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId()
+                        + "?Имя=" + NEW_FIRST_NAME
+                        + "&Фамилия=" + NEW_LAST_NAME
+                        + "&Номер=" + NEW_PHONE_NUMBER
                         + "&Приют=" + NEW_SHELTER.getId(),
+
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
-                Pet.class).getBody();
+                Volunteer.class).getBody();
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(NEW_SHELTER.getId());
         deleteShelter(SHELTER.getId());
 
@@ -600,16 +597,46 @@ class PetControllerTest {
     @MethodSource("provideParamsForName")
     void edit_InvalideInputException(String name) {
         addShelter();
-        addPet();
+        addVolunteer();
 
-        String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
+        String actual_1 = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId()
                         + "?Имя=" + name,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
 
-        deletePet(PET.getId());
+        String actual_2 = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId()
+                        + "?Фамилия=" + name,
+                HttpMethod.PUT,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        deleteVolunteer(VOLUNTEER.getId());
+        deleteShelter(SHELTER.getId());
+
+        assertNotNull(actual_1);
+        assertNotNull(actual_2);
+
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_1);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForId")
+    void edit_InvalideInputException(Long id) {
+        addShelter();
+        addVolunteer();
+
+        String actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId()
+                        + "?Приют=" + id,
+                HttpMethod.PUT,
+                HttpEntity.EMPTY,
+                String.class).getBody();
+
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
@@ -617,38 +644,38 @@ class PetControllerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideParamsForId")
-    void edit_InvalideInputException(Long id) {
+    @MethodSource("provideParamsForPhoneNumber")
+    void edit_InvalideNumberException(String number) {
         addShelter();
-        addPet();
+        addVolunteer();
 
         String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
-                        + "?Приют=" + id,
+                        + "/volunteer/" + VOLUNTEER.getId()
+                        + "?Номер=" + number,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
-        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_NUMBER), actual);
     }
 
     @Test
     void edit_ShelterNotFoundException() {
         addShelter();
-        addPet();
+        addVolunteer();
 
         String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
+                        + "/volunteer/" + VOLUNTEER.getId()
                         + "?Приют=" + ID,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
 
-        deletePet(PET.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
@@ -656,80 +683,58 @@ class PetControllerTest {
     }
 
     @Test
-    void edit_PetNotFoundException() {
+    void edit_VolunteerNotFoundException() {
         String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + ID,
+                        + "/volunteer/" + ID,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
 
         assertNotNull(actual);
-        assertEquals(exception(NOT_FOUND, PET_NOT_FOUND), actual);
+        assertEquals(exception(NOT_FOUND, VOLUNTEER_NOT_FOUND), actual);
     }
 
     @Test
-    void edit_DifferentTypesException() {
+    void edit_VolunteerAlreadyAddedException() {
         addShelter();
-        addPet();
-        addNewShelter();
+        addVolunteer();
 
         String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
-                        + "?Тип=" + DOG
-                        + "&Приют=" + NEW_SHELTER.getId(),
+                        + "/volunteer/" + VOLUNTEER.getId()
+                        + "?Номер=" + PHONE_NUMBER,
                 HttpMethod.PUT,
                 HttpEntity.EMPTY,
                 String.class).getBody();
 
-        deletePet(PET.getId());
-        deleteShelter(NEW_SHELTER.getId());
+        deleteVolunteer(VOLUNTEER.getId());
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
-        assertEquals(exception(BAD_REQUEST, DIFFERENT_TYPES), actual);
-    }
-
-    @Test
-    void edit_PetAlreadyAddedException() {
-        addShelter();
-        addPet();
-
-        String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId()
-                        + "?Имя=" + NAME,
-                HttpMethod.PUT,
-                HttpEntity.EMPTY,
-                String.class).getBody();
-
-        deletePet(PET.getId());
-        deleteShelter(SHELTER.getId());
-
-        assertNotNull(actual);
-        assertEquals(exception(BAD_REQUEST, PET_ALREADY_ADDED), actual);
+        assertEquals(exception(BAD_REQUEST, VOLUNTEER_ALREADY_ADDED), actual);
     }
 
     @Test
     void delete_success() {
         addShelter();
-        addPet();
+        addVolunteer();
 
-        Pet actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + PET.getId(),
+        Volunteer actual = this.template.exchange("http://localhost:" + port
+                        + "/volunteer/" + VOLUNTEER.getId(),
                 HttpMethod.DELETE,
                 HttpEntity.EMPTY,
-                Pet.class).getBody();
+                Volunteer.class).getBody();
 
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
-        assertEquals(PET, actual);
+        assertEquals(VOLUNTEER, actual);
     }
 
     @ParameterizedTest
     @MethodSource("provideParamsForId")
     void delete_InvalideInputException(Long id) {
         String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + id,
+                        + "/volunteer/" + id,
                 HttpMethod.DELETE,
                 HttpEntity.EMPTY,
                 String.class).getBody();
@@ -739,15 +744,15 @@ class PetControllerTest {
     }
 
     @Test
-    void delete_PetNotFoundException() {
+    void delete_VolunteerNotFoundException() {
         String actual = this.template.exchange("http://localhost:" + port
-                        + "/pet/" + ID,
+                        + "/volunteer/" + ID,
                 HttpMethod.DELETE,
                 HttpEntity.EMPTY,
                 String.class).getBody();
 
         assertNotNull(actual);
-        assertEquals(exception(NOT_FOUND, PET_NOT_FOUND), actual);
+        assertEquals(exception(NOT_FOUND, VOLUNTEER_NOT_FOUND), actual);
     }
 
     private void addShelter() {
@@ -755,33 +760,38 @@ class PetControllerTest {
         SHELTER.setId(id);
     }
 
-    private void addNewShelter() {
-        Long id = shelterController.add(CAT, NEW_ADDRESS).getId();
-        NEW_SHELTER.setId(id);
-    }
-
-    private void addPet() {
-        Long id = petController.add(DOG, FREE, NAME, SHELTER.getId()).getId();
-        PET.setShelter(SHELTER);
-        PET.setId(id);
+    private void addVolunteer() {
+        Long id = volunteerController.add(FIRST_NAME, LAST_NAME, PHONE_NUMBER, SHELTER.getId()).getId();
+        VOLUNTEER.setShelter(SHELTER);
+        VOLUNTEER.setId(id);
     }
 
     private void deleteShelter(Long id) {
         shelterController.delete(id);
     }
 
-    private void deletePet(Long id) {
-        petController.delete(id);
+    private void deleteVolunteer(Long id) {
+        volunteerController.delete(id);
     }
 
     private void assertTrueForCollection(String actual) {
-        assertTrue(actual.contains(PET.getId().toString()));
-        assertTrue(actual.contains(PET.getType().toString()));
-        assertTrue(actual.contains(PET.getStatus().toString()));
-        assertTrue(actual.contains(PET.getName()));
-        assertTrue(actual.contains(PET.getShelter().getId().toString()));
-        assertTrue(actual.contains(PET.getShelter().getType().toString()));
-        assertTrue(actual.contains(PET.getShelter().getAddress()));
+        assertTrue(actual.contains(VOLUNTEER.getId().toString()));
+        assertTrue(actual.contains(VOLUNTEER.getFirstName()));
+        assertTrue(actual.contains(VOLUNTEER.getLastName()));
+        assertTrue(actual.contains(VOLUNTEER.getPhoneNumber()));
+        assertTrue(actual.contains(VOLUNTEER.getShelter().getId().toString()));
+        assertTrue(actual.contains(VOLUNTEER.getShelter().getType().toString()));
+        assertTrue(actual.contains(VOLUNTEER.getShelter().getAddress()));
+    }
+
+    private static Stream<Arguments> provideParamsForPhoneNumber() {
+        return Stream.of(
+                Arguments.of((Object) null),
+                Arguments.of(EMPTY),
+                Arguments.of(SHORT_PHONE_NUMBER),
+                Arguments.of(LONG_PHONE_NUMBER),
+                Arguments.of(INCORRECT_STRING)
+        );
     }
 
     private static Stream<Arguments> provideParamsForName() {

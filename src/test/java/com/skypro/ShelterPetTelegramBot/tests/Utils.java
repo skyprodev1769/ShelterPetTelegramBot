@@ -1,4 +1,4 @@
-package com.skypro.ShelterPetTelegramBot;
+package com.skypro.ShelterPetTelegramBot.tests;
 
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
