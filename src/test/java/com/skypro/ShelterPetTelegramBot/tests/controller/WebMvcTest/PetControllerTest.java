@@ -5,9 +5,15 @@ import com.skypro.ShelterPetTelegramBot.controller.PetController;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
-import com.skypro.ShelterPetTelegramBot.model.repository.*;
+import com.skypro.ShelterPetTelegramBot.model.repository.ParentRepository;
+import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
+import com.skypro.ShelterPetTelegramBot.model.repository.ShelterRepository;
+import com.skypro.ShelterPetTelegramBot.model.repository.VolunteerRepository;
 import com.skypro.ShelterPetTelegramBot.service.impl.CheckServiceImpl;
-import com.skypro.ShelterPetTelegramBot.service.impl.entity_service.*;
+import com.skypro.ShelterPetTelegramBot.service.impl.entity_service.ParentServiceImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.entity_service.PetServiceImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.entity_service.ShelterServiceImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.entity_service.VolunteerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -48,8 +54,6 @@ class PetControllerTest {
     private PetRepository petRepository;
     @MockBean
     private ParentRepository parentRepository;
-    @MockBean
-    private ReportRepository reportRepository;
     @SpyBean
     private ShelterServiceImpl shelterService;
     @SpyBean
@@ -58,8 +62,6 @@ class PetControllerTest {
     private PetServiceImpl petService;
     @SpyBean
     private ParentServiceImpl parentService;
-    @SpyBean
-    private ReportServiceImpl reportService;
     @SpyBean
     private CheckServiceImpl checkService;
     @InjectMocks

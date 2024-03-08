@@ -12,10 +12,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 /**
  * Класс {@link BotInitializer}
- * является конфигурационным классом для регистрации телеграм бота
- * и имеет основной метод: <br> <br>
- *
- * <b> {@code init()} </b>
+ * является конфигурационным классом для регистрации телеграм бота {@link TelegramBot}
  */
 @Slf4j
 @Component

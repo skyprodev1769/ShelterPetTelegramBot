@@ -25,6 +25,13 @@ values ('5', 'CAT', 'FREE', 'Пушок', '2');
 insert into pet (id, type, status, name, shelter_id)
 values ('6', 'CAT', 'ADOPTED', 'Снежок', '2');
 
+insert into potential_parent(chat_id, first_name, last_name, phone_number)
+values('111111', 'Семен', 'Семенов', '88888888881');
+insert into potential_parent(chat_id, first_name, last_name, phone_number)
+values('222222', 'Андрей', 'Андреев', '88888888882');
+insert into potential_parent(chat_id, first_name, last_name, phone_number)
+values('333333', 'Алексей', 'Алексеев', '88888888883');
+
 insert into parent  (id, first_name, last_name, phone_number, pet_id)
 values ('1', 'Семен', 'Семенов', '+7-888-888-88-81', '1');
 insert into parent  (id, first_name, last_name, phone_number, pet_id)

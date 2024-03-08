@@ -48,7 +48,7 @@ public interface ParentService {
     Collection<Parent> getAll();
 
     /**
-     * Метод изменяет данные усыновителя В БД
+     * Метод изменяет данные усыновителя В БД по id
      *
      * @param id          <i> является идентификатором усыновителя </i> <br>
      * @param firstName   <i> является новым именем усыновителя </i> <br>
@@ -63,7 +63,7 @@ public interface ParentService {
                 String petName);
 
     /**
-     * Метод удаляет усыновителя из БД
+     * Метод удаляет усыновителя из БД по id
      *
      * @param id <i> является идентификатором усыновителя </i>
      */

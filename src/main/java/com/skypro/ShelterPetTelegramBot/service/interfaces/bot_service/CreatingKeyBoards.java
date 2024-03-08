@@ -56,4 +56,12 @@ public interface CreatingKeyBoards {
      * @param answer <i> является текстом для отправки пользователю </i>
      */
     SendMessage createKeyBoardForDetailedInfoAboutProcessForCat(Long chatId, String answer);
+
+    /**
+     * Метод создает интерактивную клавиатуру для получения информации об отправке отчета о животном
+     *
+     * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param answer <i> является текстом для отправки пользователю </i>
+     */
+    SendMessage createKeyBoardForReportPet(Long chatId, String answer);
 }

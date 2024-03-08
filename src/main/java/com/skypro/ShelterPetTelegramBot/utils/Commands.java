@@ -42,14 +42,16 @@ public class Commands {
     public static final String LIST_REASONS_FOR_REFUSAL = "Список причин, почему могут отказать в том, чтобы забрать животное";
 
 
+    // КОМАНДЫ ИНФОРМАЦИИ ОБ ОТПРАВКЕ ОТЧЕТА О ЖИВОТНОМ (ЭТАП 3)
     public static final String REPORT_ABOUT_PET = "ЭТАП 3: Отчет о домашнем животном";
+    public static final String PATTERN_REPORT = "Шаблон отчета о животном";
 
 
     // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
     public static final String RECORD_CONTACT_DETAILS = "Принять и записать контактные данные для связи";
 
 
-    // КОМАНДА УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ
+    // КОМАНДЫ УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ
     public static final String REMOVE_CONTACT_DETAILS = "Удалить мои контактные данные";
     public static final String REMOVE = "Удалить";
 

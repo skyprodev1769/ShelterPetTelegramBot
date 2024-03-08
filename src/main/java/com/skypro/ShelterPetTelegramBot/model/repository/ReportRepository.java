@@ -1,9 +1,10 @@
 package com.skypro.ShelterPetTelegramBot.model.repository;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Report;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
@@ -13,5 +14,5 @@ import java.util.Optional;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    Optional<Report> findByParentFirstNameContainsIgnoreCaseAndParentLastNameContainsIgnoreCase(String parentFirstName, String parentLastName);
+    Optional<Report> getByDate(LocalDate date);
 }

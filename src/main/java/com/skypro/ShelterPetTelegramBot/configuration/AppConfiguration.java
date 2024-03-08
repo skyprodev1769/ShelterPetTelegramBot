@@ -26,4 +26,7 @@ public class AppConfiguration {
 
     @Value("${shelters.path-to-cat-shelter}")
     private String pathForCatShelter;
+
+    @Value("${pets.path-to-photo}")
+    private String photosDir;
 }

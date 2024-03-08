@@ -33,10 +33,10 @@ public class CheckServiceImpl implements CheckService {
     @Override
     public boolean checkStatus(PetStatus status) {
         if (!status.equals(FREE)) {
-            log.info("СТАТУС {} НЕ СООТВЕТСТВУЕТ", status);
+            log.info("СТАТУС {} НЕ СООТВЕТСТВУЕТ ДЛЯ УСЫНОВЛЕНИЯ", status);
             throw new PetStatusException();
         }
-        log.info("СТАТУС {} СООТВЕТСТВУЕТ", status);
+        log.info("СТАТУС {} СООТВЕТСТВУЕТ ДЛЯ УСЫНОВЛЕНИЯ", status);
         return true;
     }
 

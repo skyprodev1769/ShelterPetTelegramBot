@@ -162,7 +162,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
     @Override
     public final SendMessage createKeyBoardForDetailedInfoAboutProcessForDog(Long chatId, String answer) {
-        SendMessage message = createKeyBoardForDetailedInfoAboutProcessForCat(chatId, answer);
+        SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
         message.setText(answer);
@@ -315,6 +315,53 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
         message.setReplyMarkup(keyboard);
 
         log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ДЕТАЛЬНОЙ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИЯ КОШКИ");
+        return message;
+    }
+
+    @Override
+    public SendMessage createKeyBoardForReportPet(Long chatId, String answer) {
+        SendMessage message = new SendMessage();
+
+        message.setChatId(chatId);
+        message.setText(answer);
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(PATTERN_REPORT);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(RECORD_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(REMOVE_CONTACT_DETAILS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(INFO_ABOUT_PROCESS);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CHANGE_SHELTER);
+        rows.add(row);
+
+        row = new KeyboardRow();
+        row.add(CALL_VOLUNTEER);
+        rows.add(row);
+
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+
+        log.info("СОЗДАНА КЛАВИАТУРА ДЛЯ ПОЛУЧЕНИЯ ИНФОРМАЦИИ ОБ ОТПРАВКЕ ОТЧЕТА О ЖИВОТНОМ");
         return message;
     }
 }

@@ -41,7 +41,7 @@ public interface ShelterService {
     Collection<Shelter> getAll();
 
     /**
-     * Метод изменяет данные приюта для животных В БД
+     * Метод изменяет данные приюта для животных В БД по id
      *
      * @param id      <i> является идентификатором приюта </i> <br>
      * @param type    <i> является новым указателем типа животных в приюте </i> <br>
@@ -50,7 +50,7 @@ public interface ShelterService {
     Shelter edit(Long id, PetType type, String address);
 
     /**
-     * Метод удаляет приют для животных из БД
+     * Метод удаляет приют для животных из БД по id
      *
      * @param id <i> является идентификатором приюта </i>
      */

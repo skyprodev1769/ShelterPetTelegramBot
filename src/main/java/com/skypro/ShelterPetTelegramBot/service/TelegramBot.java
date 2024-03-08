@@ -3,12 +3,16 @@ package com.skypro.ShelterPetTelegramBot.service;
 import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
 import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.Report;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.User;
+import com.skypro.ShelterPetTelegramBot.model.repository.ParentRepository;
 import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
+import com.skypro.ShelterPetTelegramBot.model.repository.ReportRepository;
 import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
 import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingButtonsImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingKeyBoardsImpl;
@@ -24,11 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -36,6 +40,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -55,6 +60,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersFor
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutCatShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutDogShelterCommands.REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER;
 import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForInfoAboutProcess.*;
+import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersForReportPet.*;
 
 /**
  * Класс {@link TelegramBot}
@@ -74,7 +80,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private PotentialParentRepository parentRepository;
+    private PotentialParentRepository potentialParentRepository;
+    @Autowired
+    private ParentRepository parentRepository;
+    @Autowired
+    private ReportRepository reportRepository;
     @Autowired
     private ShelterService shelterService;
     @Autowired
@@ -103,26 +113,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId;
         String userFirstName;
 
-        if (update.hasMessage() && update.getMessage().hasText()) { // ЕСЛИ ПРИХОДИТ ТЕКСТОВОЕ СООБЩЕНИЕ
+        if (update.hasMessage()) { // ЕСЛИ ПРИХОДИТ СООБЩЕНИЕ
 
             chatId = update.getMessage().getChatId();
             userFirstName = update.getMessage().getChat().getFirstName();
-            String text = update.getMessage().getText();
+            Message message = update.getMessage();
 
             if (userRepository.findById(chatId).isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ РЕГИСТРИРОВАЛСЯ
 
-                getReactionsForUnregisteredUsers(chatId, userFirstName, text);
+                workWithUnregisteredUsers(chatId, userFirstName, message);
 
             } else { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ЗАРЕГИСТРИРОВАЛСЯ
 
-                Matcher matcher = appConfiguration.getPattern().matcher(text);
-
-                if (matcher.matches()) { // ЕСЛИ ВХОДЯЩЕЕ СООБЩЕНИЕ СОДЕРЖИТ ФОРМУ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ
-                    savePotentialParentToDB(chatId, userFirstName, matcher);
-                    return;
-                }
-
-                getReactionsForRegisteredUsers(chatId, userFirstName, text);
+                workWithRegisteredUsers(chatId, userFirstName, message);
             }
 
         } else if (update.hasCallbackQuery()) { // ЕСЛИ ПРИХОДИТ ОТКЛИК ОТ НАЖАТИЯ КНОПКИ
@@ -132,6 +135,126 @@ public class TelegramBot extends TelegramLongPollingBot {
             String callbackData = update.getCallbackQuery().getData();
 
             getReactionsToClickingButtons(chatId, userFirstName, callbackData);
+        }
+    }
+
+    /**
+     * Метод содержит логику работы для <b> НЕЗАРЕГИСТРИРОВАННЫХ </b> пользователей
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i> <br>
+     * @param message       <i> является получаемым сообщением </i>
+     */
+    private void workWithUnregisteredUsers(Long chatId, String userFirstName, Message message) {
+
+        if (message.hasText()) { // ЕСЛИ ПРИХОДИТ ТЕКСТОВОЕ СООБЩЕНИЕ
+            String text = message.getText();
+            getReactionsForUnregisteredUsers(chatId, userFirstName, text);
+
+        } else { // ЕСЛИ ПРИХОДИТ НЕ ТЕКСТОВОЕ СООБЩЕНИЕ
+            String answer = DEFAULT_REACTION_FOR_UNREGISTERED_USERS(userFirstName);
+            reactionToCommand(chatId, answer);
+        }
+    }
+
+    /**
+     * Метод содержит логику работы для <b> ЗАРЕГИСТРИРОВАННЫХ </b> пользователей
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i> <br>
+     * @param message       <i> является получаемым сообщением </i>
+     */
+    private void workWithRegisteredUsers(Long chatId, String userFirstName, Message message) {
+
+        if (message.hasText()) { // ЕСЛИ ПРИХОДИТ ТЕКСТОВОЕ СООБЩЕНИЕ
+
+            String text = message.getText();
+            Matcher matcher = appConfiguration.getPattern().matcher(text);
+
+            if (matcher.matches()) { // ЕСЛИ ВХОДЯЩЕЕ СООБЩЕНИЕ СОДЕРЖИТ ФОРМУ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ
+                savePotentialParentToDB(chatId, userFirstName, matcher);
+                return;
+            }
+
+            getReactionsForRegisteredUsers(chatId, userFirstName, text);
+
+        } else if (message.hasPhoto() | message.hasDocument()) { // ЕСЛИ ПРИХОДИТ ФОТО ИЛИ ДОКУМЕНТ
+
+            workWithParents(chatId, userFirstName, message);
+
+        } else { // ЕСЛИ ПРИХОДИТ НЕ ТЕКСТОВОЕ СООБЩЕНИЕ, НЕ ФОТО И НЕ ДОКУМЕНТ
+
+            String answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
+            SendMessage sendMessage = buttons.createButtonForCallVolunteer(chatId, answer);
+            executeMessage(sendMessage);
+        }
+    }
+
+    /**
+     * Метод содержит логику работы для усыновителей
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i> <br>
+     * @param message       <i> является получаемым сообщением </i>
+     */
+    private void workWithParents(Long chatId, String userFirstName, Message message) {
+
+        List<PotentialParent> parents = potentialParentRepository.getAllByChatId(chatId);
+
+        if (!parents.isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОСТАВИЛ СВОИ КОНТАКТНЫЕ ДАННЫЕ
+
+            for (PotentialParent el : parents) {
+
+                String firstName = el.getFirstName();
+                String lastName = el.getLastName();
+
+                Parent parent = parentRepository.getByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(firstName, lastName);
+
+                if (parent != null) { // ЕСЛИ ВОЛОНТЕР ЗАНЕС УСЫНОВИТЕЛЯ В БД
+
+                    uploadReport(chatId, userFirstName, message, parent);
+                    return;
+                }
+            }
+        }
+
+        String answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
+        SendMessage sendMessage = buttons.createButtonForCallVolunteer(chatId, answer);
+        executeMessage(sendMessage);
+    }
+
+    /**
+     * Метод содержит логику работы для загрузки отчетов о животных
+     *
+     * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
+     * @param userFirstName <i> является именем пользователя </i> <br>
+     * @param message       <i> является получаемым сообщением </i> <br>
+     * @param parent        <i> является именем пользователя </i> <br>
+     */
+    private void uploadReport(Long chatId, String userFirstName, Message message, Parent parent) {
+        String answer;
+
+        if (message.hasPhoto()) { // ЕСЛИ ПРИХОДИТ ФОТО
+
+            List<PhotoSize> photos = message.getPhoto();
+            saveReport(parent, photos, null);
+
+            answer = REACTION_TO_SAVE_ONLY_PHOTO(userFirstName);
+            reactionToCommand(chatId, answer);
+
+        } else if (message.hasDocument()) { // ЕСЛИ ПРИХОДИТ ДОКУМЕНТ
+
+            Document document = message.getDocument();
+            saveReport(parent, null, document);
+
+            answer = REACTION_TO_SAVE_ONLY_DOCUMENT(userFirstName);
+            reactionToCommand(chatId, answer);
+
+        } else { // ЕСЛИ ПРИХОДИТ НЕ ФОТО И НЕ ДОКУМЕНТ
+
+            answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
+            SendMessage sendMessage = buttons.createButtonForCallVolunteer(chatId, answer);
+            executeMessage(sendMessage);
         }
     }
 
@@ -163,7 +286,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case SETTINGS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ КЛАВИАТУРУ ДЛЯ РЕГИСТРАЦИИ", chatId, userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КЛАВИАТУРУ ДЛЯ РЕГИСТРАЦИИ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_SETTINGS(userFirstName);
                 message = keyBoards.createKeyBoardForRegistration(chatId, answer);
                 executeMessage(message);
@@ -216,7 +339,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case SETTINGS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ КЛАВИАТУРУ ДЛЯ ВЫБОРА ПРИЮТА", chatId, userFirstName);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КЛАВИАТУРУ ДЛЯ ВЫБОРА ПРИЮТА", chatId, userFirstName);
                 answer = REACTION_TO_CHANGED_SHELTER(userFirstName);
                 message = keyBoards.createKeyBoardForChoiceShelter(chatId, answer);
                 executeMessage(message);
@@ -348,6 +471,21 @@ public class TelegramBot extends TelegramLongPollingBot {
             case LIST_REASONS_FOR_REFUSAL -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРИЧИН ДЛЯ ОТКАЗА", chatId, userFirstName);
                 answer = REACTION_TO_LIST_REASONS_FOR_REFUSAL(userFirstName);
+                reactionToCommand(chatId, answer);
+            }
+
+            // КОМАНДЫ ИНФОРМАЦИИ ОБ ОТПРАВКЕ ОТЧЕТА О ЖИВОТНОМ (ЭТАП 3)
+
+            case REPORT_ABOUT_PET -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ ОБ ОТПРАВКЕ ОТЧЕТА О ЖИВОТНОМ", chatId, userFirstName);
+                answer = REACTION_TO_DETAILED_INFO(userFirstName);
+                message = keyBoards.createKeyBoardForReportPet(chatId, answer);
+                executeMessage(message);
+            }
+
+            case PATTERN_REPORT -> {
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ШАБЛОН ОТЧЕТА О ЖИВОТНОМ", chatId, userFirstName);
+                answer = REACTION_TO_PATTERN_REPORT(userFirstName);
                 reactionToCommand(chatId, answer);
             }
 
@@ -484,6 +622,87 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
+     * Метод сохраняет отчет о животном {@link Report} в БД
+     *
+     * @param parent   <i> является усыновителем, отправившим отчет </i> <br>
+     * @param photos   <i> являются фото, отправляемыми усыновителем </i> <br>
+     * @param document <i> является документом, отправляемым усыновителем </i>
+     */
+    public void saveReport(Parent parent, List<PhotoSize> photos, Document document) {
+
+        String firstName = parent.getFirstName();
+        String lastName = parent.getLastName();
+
+        String firstPartFileName = firstName + "_" + lastName + "_" + LocalDate.now();
+        String parentDir = appConfiguration.getPhotosDir() + "/" + firstName + "_" + lastName + "_" + parent.getPet().getName();
+
+        Report report = reportRepository.getByDate(LocalDate.now()).orElseGet(Report::new);
+
+        if (photos != null) {
+            savePhoto(photos, firstPartFileName, parentDir, report);
+        }
+
+        if (document != null) {
+            saveDocument(document, firstPartFileName, parentDir, report);
+        }
+
+        report.setDate(LocalDate.now());
+        report.setParent(parent);
+        reportRepository.save(report);
+    }
+
+    /**
+     * Метод сохраняет фото животного в отчет о животном
+     *
+     * @param photos            <i> являются фото, отправляемыми усыновителем </i> <br>
+     * @param firstPartFileName <i> является первой частью названия фото </i> <br>
+     * @param parentDir         <i> является директорией сохранения фото </i> <br>
+     * @param report            <i> является отчетом о животном </i>
+     */
+    private void savePhoto(List<PhotoSize> photos, String firstPartFileName, String parentDir, Report report) {
+
+        PhotoSize photo = photos.get(photos.size() - 1);
+        GetFile getFile = new GetFile(photo.getFileId());
+
+        String fileName = firstPartFileName + ".png";
+        File file = new File(parentDir, fileName);
+
+        try {
+            downloadFile(execute(getFile), file);
+        } catch (TelegramApiException e) {
+            log.error("ОШИБКА СОХРАНЕНИЯ ИЗОБРАЖЕНИЯ: {}", e.getMessage());
+        }
+
+        report.setPhoto(fileName);
+        log.info("ДОБАВЛЕНО ФОТО {} В ОТЧЕТ О ЖИВОТНОМ {}", fileName, LocalDate.now());
+    }
+
+    /**
+     * Метод сохраняет документ с описательной частью в отчет о животном
+     *
+     * @param document          <i> является документом, отправляемым усыновителем </i> <br>
+     * @param firstPartFileName <i> является первой частью названия фото </i> <br>
+     * @param parentDir         <i> является директорией сохранения фото </i> <br>
+     * @param report            <i> является отчетом о животном </i>
+     */
+    private void saveDocument(Document document, String firstPartFileName, String parentDir, Report report) {
+
+        GetFile getFile = new GetFile(document.getFileId());
+
+        String fileName = firstPartFileName + ".docx";
+        File file = new File(parentDir, fileName);
+
+        try {
+            downloadFile(execute(getFile), file);
+        } catch (TelegramApiException e) {
+            log.error("ОШИБКА СОХРАНЕНИЯ ДОКУМЕНТА: {}", e.getMessage());
+        }
+
+        report.setDocument(fileName);
+        log.info("ДОБАВЛЕН ДОКУМЕНТ {} В ОТЧЕТ О ЖИВОТНОМ {}", fileName, LocalDate.now());
+    }
+
+    /**
      * Метод возвращает, в зависимости от выбранного типа, список животных для усыновления из БД
      *
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
@@ -578,14 +797,14 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param matcher       <i> является объектом класса {@link Matcher} </i>
      */
     private void savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher) {
-
         String answer;
+
         PotentialParent parent = contacts.recordContact(chatId, matcher);
         Long id = Long.valueOf(parent.getPhoneNumber());
 
-        if (parentRepository.findById(id).isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
+        if (potentialParentRepository.findById(id).isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ РАНЕЕ НЕ ОТПРАВЛЯЛ КОНТАКТНЫЕ ДАННЫЕ
 
-            parentRepository.save(parent);
+            potentialParentRepository.save(parent);
             log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПИСАЛСЯ КАК ПОТЕНЦИАЛЬНЫЙ УСЫНОВИТЕЛЬ", chatId, userFirstName);
             answer = REACTION_TO_SUCCESSFUL_RECORD_CONTACT(userFirstName);
             SendMessage message = keyBoards.createKeyBoardForGeneralInfo(chatId, answer);
@@ -603,13 +822,12 @@ public class TelegramBot extends TelegramLongPollingBot {
      * Метод стирает все ранее переданные контакты усыновителя {@link PotentialParent} из БД
      *
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param userFirstName <i> является именем пользователя </i> <br>
+     * @param userFirstName <i> является именем пользователя </i>
      */
     private void removePotentialParentFromDB(Long chatId, String userFirstName) {
-
         String answer;
 
-        List<PotentialParent> parent = parentRepository.getAllByChatId(chatId);
+        List<PotentialParent> parent = potentialParentRepository.getAllByChatId(chatId);
 
         if (parent.isEmpty()) { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ ОТПРАВЛЯЛ РАНЕЕ КОНТАКТНЫЕ ДАННЫЕ
 
@@ -619,8 +837,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         } else { // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОТПРАВЛЯЛ РАНЕЕ КОНТАКТНЫЕ ДАННЫЕ
 
-            parentRepository.deleteAll();
-            log.info("СТЕРТЫ КОНТАКТНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ: {} {}", chatId, userFirstName);
+            potentialParentRepository.deleteAll();
+            log.info("УДАЛЕНЫ КОНТАКТНЫЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ: {} {}", chatId, userFirstName);
             answer = REACTION_TO_REMOVED_CONTACTS_DETAILS(userFirstName);
             SendMessage message = keyBoards.createKeyBoardForGeneralInfo(chatId, answer);
             executeMessage(message);
@@ -650,7 +868,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      *
      * <b>/start</b> <br>
      * <b>/help</b> <br>
-     * <b>/settings</b> <br>
+     * <b>/settings</b>
      */
     private void createMainMenu() {
         List<BotCommand> listOfCommands = new ArrayList<>();
@@ -670,7 +888,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * Метод отправляет изображение пользователю: <br>
      *
      * @param chatId  <i> является идентификатором пользователя (его id в telegram) </i> <br>
-     * @param caption <i> является подписью под картинкой для отправки пользователю </i>
+     * @param caption <i> является подписью под картинкой для отправки пользователю </i> <br>
      * @param path    <i> является путем к расположению изображения </i>
      */
     private void sendImage(Long chatId, String caption, String path) {

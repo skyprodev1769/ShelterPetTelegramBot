@@ -1,5 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.configuration;
 
+import com.skypro.ShelterPetTelegramBot.service.TelegramBot;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -7,10 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 /**
  * Класс {@link BotConfiguration}
- * является конфигурационным классом для телеграм бота и имеет 2 поля: <br> <br>
- *
- * <b> {@code String name} </b> <br> <i> является наименованием телеграм бота </i> <br> <br>
- * <b> {@code String token} </b> <br> <i> является аутентификационным номером телеграм бота </i>
+ * является конфигурационным классом для телеграм бота {@link TelegramBot}
  */
 @Data
 @Configuration

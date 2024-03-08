@@ -50,7 +50,7 @@ public interface VolunteerService {
     Collection<Volunteer> getAll();
 
     /**
-     * Метод изменяет данные волонтера В БД
+     * Метод изменяет данные волонтера В БД по id
      *
      * @param id          <i> является идентификатором волонтера </i> <br>
      * @param firstName   <i> является новым именем волонтера </i> <br>
@@ -65,7 +65,7 @@ public interface VolunteerService {
                    Long shelterId);
 
     /**
-     * Метод удаляет волонтера из БД
+     * Метод удаляет волонтера из БД по id
      *
      * @param id <i> является идентификатором волонтера </i>
      */

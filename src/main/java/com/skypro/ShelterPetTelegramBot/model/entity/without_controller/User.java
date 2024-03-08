@@ -9,11 +9,7 @@ import java.sql.Timestamp;
 
 /**
  * Класс {@link User}
- * является сущностью для хранения новых пользователей в БД и имеет 3 поля: <br> <br>
- *
- * <b> {@code Long chatId} </b> <br> <i> является идентификатором пользователя (его id в telegram) </i> <br> <br>
- * <b> {@code String firstName} </b> <br> <i> является именем пользователя </i> <br> <br>
- * <b> {@code Timestamp registerAt} </b> <br> <i> является временем регистрации пользователя </i>
+ * является сущностью для хранения новых пользователей в БД
  */
 @Data
 @Entity(name = "users")
