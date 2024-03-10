@@ -1,7 +1,6 @@
 package com.skypro.ShelterPetTelegramBot.utils.documentation;
 
-import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.INVALIDE_INPUT;
-import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.REPORT_NOT_FOUND;
+import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 
 public class ReportControllerDoc {
 
@@ -45,10 +44,13 @@ public class ReportControllerDoc {
 
     public static final String ID_REPORT_INCORRECT = "ПРИЧИНА: Передан некорректный ID отчета.\n";
     public static final String ID_REPORT_NOT_FOUND = "ПРИЧИНА: Отчет с данным ID еще не был добавлен.\n";
+    public static final String TYPE_ATTACHMENT_NOT_FOUND = "ПРИЧИНА: Вложение в отчете такого типа еще не было добавлено.\n";
 
     public static final String GET_REPORT_CODE_400 =
             ID_REPORT_INCORRECT + INVALIDE_INPUT;
-
     public static final String GET_REPORT_CODE_404 =
             ID_REPORT_NOT_FOUND + REPORT_NOT_FOUND;
+    public static final String GET_ATTACHMENT_CODE_404 =
+            ID_REPORT_NOT_FOUND + REPORT_NOT_FOUND + "\n\n" +
+                    TYPE_ATTACHMENT_NOT_FOUND + ATTACHMENT_NOT_FOUND;
 }

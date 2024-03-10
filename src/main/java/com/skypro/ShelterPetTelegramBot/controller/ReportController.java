@@ -108,7 +108,7 @@ public class ReportController {
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(GET_REPORT_CODE_404)
+                                    examples = @ExampleObject(GET_ATTACHMENT_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -122,7 +122,7 @@ public class ReportController {
     )
 
     @GetMapping("/attachment/{ID}")
-    public void getAttachmentById(
+    public void getAttachmentByIdAndType(
             @Parameter(
                     description = ID_REPORT,
                     content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
@@ -133,7 +133,7 @@ public class ReportController {
 
             HttpServletResponse response) {
 
-        service.getAttachmentById(id, type, response);
+        service.getAttachmentByIdAndType(id, type, response);
     }
 
     @Operation(

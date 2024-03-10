@@ -1,6 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.ReportController;
+import com.skypro.ShelterPetTelegramBot.exception.AttachmentNotFoundException;
 import com.skypro.ShelterPetTelegramBot.exception.ReportNotFoundException;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Report;
 import com.skypro.ShelterPetTelegramBot.model.enums.FileType;
@@ -47,23 +48,20 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void getAttachmentById(Long id, FileType type, HttpServletResponse response) {
+    public void getAttachmentByIdAndType(Long id, FileType type, HttpServletResponse response) {
         Report report = getById(id);
 
-        Path path;
-
         if (type == PNG) {
-            path = Path.of(report.getPhoto());
-        } else {
-            path = Path.of(report.getDocument());
-        }
+            getAttachment(id, response, report.getPhoto());
 
-        downloadAttachmentFromDir(path, response);
-        log.info("ПОЛУЧЕНО ВЛОЖЕНИЕ ОТЧЕТА ПО ID - {}", id);
+        } else {
+            getAttachment(id, response, report.getDocument());
+        }
 
         if (report.getPhoto() != null & report.getDocument() != null) {
             report.setStatus(VIEWED);
             repository.save(report);
+            log.info("ВСЕ ВЛОЖЕНИЯ ОТЧЕТА {} ПРОСМОТРЕНЫ", id);
         }
     }
 
@@ -96,6 +94,35 @@ public class ReportServiceImpl implements ReportService {
         return repository.findAll();
     }
 
+    /**
+     * Метод передает загруженное вложение отчета
+     *
+     * @param id         <i> является идентификатором отчета о животном </i> <br>
+     * @param response   <i> является определителем ответа клиенту </i> <br>
+     * @param attachment <i> является передаваемым вложением </i>
+     */
+    private void getAttachment(Long id, HttpServletResponse response, String attachment) {
+
+        Path path;
+
+        if (attachment != null) {
+            path = Path.of(attachment);
+            downloadAttachmentFromDir(path, response);
+            log.info("ПОЛУЧЕНО ВЛОЖЕНИЕ ОТЧЕТА ПО ID - {}", id);
+
+        } else {
+
+            log.info("НЕ НАЙДЕНО ВЛОЖЕНИЕ ОТЧЕТА ПО ID - {}", id);
+            throw new AttachmentNotFoundException();
+        }
+    }
+
+    /**
+     * Метод загружает вложение отчета из файловой директории
+     *
+     * @param path     <i> является путем сохранения вложения отчета </i> <br>
+     * @param response <i> является определителем ответа клиенту </i>
+     */
     private void downloadAttachmentFromDir(Path path, HttpServletResponse response) {
 
         try (InputStream is = Files.newInputStream(path);

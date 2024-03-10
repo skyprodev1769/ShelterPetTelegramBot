@@ -29,7 +29,7 @@ public interface ReportService {
      * @param type     <i> является расширением получаемого вложения </i> <br>
      * @param response <i> является определителем ответа клиенту </i>
      */
-    void getAttachmentById(Long id, FileType type, HttpServletResponse response);
+    void getAttachmentByIdAndType(Long id, FileType type, HttpServletResponse response);
 
     /**
      * Метод находит все отчеты о животных из БД по разным параметрам
