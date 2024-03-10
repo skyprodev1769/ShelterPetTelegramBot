@@ -2,8 +2,8 @@ package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.PetController;
 import com.skypro.ShelterPetTelegramBot.exception.pet.PetNotFoundException;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
@@ -51,14 +51,14 @@ public class PetServiceImpl implements PetService {
 
         checkService.checkPetAlreadyAdded(getAll(), pet);
 
-        log.info("ДОБАВЛЕНО НОВОЕ ЖИВОТНОЕ: \"тип\" - {}; \"статус\" - {}; \"имя\" - {}; \"ID приюта для животных\" - {}", type, status, name, shelterId);
+        log.info("СОЗДАНО НОВОЕ ЖИВОТНОЕ: \"тип\" - {}; \"статус\" - {}; \"имя\" - {}; \"ID приюта для животных\" - {}", type, status, name, shelterId);
         return repository.save(pet);
     }
 
     @Override
     public Pet getById(Long id) {
         checkService.checkValue(id);
-        log.info("ПОЛУЧЕНО ЖИВОТНОЕ ПО ID - {}", id);
+        log.info("ЗАПРОШЕНО ЖИВОТНОЕ ПО ID - {}", id);
         return repository.findById(id).orElseThrow(PetNotFoundException::new);
     }
 
@@ -74,79 +74,79 @@ public class PetServiceImpl implements PetService {
         } else {
 
             if (type != null & status == null & name == null & shelterId == null) {
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}", type);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}", type);
                 return repository.getAllByType(type);
 
             } else if (type == null & status != null & name == null & shelterId == null) {
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}", status);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}", status);
                 return repository.getAllByStatus(status);
 
             } else if (type == null & status == null & name != null & shelterId == null) {
                 checkService.checkName(name);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {}", name);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {}", name);
                 return repository.getAllByNameContainsIgnoreCase(name);
 
             } else if (type == null & status == null & name == null & shelterId != null) {
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
                 return repository.getAllByShelterId(shelterId);
 
             } else if (type != null & status != null & name == null & shelterId == null) {
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И СТАТУСУ - {}", type, status);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И СТАТУСУ - {}", type, status);
                 return repository.getAllByTypeAndStatus(type, status);
 
             } else if (type != null & status == null & name != null & shelterId == null) {
                 checkService.checkName(name);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И ИМЕНИ - {}", type, name);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И ИМЕНИ - {}", type, name);
                 return repository.getAllByTypeAndNameContainsIgnoreCase(type, name);
 
             } else if (type != null & status == null & name == null & shelterId != null) {
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, shelterId);
                 return repository.getAllByTypeAndShelterId(type, shelterId);
 
             } else if (type == null & status != null & name != null & shelterId == null) {
                 checkService.checkName(name);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {} И ИМЕНИ - {}", status, name);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {} И ИМЕНИ - {}", status, name);
                 return repository.getAllByStatusAndNameContainsIgnoreCase(status, name);
 
             } else if (type == null & status != null & name == null & shelterId != null) {
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", status, shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", status, shelterId);
                 return repository.getAllByStatusAndShelterId(status, shelterId);
 
             } else if (type == null & status == null & name != null & shelterId != null) {
                 checkService.checkName(name);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", name, shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", name, shelterId);
                 return repository.getAllByNameContainsIgnoreCaseAndShelterId(name, shelterId);
 
             } else if (type != null & status != null & name != null & shelterId == null) {
                 checkService.checkName(name);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {} И ИМЕНИ - {}", type, status, name);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {} И ИМЕНИ - {}", type, status, name);
                 return repository.getAllByTypeAndStatusAndNameContainsIgnoreCase(type, status, name);
 
             } else if (type != null & status != null & name == null) {
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, status, shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, status, shelterId);
                 return repository.getAllByTypeAndStatusAndShelterId(type, status, shelterId);
 
             } else if (type != null & status == null) {
                 checkService.checkName(name);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, name, shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, name, shelterId);
                 return repository.getAllByTypeAndNameContainsIgnoreCaseAndShelterId(type, name, shelterId);
 
             } else if (type == null) {
                 checkService.checkName(name);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", status, name, shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО СТАТУСУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", status, name, shelterId);
                 return repository.getAllByStatusAndNameContainsIgnoreCaseAndShelterId(status, name, shelterId);
 
             } else {
                 checkService.checkName(name);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, status, name, shelterId);
+                log.info("ЗАПРОШЕНЫ ЖИВОТНЫЕ ПО ТИПУ - {}, СТАТУСУ - {}, ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", type, status, name, shelterId);
                 return repository.getAllByTypeAndStatusAndNameContainsIgnoreCaseAndShelterId(type, status, name, shelterId);
             }
         }
@@ -154,7 +154,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Collection<Pet> getAll() {
-        log.info("ПОЛУЧЕНЫ ВСЕ ЖИВОТНЫЕ");
+        log.info("ЗАПРОШЕНЫ ВСЕ ЖИВОТНЫЕ");
         return repository.findAll();
     }
 

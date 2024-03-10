@@ -8,19 +8,19 @@ import com.skypro.ShelterPetTelegramBot.exception.parent.ParentAlreadyAddedExcep
 import com.skypro.ShelterPetTelegramBot.exception.pet.PetAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterAlreadyAddedException;
 import com.skypro.ShelterPetTelegramBot.exception.volunteer.VolunteerAlreadyAddedException;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
 
 /**
  * Класс {@link CheckServiceImpl}
@@ -43,7 +43,7 @@ public class CheckServiceImpl implements CheckService {
     @Override
     public boolean checkTypes(PetType typeOne, PetType typeTwo) {
         if (!typeOne.equals(typeTwo)) {
-            log.info("ТИПЫ {} И {} РАЗНЫЕ", typeTwo, typeTwo);
+            log.info("ТИПЫ {} И {} РАЗНЫЕ", typeOne, typeTwo);
             throw new DifferentTypesException();
         }
         log.info("ТИПЫ {} И {} ОДИНАКОВЫЕ", typeOne, typeTwo);

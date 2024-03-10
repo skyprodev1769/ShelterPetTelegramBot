@@ -2,7 +2,7 @@ package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterNotFoundException;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.repository.ShelterRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
@@ -34,14 +34,14 @@ public class ShelterServiceImpl implements ShelterService {
         Shelter shelter = new Shelter(type, address);
         checkService.checkShelterAlreadyAdded(getAll(), shelter);
 
-        log.info("ДОБАВЛЕН НОВЫЙ ПРИЮТ: \"тип\" - {}; \"адрес\" - {}", type, address);
+        log.info("СОЗДАН НОВЫЙ ПРИЮТ: \"тип\" - {}; \"адрес\" - {}", type, address);
         return repository.save(shelter);
     }
 
     @Override
     public Shelter getById(Long id) {
         checkService.checkValue(id);
-        log.info("ПОЛУЧЕН ПРИЮТ ПО ID - {}", id);
+        log.info("ЗАПРОШЕН ПРИЮТ ПО ID - {}", id);
         return repository.findById(id).orElseThrow(ShelterNotFoundException::new);
     }
 
@@ -54,17 +54,17 @@ public class ShelterServiceImpl implements ShelterService {
         } else {
 
             if (type != null & address == null) {
-                log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ - {}", type);
+                log.info("ЗАПРОШЕНЫ ПРИЮТЫ ПО ТИПУ - {}", type);
                 return repository.getAllByType(type);
 
             } else if (type == null) {
                 checkService.checkAddress(address);
-                log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО АДРЕСУ - {}", address);
+                log.info("ЗАПРОШЕНЫ ПРИЮТЫ ПО АДРЕСУ - {}", address);
                 return repository.getAllByAddressContainsIgnoreCase(address);
 
             } else {
                 checkService.checkAddress(address);
-                log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ ПО ТИПУ - {} И ПО АДРЕСУ - {}", type, address);
+                log.info("ЗАПРОШЕНЫ ПРИЮТЫ ПО ТИПУ - {} И ПО АДРЕСУ - {}", type, address);
                 return repository.getAllByTypeAndAddressContainsIgnoreCase(type, address);
             }
         }
@@ -72,7 +72,7 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     public Collection<Shelter> getAll() {
-        log.info("ПОЛУЧЕНЫ ВСЕ ПРИЮТЫ");
+        log.info("ЗАПРОШЕНЫ ВСЕ ПРИЮТЫ");
         return repository.findAll();
     }
 

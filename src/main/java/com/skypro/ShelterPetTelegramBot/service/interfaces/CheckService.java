@@ -1,11 +1,11 @@
 package com.skypro.ShelterPetTelegramBot.service.interfaces;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.service.impl.CheckServiceImpl;
 
 import java.util.Collection;
@@ -34,7 +34,7 @@ public interface CheckService {
     /**
      * Метод изменяет переданный номер телефона под заданный формат
      *
-     * @param phoneNumber <i> является проверяемым номером телефона </i>
+     * @param phoneNumber <i> является изменяемым номером телефона </i>
      */
     String validatePhoneNumber(String phoneNumber);
 

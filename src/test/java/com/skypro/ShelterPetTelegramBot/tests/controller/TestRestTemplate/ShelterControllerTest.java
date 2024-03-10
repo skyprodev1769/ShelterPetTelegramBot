@@ -16,8 +16,8 @@ import org.springframework.http.HttpMethod;
 
 import java.util.stream.Stream;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.CAT;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -148,9 +148,9 @@ class ShelterControllerTest {
         assertNotNull(actual_2);
         assertNotNull(actual_3);
 
-        asserTrueForCollection(actual_1);
-        asserTrueForCollection(actual_2);
-        asserTrueForCollection(actual_3);
+        assertTrueForCollection(actual_1);
+        assertTrueForCollection(actual_2);
+        assertTrueForCollection(actual_3);
     }
 
     @ParameterizedTest
@@ -185,7 +185,7 @@ class ShelterControllerTest {
         deleteShelter(SHELTER.getId());
 
         assertNotNull(actual);
-        asserTrueForCollection(actual);
+        assertTrueForCollection(actual);
     }
 
     @Test
@@ -304,7 +304,7 @@ class ShelterControllerTest {
         shelterController.delete(id);
     }
 
-    private void asserTrueForCollection(String actual) {
+    private void assertTrueForCollection(String actual) {
         assertTrue(actual.contains(SHELTER.getId().toString()));
         assertTrue(actual.contains(SHELTER.getType().toString()));
         assertTrue(actual.contains(SHELTER.getAddress()));

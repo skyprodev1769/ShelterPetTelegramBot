@@ -1,7 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.controller;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,7 +37,7 @@ public class ShelterController {
     }
 
     @Operation(
-            summary = "Добавление нового приюта для животных",
+            summary = ADD_SHELTER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -51,7 +51,7 @@ public class ShelterController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_ADD_SHELTER_CODE_400)
+                                    examples = @ExampleObject(ADD_SHELTER_CODE_400)
                             )
                     ),
                     @ApiResponse(
@@ -65,17 +65,20 @@ public class ShelterController {
     )
 
     @PostMapping
-    public Shelter add(@Parameter(description = "Тип животного")
-                       @RequestParam(name = "Тип") PetType type,
+    public Shelter add(
+            @Parameter(description = TYPE_SHELTER)
+            @RequestParam(name = ARG_TYPE) PetType type,
 
-                       @Parameter(description = "Адрес приюта для животных")
-                       @RequestParam(name = "Адрес") String address) {
+            @Parameter(
+                    description = ADDRESS,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ADDRESS)))
+            @RequestParam(name = ARG_ADDRESS) String address) {
 
         return service.add(type, address);
     }
 
     @Operation(
-            summary = "Получение приюта для животных по id",
+            summary = GET_SHELTER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -89,14 +92,14 @@ public class ShelterController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_400)
+                                    examples = @ExampleObject(GET_SHELTER_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
+                                    examples = @ExampleObject(GET_SHELTER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -109,15 +112,18 @@ public class ShelterController {
             }
     )
 
-    @GetMapping("{id}")
-    public Shelter getById(@Parameter(description = "id приюта для животных")
-                           @PathVariable(name = "id") Long id) {
+    @GetMapping("{ID}")
+    public Shelter getById(
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
 
         return service.getById(id);
     }
 
     @Operation(
-            summary = "Получение списка приютов для животных по типу или адресу",
+            summary = GET_ALL_SHELTERS_BY_PARAMETERS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -131,7 +137,7 @@ public class ShelterController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_ALL_SHELTERS_BY_PARAMETERS_CODE_400)
+                                    examples = @ExampleObject(GET_ALL_SHELTERS_BY_PARAMETERS_CODE_400)
                             )
                     ),
                     @ApiResponse(
@@ -145,17 +151,20 @@ public class ShelterController {
     )
 
     @GetMapping
-    public Collection<Shelter> getAllByParameters(@Parameter(description = "Тип животного")
-                                                  @RequestParam(required = false, name = "Тип") PetType type,
+    public Collection<Shelter> getAllByParameters(
+            @Parameter(description = TYPE_SHELTER)
+            @RequestParam(required = false, name = ARG_TYPE) PetType type,
 
-                                                  @Parameter(description = "Адрес приюта для животных")
-                                                  @RequestParam(required = false, name = "Адрес") String address) {
+            @Parameter(
+                    description = ADDRESS,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ADDRESS)))
+            @RequestParam(required = false, name = ARG_ADDRESS) String address) {
 
         return service.getAllByParameters(type, address);
     }
 
     @Operation(
-            summary = "Получение списка всех приютов для животных",
+            summary = GET_ALL_SHELTERS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -181,7 +190,7 @@ public class ShelterController {
     }
 
     @Operation(
-            summary = "Изменение данных приюта для животных по id",
+            summary = EDIT_SHELTER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -195,14 +204,14 @@ public class ShelterController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_EDIT_SHELTER_CODE_400)
+                                    examples = @ExampleObject(EDIT_SHELTER_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
+                                    examples = @ExampleObject(GET_SHELTER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -215,21 +224,26 @@ public class ShelterController {
             }
     )
 
-    @PutMapping("{id}")
-    public Shelter edit(@Parameter(description = "id приюта для животных")
-                        @PathVariable(name = "id") Long id,
+    @PutMapping("{ID}")
+    public Shelter edit(
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id,
 
-                        @Parameter(description = "Тип животного")
-                        @RequestParam(required = false, name = "Тип") PetType type,
+            @Parameter(description = TYPE_SHELTER)
+            @RequestParam(required = false, name = ARG_TYPE) PetType type,
 
-                        @Parameter(description = "Адрес приюта для животных")
-                        @RequestParam(required = false, name = "Адрес") String address) {
+            @Parameter(
+                    description = ADDRESS,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ADDRESS)))
+            @RequestParam(required = false, name = ARG_ADDRESS) String address) {
 
         return service.edit(id, type, address);
     }
 
     @Operation(
-            summary = "Удаление приюта для животных по id",
+            summary = DELETE_SHELTER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -243,14 +257,14 @@ public class ShelterController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_400)
+                                    examples = @ExampleObject(GET_SHELTER_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
+                                    examples = @ExampleObject(GET_SHELTER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -263,9 +277,12 @@ public class ShelterController {
             }
     )
 
-    @DeleteMapping("{id}")
-    public Shelter delete(@Parameter(description = "id приюта для животных")
-                          @PathVariable(name = "id") Long id) {
+    @DeleteMapping("{ID}")
+    public Shelter delete(
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
 
         return service.delete(id);
     }

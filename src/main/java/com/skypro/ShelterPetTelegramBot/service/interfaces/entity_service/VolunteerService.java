@@ -17,7 +17,7 @@ public interface VolunteerService {
      * @param firstName   <i> является именем нового волонтера </i> <br>
      * @param lastName    <i> является фамилией нового волонтера </i> <br>
      * @param phoneNumber <i> является номером телефона нового волонтера </i> <br>
-     * @param shelterId   <i> является идентификатором приюта для животного </i>
+     * @param shelterId   <i> является идентификатором приюта для животных </i>
      */
     Volunteer add(String firstName,
                   String lastName,
@@ -37,7 +37,7 @@ public interface VolunteerService {
      * @param firstName   <i> является именем волонтера </i> <br>
      * @param lastName    <i> является фамилией волонтера </i> <br>
      * @param phoneNumber <i> является номером телефона волонтера </i> <br>
-     * @param shelterId   <i> является идентификатором приюта </i>
+     * @param shelterId   <i> является идентификатором приюта для животных </i>
      */
     Collection<Volunteer> getAllByParameters(String firstName,
                                              String lastName,
@@ -56,7 +56,7 @@ public interface VolunteerService {
      * @param firstName   <i> является новым именем волонтера </i> <br>
      * @param lastName    <i> является новой фамилией волонтера </i> <br>
      * @param phoneNumber <i> является новым номером телефона волонтера </i> <br>
-     * @param shelterId   <i> является новым идентификатором приюта для животного </i>
+     * @param shelterId   <i> является идентификатором нового приюта для животных </i>
      */
     Volunteer edit(Long id,
                    String firstName,

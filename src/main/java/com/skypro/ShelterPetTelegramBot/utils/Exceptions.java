@@ -13,4 +13,5 @@ public class Exceptions {
     public static final String PET_NOT_FOUND = "Животное не найдено!";
     public static final String SHELTER_NOT_FOUND = "Приют не найден!";
     public static final String VOLUNTEER_NOT_FOUND = "Волонтер не найден!";
+    public static final String REPORT_NOT_FOUND = "Отчет не найден!";
 }

@@ -1,10 +1,12 @@
 package com.skypro.ShelterPetTelegramBot.model.repository;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.Report;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Report;
+import com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -15,4 +17,10 @@ import java.util.Optional;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
     Optional<Report> getByDate(LocalDate date);
+
+    Collection<Report> getAllByDate(LocalDate date);
+
+    Collection<Report> getAllByStatus(ReportStatus status);
+
+    Collection<Report> getAllByDateAndStatus(LocalDate date, ReportStatus status);
 }

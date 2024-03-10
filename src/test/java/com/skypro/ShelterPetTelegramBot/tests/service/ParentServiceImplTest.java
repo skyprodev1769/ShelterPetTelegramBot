@@ -1,7 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.tests.service;
 
 import com.skypro.ShelterPetTelegramBot.exception.parent.ParentNotFoundException;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.repository.ParentRepository;
 import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;

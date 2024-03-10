@@ -1,7 +1,7 @@
 insert into shelter (id, type, address)
-values ('1', 'DOG', 'г. Астана, ул. Планерная, д.1, стр.1');
+values ('1', 'DOG', 'г. Астана, ул. Планерная, д. 1, стр. 1');
 insert into shelter (id, type, address)
-values ('2', 'CAT', 'г. Астана, ул. Ленина, д.13, стр.4');
+values ('2', 'CAT', 'г. Астана, ул. Ленина, д. 13, стр. 4');
 
 insert into volunteer  (id, first_name, last_name, phone_number, shelter_id)
 values ('1', 'Иван', 'Иванов', '+7-999-999-99-91', '1');

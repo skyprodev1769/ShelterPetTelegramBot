@@ -1,7 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,11 +28,11 @@ public class Shelter {
     private String address;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "shelter")
     private Collection<Volunteer> volunteers;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "shelter")
     private Collection<Pet> pets;
 
     public Shelter() {

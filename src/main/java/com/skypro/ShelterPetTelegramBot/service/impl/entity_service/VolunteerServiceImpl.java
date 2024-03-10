@@ -50,14 +50,14 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         checkService.checkVolunteerAlreadyAdded(getAll(), volunteer);
 
-        log.info("ДОБАВЛЕН НОВЫЙ ВОЛОНТЕР: \"имя\" - {}; \"фамилия\" - {}; \"номер телефона\" - {}; \"ID приюта для животных\" - {}", firstName, lastName, phoneNumber, shelterId);
+        log.info("СОЗДАН НОВЫЙ ВОЛОНТЕР: \"имя\" - {}; \"фамилия\" - {}; \"номер телефона\" - {}; \"ID приюта для животных\" - {}", firstName, lastName, phoneNumber, shelterId);
         return repository.save(volunteer);
     }
 
     @Override
     public Volunteer getById(Long id) {
         checkService.checkValue(id);
-        log.info("ПОЛУЧЕН ВОЛОНТЕР ПО ID - {}", id);
+        log.info("ЗАПРОШЕН ВОЛОНТЕР ПО ID - {}", id);
         return repository.findById(id).orElseThrow(VolunteerNotFoundException::new);
     }
 
@@ -74,86 +74,86 @@ public class VolunteerServiceImpl implements VolunteerService {
 
             if (firstName != null & lastName == null & phoneNumber == null & shelterId == null) {
                 checkService.checkName(firstName);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}", firstName);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}", firstName);
                 return repository.getAllByFirstNameContainsIgnoreCase(firstName);
 
             } else if (firstName == null & lastName != null & phoneNumber == null & shelterId == null) {
                 checkService.checkName(lastName);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {}", lastName);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {}", lastName);
                 return repository.getAllByLastNameContainsIgnoreCase(lastName);
 
             } else if (firstName == null & lastName == null & phoneNumber != null & shelterId == null) {
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО НОМЕРУ ТЕЛЕФОНА - {}", phoneNumber);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО НОМЕРУ ТЕЛЕФОНА - {}", phoneNumber);
                 return repository.getAllByPhoneNumberContains(phoneNumber);
 
             } else if (firstName == null & lastName == null & phoneNumber == null & shelterId != null) {
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", shelterId);
                 return repository.getAllByShelterId(shelterId);
 
             } else if (firstName != null & lastName != null & phoneNumber == null & shelterId == null) {
                 checkService.checkName(firstName);
                 checkService.checkName(lastName);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {} И ФАМИЛИИ - {}", firstName, lastName);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {} И ФАМИЛИИ - {}", firstName, lastName);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(firstName, lastName);
 
             } else if (firstName != null & lastName == null & phoneNumber != null & shelterId == null) {
                 checkService.checkName(firstName);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, phoneNumber);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, phoneNumber);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContains(firstName, phoneNumber);
 
             } else if (firstName != null & lastName == null & phoneNumber == null & shelterId != null) {
                 checkService.checkName(firstName);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, shelterId);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndShelterId(firstName, shelterId);
 
             } else if (firstName == null & lastName != null & phoneNumber != null & shelterId == null) {
                 checkService.checkName(lastName);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", lastName, phoneNumber);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", lastName, phoneNumber);
                 return repository.getAllByLastNameContainsIgnoreCaseAndPhoneNumberContains(lastName, phoneNumber);
 
             } else if (firstName == null & lastName != null & phoneNumber == null & shelterId != null) {
                 checkService.checkName(lastName);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", lastName, shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", lastName, shelterId);
                 return repository.getAllByLastNameContainsIgnoreCaseAndShelterId(lastName, shelterId);
 
             } else if (firstName == null & lastName == null & phoneNumber != null & shelterId != null) {
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", phoneNumber, shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", phoneNumber, shelterId);
                 return repository.getAllByPhoneNumberContainsAndShelterId(phoneNumber, shelterId);
 
             } else if (firstName != null & lastName != null & phoneNumber != null & shelterId == null) {
                 checkService.checkName(firstName);
                 checkService.checkName(lastName);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, lastName, phoneNumber);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И НОМЕРУ ТЕЛЕФОНА - {}", firstName, lastName, phoneNumber);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContains(firstName, lastName, phoneNumber);
 
             } else if (firstName != null & lastName != null & phoneNumber == null) {
                 checkService.checkName(firstName);
                 checkService.checkName(lastName);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, lastName, shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, lastName, shelterId);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndShelterId(firstName, lastName, shelterId);
 
             } else if (firstName != null & lastName == null) {
                 checkService.checkName(firstName);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, phoneNumber, shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, phoneNumber, shelterId);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(firstName, phoneNumber, shelterId);
 
             } else if (firstName == null) {
                 checkService.checkName(lastName);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {}, НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", lastName, phoneNumber, shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ФАМИЛИИ - {}, НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", lastName, phoneNumber, shelterId);
                 return repository.getAllByLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(lastName, phoneNumber, shelterId);
 
             } else {
                 checkService.checkName(firstName);
                 checkService.checkName(lastName);
                 checkService.checkValue(shelterId);
-                log.info("ПОЛУЧЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {}, НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, lastName, phoneNumber, shelterId);
+                log.info("ЗАПРОШЕНЫ ВОЛОНТЕРЫ ПО ИМЕНИ - {}, ФАМИЛИИ - {}, НОМЕРУ ТЕЛЕФОНА - {} И ID ПРИЮТА ДЛЯ ЖИВОТНЫХ - {}", firstName, lastName, phoneNumber, shelterId);
                 return repository.getAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPhoneNumberContainsAndShelterId(firstName, lastName, phoneNumber, shelterId);
             }
         }
@@ -161,7 +161,7 @@ public class VolunteerServiceImpl implements VolunteerService {
 
     @Override
     public Collection<Volunteer> getAll() {
-        log.info("ПОЛУЧЕНЫ ВСЕ ВОЛОНТЕРЫ");
+        log.info("ЗАПРОШЕНЫ ВСЕ ВОЛОНТЕРЫ");
         return repository.findAll();
     }
 

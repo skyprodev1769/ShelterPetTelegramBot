@@ -1,8 +1,8 @@
 package com.skypro.ShelterPetTelegramBot.controller;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +19,8 @@ import java.util.Collection;
 
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.Codes.*;
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.PetControllerDoc.*;
-import static com.skypro.ShelterPetTelegramBot.utils.documentation.ShelterControllerDoc.EXAMPLE_GET_BY_ID_SHELTER_CODE_404;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.ShelterControllerDoc.*;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.VolunteerControllerDoc.ARG_SHELTER;
 
 /**
  * Класс {@link PetController}
@@ -38,7 +39,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Добавление нового животного",
+            summary = ADD_PET,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -52,14 +53,14 @@ public class PetController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_ADD_PET_CODE_400)
+                                    examples = @ExampleObject(ADD_PET_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
+                                    examples = @ExampleObject(GET_SHELTER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -73,23 +74,28 @@ public class PetController {
     )
 
     @PostMapping
-    public Pet add(@Parameter(description = "Тип животного")
-                   @RequestParam(name = "Тип") PetType type,
+    public Pet add(
+            @Parameter(description = TYPE_PET)
+            @RequestParam(name = ARG_TYPE) PetType type,
 
-                   @Parameter(description = "Статус животного")
-                   @RequestParam(name = "Статус") PetStatus status,
+            @Parameter(description = STATUS_PET)
+            @RequestParam(name = ARG_STATUS) PetStatus status,
 
-                   @Parameter(description = "Имя животного")
-                   @RequestParam(name = "Имя") String name,
+            @Parameter(
+                    description = NAME_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_NAME)))
+            @RequestParam(name = ARG_NAME) String name,
 
-                   @Parameter(description = "id приюта для животных")
-                   @RequestParam(name = "Приют") Long shelterId) {
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @RequestParam(name = ARG_SHELTER) Long shelterId) {
 
         return service.add(type, status, name, shelterId);
     }
 
     @Operation(
-            summary = "Получение животного по id",
+            summary = GET_PET,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -103,14 +109,14 @@ public class PetController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PET_CODE_400)
+                                    examples = @ExampleObject(GET_PET_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PET_CODE_404)
+                                    examples = @ExampleObject(GET_PET_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -123,15 +129,18 @@ public class PetController {
             }
     )
 
-    @GetMapping("{id}")
-    public Pet getById(@Parameter(description = "id животного")
-                       @PathVariable(name = "id") Long id) {
+    @GetMapping("{ID}")
+    public Pet getById(
+            @Parameter(
+                    description = ID_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
 
         return service.getById(id);
     }
 
     @Operation(
-            summary = "Получение списка животных по имени, статусу, типу или id приюта для животных",
+            summary = GET_ALL_PETS_BY_PARAMETERS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -145,7 +154,7 @@ public class PetController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_ALL_PETS_BY_PARAMETERS_CODE_400)
+                                    examples = @ExampleObject(GET_ALL_PETS_BY_PARAMETERS_CODE_400)
                             )
                     ),
                     @ApiResponse(
@@ -159,23 +168,28 @@ public class PetController {
     )
 
     @GetMapping
-    public Collection<Pet> getAllByParameters(@Parameter(description = "Тип животного")
-                                              @RequestParam(required = false, name = "Тип") PetType type,
+    public Collection<Pet> getAllByParameters(
+            @Parameter(description = TYPE_PET)
+            @RequestParam(required = false, name = ARG_TYPE) PetType type,
 
-                                              @Parameter(description = "Статус животного")
-                                              @RequestParam(required = false, name = "Статус") PetStatus status,
+            @Parameter(description = STATUS_PET)
+            @RequestParam(required = false, name = ARG_STATUS) PetStatus status,
 
-                                              @Parameter(description = "Имя животного")
-                                              @RequestParam(required = false, name = "Имя") String name,
+            @Parameter(
+                    description = NAME_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_NAME)))
+            @RequestParam(required = false, name = ARG_NAME) String name,
 
-                                              @Parameter(description = "id приюта для животных")
-                                              @RequestParam(required = false, name = "Приют") Long shelterId) {
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @RequestParam(required = false, name = ARG_SHELTER) Long shelterId) {
 
         return service.getAllByParameters(type, status, name, shelterId);
     }
 
     @Operation(
-            summary = "Получение списка всех животных",
+            summary = GET_ALL_PETS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -201,7 +215,7 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Изменение данных животного по id",
+            summary = EDIT_PET,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -215,14 +229,14 @@ public class PetController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_EDIT_PET_CODE_400)
+                                    examples = @ExampleObject(EDIT_PET_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_EDIT_PET_CODE_404)
+                                    examples = @ExampleObject(EDIT_PET_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -235,27 +249,34 @@ public class PetController {
             }
     )
 
-    @PutMapping("{id}")
-    public Pet edit(@Parameter(description = "id животного")
-                    @PathVariable(name = "id") Long id,
+    @PutMapping("{ID}")
+    public Pet edit(
+            @Parameter(
+                    description = ID_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id,
 
-                    @Parameter(description = "Тип животного")
-                    @RequestParam(required = false, name = "Тип") PetType type,
+            @Parameter(description = TYPE_PET)
+            @RequestParam(required = false, name = ARG_TYPE) PetType type,
 
-                    @Parameter(description = "Статус животного")
-                    @RequestParam(required = false, name = "Статус") PetStatus status,
+            @Parameter(description = STATUS_PET)
+            @RequestParam(required = false, name = ARG_STATUS) PetStatus status,
 
-                    @Parameter(description = "Имя животного")
-                    @RequestParam(required = false, name = "Имя") String name,
+            @Parameter(
+                    description = NAME_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_NAME)))
+            @RequestParam(required = false, name = ARG_NAME) String name,
 
-                    @Parameter(description = "id приюта для животных")
-                    @RequestParam(required = false, name = "Приют") Long shelterId) {
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @RequestParam(required = false, name = ARG_SHELTER) Long shelterId) {
 
         return service.edit(id, type, status, name, shelterId);
     }
 
     @Operation(
-            summary = "Удаление животного по id",
+            summary = DELETE_PET,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -269,14 +290,14 @@ public class PetController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PET_CODE_400)
+                                    examples = @ExampleObject(GET_PET_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PET_CODE_404)
+                                    examples = @ExampleObject(GET_PET_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -289,9 +310,12 @@ public class PetController {
             }
     )
 
-    @DeleteMapping("{id}")
-    public Pet delete(@Parameter(description = "id животного")
-                      @PathVariable(name = "id") Long id) {
+    @DeleteMapping("{ID}")
+    public Pet delete(
+            @Parameter(
+                    description = ID_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
         return service.delete(id);
     }
 }

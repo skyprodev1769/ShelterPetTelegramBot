@@ -1,17 +1,16 @@
 package com.skypro.ShelterPetTelegramBot.tests;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.*;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.CAT;
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.CAT;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus.NOT_VIEWED;
 
 public class Utils {
 
@@ -37,6 +36,8 @@ public class Utils {
     public static final String LAST_NAME = "Иванов";
     public static final String PHONE_NUMBER = "89999999999";
     public static final String VALID_PHONE_NUMBER = "+7-999-999-99-99";
+    public static final String PHOTO = "path_file.png";
+    public static final String DOCUMENT = "path_file.txt";
 
     /*
     НОВЫЕ ЗНАЧЕНИЯ
@@ -60,6 +61,7 @@ public class Utils {
     public static final Pet NEW_PET = new Pet(DOG, FREE, NEW_NAME, SHELTER);
     public static final Volunteer VOLUNTEER = new Volunteer(FIRST_NAME, LAST_NAME, VALID_PHONE_NUMBER, SHELTER);
     public static final Parent PARENT = new Parent(FIRST_NAME, LAST_NAME, VALID_PHONE_NUMBER, PET);
+    public static final Report REPORT = new Report(PHOTO, DOCUMENT, LocalDate.now(), NOT_VIEWED, PARENT);
 
     /*
     КОЛЛЕКЦИИ
@@ -74,6 +76,7 @@ public class Utils {
     public static final List<Pet> PETS = List.of(PET);
     public static final List<Volunteer> VOLUNTEERS = List.of(VOLUNTEER);
     public static final List<Parent> PARENTS = List.of(PARENT);
+    public static final List<Report> REPORTS = List.of(REPORT);
 
     /*
     ДОПОЛНИТЕЛЬНЫЕ МЕТОДЫ

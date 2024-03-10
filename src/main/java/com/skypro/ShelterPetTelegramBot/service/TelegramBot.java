@@ -2,18 +2,13 @@ package com.skypro.ShelterPetTelegramBot.service;
 
 import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
+import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.*;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.Attachment;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
-import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.Report;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.User;
-import com.skypro.ShelterPetTelegramBot.model.repository.ParentRepository;
-import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
-import com.skypro.ShelterPetTelegramBot.model.repository.ReportRepository;
-import com.skypro.ShelterPetTelegramBot.model.repository.UserRepository;
+import com.skypro.ShelterPetTelegramBot.model.enums.FileType;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.repository.*;
 import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingButtonsImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.CreatingKeyBoardsImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.RecordingContactsImpl;
@@ -39,13 +34,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.model.enums.FileType.PNG;
+import static com.skypro.ShelterPetTelegramBot.model.enums.FileType.TXT;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus.NOT_VIEWED;
 import static com.skypro.ShelterPetTelegramBot.utils.Buttons.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Descriptions.*;
@@ -85,6 +84,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private ParentRepository parentRepository;
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private AttachmentRepository attachmentRepository;
     @Autowired
     private ShelterService shelterService;
     @Autowired
@@ -178,15 +179,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             getReactionsForRegisteredUsers(chatId, userFirstName, text);
 
-        } else if (message.hasPhoto() | message.hasDocument()) { // ЕСЛИ ПРИХОДИТ ФОТО ИЛИ ДОКУМЕНТ
+        } else { // ЕСЛИ ПРИХОДИТ НЕ ТЕКСТОВОЕ СООБЩЕНИЕ
 
             workWithParents(chatId, userFirstName, message);
-
-        } else { // ЕСЛИ ПРИХОДИТ НЕ ТЕКСТОВОЕ СООБЩЕНИЕ, НЕ ФОТО И НЕ ДОКУМЕНТ
-
-            String answer = DEFAULT_REACTION_FOR_REGISTERED_USERS(userFirstName);
-            SendMessage sendMessage = buttons.createButtonForCallVolunteer(chatId, answer);
-            executeMessage(sendMessage);
         }
     }
 
@@ -280,9 +275,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case HELP -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ОПИСАТЕЛЬНОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = REACTION_TO_COMMAND_HELP_FOR_UNREGISTERED_USERS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ОПИСАТЕЛЬНОЕ СООБЩЕНИЕ", chatId, userFirstName);
             }
 
             case SETTINGS -> {
@@ -301,9 +296,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             default -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ДЕФОЛТНОЕ СООБЩЕНИЕ", chatId, userFirstName);
                 answer = DEFAULT_REACTION_FOR_UNREGISTERED_USERS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ДЕФОЛТНОЕ СООБЩЕНИЕ", chatId, userFirstName);
             }
         }
     }
@@ -380,98 +375,100 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case INFO_ABOUT_SECURITY_CONTACT_DETAILS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕР ОХРАНЫ ПРИЮТА", chatId, userFirstName);
 
                 if (appConfiguration.getIsDogShelter()) {
                     answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_DOG_SHELTER(userFirstName);
+                    log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕР ОХРАНЫ ПРИЮТА ДЛЯ СОБАК", chatId, userFirstName);
 
                 } else {
                     answer = REACTION_TO_INFO_ABOUT_SECURITY_CONTACT_DETAILS_FOR_CAT_SHELTER(userFirstName);
+                    log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ НОМЕР ОХРАНЫ ПРИЮТА ДЛЯ КОШЕК", chatId, userFirstName);
                 }
 
                 reactionToCommand(chatId, answer);
             }
 
             case INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ИНФОРМАЦИЮ О ТРЕБОВАНИЯХ БЕЗОПАСНОСТИ НА ТЕРРИТОРИИ ПРИЮТА", chatId, userFirstName);
                 answer = REACTION_TO_INFO_ABOUT_GENERAL_SAFETY_RECOMMENDATION(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ИНФОРМАЦИЮ О ТРЕБОВАНИЯХ БЕЗОПАСНОСТИ НА ТЕРРИТОРИИ ПРИЮТА", chatId, userFirstName);
             }
 
             // КОМАНДЫ ИНФОРМАЦИИ О ПРОЦЕССЕ ПОЛУЧЕНИИ ЖИВОТНОГО (ЭТАП 2)
 
             case INFO_ABOUT_PROCESS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ ИНФОРМАЦИЮ О ПРОЦЕССЕ ПОЛУЧЕНИЯ ЖИВОТНОГО", chatId, userFirstName);
                 answer = REACTION_TO_DETAILED_INFO(userFirstName);
 
                 if (appConfiguration.getIsDogShelter()) {
                     message = keyBoards.createKeyBoardForDetailedInfoAboutProcessForDog(chatId, answer);
+                    log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ИНФОРМАЦИЮ О ПРОЦЕССЕ УСЫНОВЛЕНИЯ СОБАКИ", chatId, userFirstName);
 
                 } else {
                     message = keyBoards.createKeyBoardForDetailedInfoAboutProcessForCat(chatId, answer);
+                    log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ИНФОРМАЦИЮ О ПРОЦЕССЕ УСЫНОВЛЕНИЯ КОШКИ", chatId, userFirstName);
                 }
 
                 executeMessage(message);
             }
 
             case LIST_PETS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ СПИСОК ЖИВОТНЫХ ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
                 answer = String.valueOf(sendListPets(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ЖИВОТНЫХ ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
             }
 
             case RULES_DATING -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРАВИЛ ДЛЯ ЗНАКОМСТВА С ЖИВОТНЫМ", chatId, userFirstName);
                 answer = REACTION_TO_RULES_DATING(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРАВИЛ ДЛЯ ЗНАКОМСТВА С ЖИВОТНЫМ", chatId, userFirstName);
             }
 
             case LIST_REQUIRED_DOCS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК НЕОБХОДИМЫХ ДОКУМЕНТОВ", chatId, userFirstName);
                 answer = REACTION_TO_LIST_REQUIRED_DOCS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК НЕОБХОДИМЫХ ДОКУМЕНТОВ", chatId, userFirstName);
             }
 
             case RECOMMENDATIONS_FOR_TRANSPORTATION -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ТРАНСПОРТИРОВКЕ ЖИВОТНОГО", chatId, userFirstName);
                 answer = REACTION_TO_RECOMMENDATIONS_FOR_TRANSPORTATION(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ТРАНСПОРТИРОВКЕ ЖИВОТНОГО", chatId, userFirstName);
             }
 
             case RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_YOUNG_PET -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ МАЛЕНЬКОГО ЖИВОТНОГО", chatId, userFirstName);
                 answer = REACTION_TO_RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_YOUNG_PET(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ МАЛЕНЬКОГО ЖИВОТНОГО", chatId, userFirstName);
             }
 
             case RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_ADULT_PET -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ ВЗРОСЛОГО ЖИВОТНОГО", chatId, userFirstName);
                 answer = REACTION_TO_RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_ADULT_PET(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ ВЗРОСЛОГО ЖИВОТНОГО", chatId, userFirstName);
             }
 
             case RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_DISABLED_PET -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ ЖИВОТНОГО С ОГРАНИЧЕННЫМИ ВОЗМОЖНОСТЯМИ", chatId, userFirstName);
                 answer = REACTION_TO_RECOMMENDATIONS_FOR_HOME_IMPROVEMENT_FOR_DISABLED_PET(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ОБУСТРОЙСТВУ ДОМА ДЛЯ ЖИВОТНОГО С ОГРАНИЧЕННЫМИ ВОЗМОЖНОСТЯМИ", chatId, userFirstName);
             }
 
             case RECOMMENDATIONS_FROM_DOG_HANDLER -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СОВЕТЫ КИНОЛОГА ПО ПЕРВИЧНОМУ ОБЩЕНИЮ С СОБАКОЙ", chatId, userFirstName);
                 answer = REACTION_TO_RECOMMENDATIONS_FROM_DOG_HANDLER(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СОВЕТЫ КИНОЛОГА ПО ПЕРВИЧНОМУ ОБЩЕНИЮ С СОБАКОЙ", chatId, userFirstName);
             }
 
             case RECOMMENDATIONS_FOR_TRUSTED_DOG_HANDLER -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ПРОВЕРЕННЫМ КИНОЛОГАМ", chatId, userFirstName);
                 answer = REACTION_TO_RECOMMENDATIONS_FOR_TRUSTED_DOG_HANDLER(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ РЕКОМЕНДАЦИИ ПО ПРОВЕРЕННЫМ КИНОЛОГАМ", chatId, userFirstName);
             }
 
             case LIST_REASONS_FOR_REFUSAL -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРИЧИН ДЛЯ ОТКАЗА", chatId, userFirstName);
                 answer = REACTION_TO_LIST_REASONS_FOR_REFUSAL(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ПРИЧИН ДЛЯ ОТКАЗА", chatId, userFirstName);
             }
 
             // КОМАНДЫ ИНФОРМАЦИИ ОБ ОТПРАВКЕ ОТЧЕТА О ЖИВОТНОМ (ЭТАП 3)
@@ -484,17 +481,17 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             case PATTERN_REPORT -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ШАБЛОН ОТЧЕТА О ЖИВОТНОМ", chatId, userFirstName);
                 answer = REACTION_TO_PATTERN_REPORT(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ШАБЛОН ОТЧЕТА О ЖИВОТНОМ", chatId, userFirstName);
             }
 
             // КОМАНДА ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
 
             case RECORD_CONTACT_DETAILS -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ФОРМУ ДЛЯ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ", chatId, userFirstName);
                 answer = REACTION_TO_RECORD_CONTACT_DETAILS(userFirstName);
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ ФОРМУ ДЛЯ ОТПРАВКИ КОНТАКТНЫХ ДАННЫХ", chatId, userFirstName);
             }
 
             // КОМАНДА УДАЛЕНИЯ КОНТАКТНЫХ ДАННЫХ
@@ -518,9 +515,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КОМАНДА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
                 answer = String.valueOf(sendListVolunteers(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
             }
 
             // ДЕФОЛТНАЯ КОМАНДА
@@ -593,14 +590,15 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКА СХЕМЫ ПРОЕЗДА
 
             case SCHEME_DRIVING_BUTTON -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СХЕМУ ПРОЕЗДА К ПРИЮТУ", chatId, userFirstName);
                 answer = REACTION_TO_SCHEME_DRIVING(userFirstName);
 
                 if (appConfiguration.getIsDogShelter()) {
                     sendImage(chatId, answer, appConfiguration.getPathForDogShelter());
+                    log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СХЕМУ ПРОЕЗДА К ПРИЮТУ ДЛЯ СОБАК", chatId, userFirstName);
 
                 } else {
                     sendImage(chatId, answer, appConfiguration.getPathForCatShelter());
+                    log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СХЕМУ ПРОЕЗДА К ПРИЮТУ ДЛЯ КОШЕК", chatId, userFirstName);
                 }
             }
 
@@ -614,9 +612,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             // КНОПКА ВЫЗОВА ВОЛОНТЕРА
 
             case CALL_VOLUNTEER_BUTTON -> {
-                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
                 answer = String.valueOf(sendListVolunteers(chatId, userFirstName));
                 reactionToCommand(chatId, answer);
+                log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
             }
         }
     }
@@ -647,8 +645,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
         report.setDate(LocalDate.now());
+        report.setStatus(NOT_VIEWED);
         report.setParent(parent);
         reportRepository.save(report);
+        log.info("СОХРАНЕН ОТЧЕТ О ЖИВОТНОМ ОТ УСЫНОВИТЕЛЯ: {} {}", firstName, lastName);
     }
 
     /**
@@ -664,8 +664,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         PhotoSize photo = photos.get(photos.size() - 1);
         GetFile getFile = new GetFile(photo.getFileId());
 
-        String fileName = firstPartFileName + ".png";
-        File file = new File(parentDir, fileName);
+        FileType type = PNG;
+        String name = firstPartFileName + "." + type;
+        Path path = Path.of(parentDir, name);
+
+        File file = new File(parentDir, name);
 
         try {
             downloadFile(execute(getFile), file);
@@ -673,8 +676,17 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.error("ОШИБКА СОХРАНЕНИЯ ИЗОБРАЖЕНИЯ: {}", e.getMessage());
         }
 
-        report.setPhoto(fileName);
-        log.info("ДОБАВЛЕНО ФОТО {} В ОТЧЕТ О ЖИВОТНОМ {}", fileName, LocalDate.now());
+        Attachment attachment = attachmentRepository.getByPath(path.toString()).orElseGet(Attachment::new);
+
+        attachment.setPath(path.toString());
+        attachment.setSize(photo.getFileSize());
+        attachment.setType(type);
+        attachment.setData(photo.toString().getBytes());
+
+        attachmentRepository.save(attachment);
+
+        report.setPhoto(attachment.getPath());
+        log.info("ДОБАВЛЕНО ФОТО {} В ОТЧЕТ О ЖИВОТНОМ {}", name, LocalDate.now());
     }
 
     /**
@@ -689,8 +701,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         GetFile getFile = new GetFile(document.getFileId());
 
-        String fileName = firstPartFileName + ".docx";
-        File file = new File(parentDir, fileName);
+        FileType type = TXT;
+        String name = firstPartFileName + "." + type;
+        Path path = Path.of(parentDir, name);
+
+        File file = new File(parentDir, name);
 
         try {
             downloadFile(execute(getFile), file);
@@ -698,8 +713,17 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.error("ОШИБКА СОХРАНЕНИЯ ДОКУМЕНТА: {}", e.getMessage());
         }
 
-        report.setDocument(fileName);
-        log.info("ДОБАВЛЕН ДОКУМЕНТ {} В ОТЧЕТ О ЖИВОТНОМ {}", fileName, LocalDate.now());
+        Attachment attachment = attachmentRepository.getByPath(path.toString()).orElseGet(Attachment::new);
+
+        attachment.setPath(path.toString());
+        attachment.setSize(document.getFileSize());
+        attachment.setType(type);
+        attachment.setData(document.toString().getBytes());
+
+        attachmentRepository.save(attachment);
+
+        report.setDocument(attachment.getPath());
+        log.info("ДОБАВЛЕН ДОКУМЕНТ {} В ОТЧЕТ О ЖИВОТНОМ {}", name, LocalDate.now());
     }
 
     /**
@@ -729,11 +753,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
         if (appConfiguration.getIsDogShelter()) {
-            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК СОБАК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ СПИСОК СОБАК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
             return dogs;
 
         } else {
-            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК КОШЕК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ СПИСОК КОШЕК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
             return cats;
         }
     }
@@ -754,7 +778,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             list.append(data).append("\n");
         }
 
-        log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
+        log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ КОНТАКТЫ ВОЛОНТЕРОВ", chatId, userFirstName);
         return list;
     }
 
@@ -766,26 +790,26 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
     private StringBuilder sendAddressShelter(Long chatId, String userFirstName) {
 
-        StringBuilder cats = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
-        StringBuilder dogs = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
+        StringBuilder shelterDog = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
+        StringBuilder shelterCat = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
 
         for (Shelter shelter : shelterService.getAll()) {
 
             if (shelter.getType() == DOG) {
-                dogs.append(shelter.getAddress()).append("\n");
+                shelterDog.append(shelter.getAddress()).append("\n");
 
             } else {
-                cats.append(shelter.getAddress()).append("\n");
+                shelterCat.append(shelter.getAddress()).append("\n");
             }
         }
 
         if (appConfiguration.getIsDogShelter()) {
-            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ СОБАК", chatId, userFirstName);
-            return dogs;
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ СОБАК", chatId, userFirstName);
+            return shelterDog;
 
         } else {
-            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ КОШЕК", chatId, userFirstName);
-            return cats;
+            log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ КОШЕК", chatId, userFirstName);
+            return shelterCat;
         }
     }
 
@@ -892,18 +916,20 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param path    <i> является путем к расположению изображения </i>
      */
     private void sendImage(Long chatId, String caption, String path) {
-        File image;
+        File image = null;
 
         try {
             image = ResourceUtils.getFile(path);
         } catch (FileNotFoundException e) {
             log.error("ОШИБКА ПОИСКА ИЗОБРАЖЕНИЯ: {}", e.getMessage());
-            throw new RuntimeException(e);
         }
 
         SendPhoto photo = new SendPhoto();
 
-        photo.setPhoto(new InputFile(image));
+        if (image != null) {
+            photo.setPhoto(new InputFile(image));
+        }
+
         photo.setChatId(chatId);
         photo.setCaption(caption);
 

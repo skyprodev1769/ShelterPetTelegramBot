@@ -1,6 +1,7 @@
-package com.skypro.ShelterPetTelegramBot.model.entity.without_controller;
+package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,10 +26,27 @@ public class Report {
     @Column(name = "document")
     private String document;
 
+    @JsonIgnore
     @Column(name = "date")
     private LocalDate date;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ReportStatus status;
+
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "parent_id")
     private Parent parent;
+
+    public Report() {
+    }
+
+    public Report(String photo, String document, LocalDate date, ReportStatus status, Parent parent) {
+        this.photo = photo;
+        this.document = document;
+        this.date = date;
+        this.status = status;
+        this.parent = parent;
+    }
 }

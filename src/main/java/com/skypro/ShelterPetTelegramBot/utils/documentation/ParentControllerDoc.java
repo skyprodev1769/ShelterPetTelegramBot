@@ -1,8 +1,24 @@
 package com.skypro.ShelterPetTelegramBot.utils.documentation;
 
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.PetControllerDoc.*;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.VolunteerControllerDoc.PHONE_NUMBER_ALREADY_ADDED;
 
 public class ParentControllerDoc {
+
+    public static final String ADD_PARENT = "Добавление нового усыновителя";
+    public static final String GET_PARENT = "Получение усыновителя по ID";
+    public static final String GET_ALL_PARENTS_BY_PARAMETERS = "Получение списка усыновителей по имени, фамилии или номеру телефона";
+    public static final String GET_ALL_PARENTS = "Получение списка всех усыновителей";
+    public static final String EDIT_PARENT = "Изменение данных усыновителя по ID";
+    public static final String DELETE_PARENT = "Удаление усыновителя по ID";
+
+    public static final String ID_PARENT = "ID усыновителя";
+    public static final String FIRST_NAME_PARENT = "Имя усыновителя";
+    public static final String LAST_NAME_PARENT = "Фамилия усыновителя";
+    public static final String PHONE_NUMBER_PARENT = "Номер телефона усыновителя";
+
+    public static final String ARG_PET = "Животное";
 
     public static final String EXAMPLE_PARENT =
             """
@@ -14,11 +30,12 @@ public class ParentControllerDoc {
                       "pet": {
                         "id": 1,
                         "type": "DOG",
+                        "status": "ADOPTED",
                         "name": "Бобик",
                         "shelter": {
                           "id": 1,
                           "type": "DOG",
-                          "address": "ул. Планерная, д.1, стр.1"
+                          "address": "ул. Планерная, д. 1, стр. 1"
                         }
                       }
                     }""";
@@ -34,11 +51,12 @@ public class ParentControllerDoc {
                         "pet": {
                           "id": 1,
                           "type": "DOG",
+                          "status": "ADOPTED",
                           "name": "Бобик",
                           "shelter": {
                             "id": 1,
                             "type": "DOG",
-                            "address": "ул. Планерная, д.1, стр.1"
+                            "address": "ул. Планерная, д. 1, стр. 1"
                           }
                         }
                       }
@@ -46,37 +64,38 @@ public class ParentControllerDoc {
                                         
                     []""";
 
-    public static final String EXAMPLE_ADD_PARENT_CODE_400 =
-            "1.Передано некорректное имя.\n" +
-                    "2.Передана некорректная фамилия.\n" +
-                    "3.Передана некорректное имя животного.\n" + INVALIDE_INPUT + "\n\n" +
-                    "4.Передан некорректный номер телефона.\n" + INVALIDE_NUMBER + "\n\n" +
-                    "5.Статус животного не позволяет его усыновить.\n" + PET_STATUS + "\n\n" +
-                    "5.Данный номер телефона уже был добавлен ранее.\n" + PARENT_ALREADY_ADDED;
+    public static final String ID_PARENT_INCORRECT = "ПРИЧИНА: Передан некорректный ID усыновителя.\n";
+    public static final String ID_PARENT_NOT_FOUND = "ПРИЧИНА: Усыновитель с данным ID еще не был добавлен.\n";
+    public static final String FIRST_NAME_PARENT_INCORRECT = "ПРИЧИНА: Передано некорректное имя усыновителя.\n";
+    public static final String LAST_NAME_PARENT_INCORRECT = "ПРИЧИНА: Передана некорректная фамилия усыновителя.\n";
+    public static final String PHONE_NUMBER_PARENT_INCORRECT = "ПРИЧИНА: Передан некорректный номер телефона усыновителя.\n";
+    public static final String STATUS_INCORRECT = "ПРИЧИНА: Статус животного не позволяет его усыновить.\n";
 
-    public static final String EXAMPLE_ADD_PARENT_CODE_404 =
-            "1.Животное с данным именем еще не было добавлено.\n" + PET_NOT_FOUND;
+    public static final String ADD_PARENT_CODE_400 =
+            FIRST_NAME_PARENT_INCORRECT + LAST_NAME_PARENT_INCORRECT + NAME_PET_INCORRECT + INVALIDE_INPUT + "\n\n" +
+                    PHONE_NUMBER_PARENT_INCORRECT + INVALIDE_NUMBER + "\n\n" +
+                    STATUS_INCORRECT + PET_STATUS + "\n\n" +
+                    PHONE_NUMBER_ALREADY_ADDED + PARENT_ALREADY_ADDED;
 
-    public static final String EXAMPLE_GET_BY_ID_PARENT_CODE_400 =
-            "1.Передан некорректный id усыновителя.\n" + INVALIDE_INPUT;
+    public static final String ADD_PARENT_CODE_404 =
+            ID_PET_NOT_FOUND + PET_NOT_FOUND;
 
-    public static final String EXAMPLE_GET_BY_ID_PARENT_CODE_404 =
-            "1.Усыновитель с данным id еще не был добавлен.\n" + PARENT_NOT_FOUND;
+    public static final String GET_CODE_400 =
+            ID_PARENT_INCORRECT + INVALIDE_INPUT;
 
-    public static final String EXAMPLE_GET_ALL_PARENTS_BY_PARAMETERS_CODE_400 =
-            "1.Передано некорректное имя.\n" +
-                    "2.Передана некорректная фамилия.\n" + INVALIDE_INPUT;
+    public static final String GET_CODE_404 =
+            ID_PARENT_NOT_FOUND + PARENT_NOT_FOUND;
 
-    public static final String EXAMPLE_EDIT_PARENT_CODE_400 =
-            "1.Передан некорректный id усыновителя.\n" +
-                    "2.Передано некорректное имя.\n" +
-                    "3.Передана некорректная фамилия.\n" +
-                    "4.Передана некорректное имя животного.\n" + INVALIDE_INPUT + "\n\n" +
-                    "5.Передан некорректный номер телефона.\n" + INVALIDE_NUMBER + "\n\n" +
-                    "6.Статус животного не позволяет его усыновить.\n" + PET_STATUS + "\n\n" +
-                    "7.Данный номер телефона уже был добавлен ранее.\n" + PARENT_ALREADY_ADDED;
+    public static final String GET_ALL_PARENTS_BY_PARAMETERS_CODE_400 =
+            FIRST_NAME_PARENT_INCORRECT + LAST_NAME_PARENT_INCORRECT + INVALIDE_INPUT;
 
-    public static final String EXAMPLE_EDIT_PARENT_CODE_404 =
-            "1.Усыновитель с данным id еще не был добавлен.\n" + PARENT_NOT_FOUND + "\n\n" +
-                    "2.Животное с данным именем еще не было добавлено.\n" + PET_NOT_FOUND;
+    public static final String EDIT_PARENT_CODE_400 =
+            ID_PARENT_INCORRECT + FIRST_NAME_PARENT_INCORRECT + LAST_NAME_PARENT_INCORRECT + NAME_PET_INCORRECT + INVALIDE_INPUT + "\n\n" +
+                    PHONE_NUMBER_PARENT_INCORRECT + INVALIDE_NUMBER + "\n\n" +
+                    STATUS_INCORRECT + PET_STATUS + "\n\n" +
+                    PHONE_NUMBER_ALREADY_ADDED + PARENT_ALREADY_ADDED;
+
+    public static final String EDIT_PARENT_CODE_404 =
+            ID_PARENT_NOT_FOUND + PARENT_NOT_FOUND + "\n\n" +
+                    ID_PET_NOT_FOUND + PET_NOT_FOUND;
 }

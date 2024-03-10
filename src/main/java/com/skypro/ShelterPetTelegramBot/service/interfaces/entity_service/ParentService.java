@@ -17,7 +17,7 @@ public interface ParentService {
      * @param firstName   <i> является именем нового усыновителя </i> <br>
      * @param lastName    <i> является фамилией нового усыновителя </i> <br>
      * @param phoneNumber <i> является номером телефона нового усыновителя </i> <br>
-     * @param petName     <i> является именем животного </i>
+     * @param petName     <i> является именем усыновляемого животного </i>
      */
     Parent add(String firstName,
                String lastName,
@@ -54,7 +54,7 @@ public interface ParentService {
      * @param firstName   <i> является новым именем усыновителя </i> <br>
      * @param lastName    <i> является новой фамилией усыновителя </i> <br>
      * @param phoneNumber <i> является новым номером телефона усыновителя </i> <br>
-     * @param petName     <i> является именем нового животного </i>
+     * @param petName     <i> является именем нового усыновляемого животного </i>
      */
     Parent edit(Long id,
                 String firstName,

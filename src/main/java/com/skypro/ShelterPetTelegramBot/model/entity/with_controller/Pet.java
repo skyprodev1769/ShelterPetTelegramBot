@@ -1,7 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus;
-import com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import jakarta.persistence.*;
 import lombok.Data;
 

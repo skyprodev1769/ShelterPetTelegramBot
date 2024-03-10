@@ -18,9 +18,9 @@ import org.springframework.http.HttpMethod;
 
 import java.util.stream.Stream;
 
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.ADOPTED;
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetStatus.FREE;
-import static com.skypro.ShelterPetTelegramBot.model.entity.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.ADOPTED;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
+import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.junit.jupiter.api.Assertions.*;

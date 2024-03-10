@@ -17,6 +17,11 @@ import java.util.Collection;
 
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.Codes.*;
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.ParentControllerDoc.*;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.PetControllerDoc.EXAMPLE_NAME;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.PetControllerDoc.NAME_PET;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.ShelterControllerDoc.ARG_ID;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.ShelterControllerDoc.EXAMPLE_ID;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.VolunteerControllerDoc.*;
 
 /**
  * Класс {@link ParentController}
@@ -35,7 +40,7 @@ public class ParentController {
     }
 
     @Operation(
-            summary = "Добавление нового усыновителя",
+            summary = ADD_PARENT,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -49,14 +54,14 @@ public class ParentController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_ADD_PARENT_CODE_400)
+                                    examples = @ExampleObject(ADD_PARENT_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_ADD_PARENT_CODE_404)
+                                    examples = @ExampleObject(ADD_PARENT_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -70,23 +75,32 @@ public class ParentController {
     )
 
     @PostMapping
-    public Parent add(@Parameter(description = "Имя усыновителя")
-                      @RequestParam(name = "Имя") String firstName,
+    public Parent add(
+            @Parameter(
+                    description = FIRST_NAME_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_FIRST_NAME)))
+            @RequestParam(name = ARG_FIRST_NAME) String firstName,
 
-                      @Parameter(description = "Фамилия усыновителя")
-                      @RequestParam(name = "Фамилия") String lastName,
+            @Parameter(
+                    description = LAST_NAME_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_LAST_NAME)))
+            @RequestParam(name = ARG_LAST_NAME) String lastName,
 
-                      @Parameter(description = "Номер телефона усыновителя")
-                      @RequestParam(name = "Номер") String phoneNumber,
+            @Parameter(
+                    description = PHONE_NUMBER_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_PHONE_NUMBER)))
+            @RequestParam(name = ARG_PHONE_NUMBER) String phoneNumber,
 
-                      @Parameter(description = "Имя животного")
-                      @RequestParam(name = "Животное") String petName) {
+            @Parameter(
+                    description = NAME_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_NAME)))
+            @RequestParam(name = ARG_PET) String petName) {
 
         return service.add(firstName, lastName, phoneNumber, petName);
     }
 
     @Operation(
-            summary = "Получение усыновителя по id",
+            summary = GET_PARENT,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -100,14 +114,14 @@ public class ParentController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PARENT_CODE_400)
+                                    examples = @ExampleObject(GET_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PARENT_CODE_404)
+                                    examples = @ExampleObject(GET_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -120,15 +134,18 @@ public class ParentController {
             }
     )
 
-    @GetMapping("{id}")
-    public Parent getById(@Parameter(description = "id усыновителя")
-                          @PathVariable(name = "id") Long id) {
+    @GetMapping("{ID}")
+    public Parent getById(
+            @Parameter(
+                    description = ID_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
 
         return service.getById(id);
     }
 
     @Operation(
-            summary = "Получение списка усыновителей по имени, фамилии или номеру телефона",
+            summary = GET_ALL_PARENTS_BY_PARAMETERS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -142,7 +159,7 @@ public class ParentController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_ALL_PARENTS_BY_PARAMETERS_CODE_400)
+                                    examples = @ExampleObject(GET_ALL_PARENTS_BY_PARAMETERS_CODE_400)
                             )
                     ),
                     @ApiResponse(
@@ -156,20 +173,27 @@ public class ParentController {
     )
 
     @GetMapping
-    public Collection<Parent> getAllByParameters(@Parameter(description = "Имя усыновителя")
-                                                 @RequestParam(required = false, name = "Имя") String firstName,
+    public Collection<Parent> getAllByParameters(
+            @Parameter(
+                    description = FIRST_NAME_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_FIRST_NAME)))
+            @RequestParam(required = false, name = ARG_FIRST_NAME) String firstName,
 
-                                                 @Parameter(description = "Фамилия усыновителя")
-                                                 @RequestParam(required = false, name = "Фамилия") String lastName,
+            @Parameter(
+                    description = LAST_NAME_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_LAST_NAME)))
+            @RequestParam(required = false, name = ARG_LAST_NAME) String lastName,
 
-                                                 @Parameter(description = "Номер телефона усыновителя")
-                                                 @RequestParam(required = false, name = "Номер") String phoneNumber) {
+            @Parameter(
+                    description = PHONE_NUMBER_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_SEARCH_PHONE_NUMBER)))
+            @RequestParam(required = false, name = ARG_PHONE_NUMBER) String phoneNumber) {
 
         return service.getAllByParameters(firstName, lastName, phoneNumber);
     }
 
     @Operation(
-            summary = "Получение списка всех усыновителей",
+            summary = GET_ALL_PARENTS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -195,7 +219,7 @@ public class ParentController {
     }
 
     @Operation(
-            summary = "Изменение данных усыновителя по id",
+            summary = EDIT_PARENT,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -209,14 +233,14 @@ public class ParentController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_EDIT_PARENT_CODE_400)
+                                    examples = @ExampleObject(EDIT_PARENT_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_EDIT_PARENT_CODE_404)
+                                    examples = @ExampleObject(EDIT_PARENT_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -229,27 +253,38 @@ public class ParentController {
             }
     )
 
-    @PutMapping("{id}")
-    public Parent edit(@Parameter(description = "id усыновителя")
-                       @PathVariable(name = "id") Long id,
+    @PutMapping("{ID}")
+    public Parent edit(
+            @Parameter(
+                    description = ID_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id,
 
-                       @Parameter(description = "Имя усыновителя")
-                       @RequestParam(required = false, name = "Имя") String firstName,
+            @Parameter(
+                    description = FIRST_NAME_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_FIRST_NAME)))
+            @RequestParam(required = false, name = ARG_FIRST_NAME) String firstName,
 
-                       @Parameter(description = "Фамилия усыновителя")
-                       @RequestParam(required = false, name = "Фамилия") String lastName,
+            @Parameter(
+                    description = LAST_NAME_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_LAST_NAME)))
+            @RequestParam(required = false, name = ARG_LAST_NAME) String lastName,
 
-                       @Parameter(description = "Номер телефона усыновителя")
-                       @RequestParam(required = false, name = "Номер") String phoneNumber,
+            @Parameter(
+                    description = PHONE_NUMBER_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_PHONE_NUMBER)))
+            @RequestParam(required = false, name = ARG_PHONE_NUMBER) String phoneNumber,
 
-                       @Parameter(description = "Имя животного")
-                       @RequestParam(required = false, name = "Животное") String petName) {
+            @Parameter(
+                    description = NAME_PET,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_NAME)))
+            @RequestParam(required = false, name = ARG_PET) String petName) {
 
         return service.edit(id, firstName, lastName, phoneNumber, petName);
     }
 
     @Operation(
-            summary = "Удаление усыновителя по id",
+            summary = DELETE_PARENT,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -263,14 +298,14 @@ public class ParentController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PARENT_CODE_400)
+                                    examples = @ExampleObject(GET_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_PARENT_CODE_404)
+                                    examples = @ExampleObject(GET_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -283,9 +318,12 @@ public class ParentController {
             }
     )
 
-    @DeleteMapping("{id}")
-    public Parent delete(@Parameter(description = "id усыновителя")
-                         @PathVariable(name = "id") Long id) {
+    @DeleteMapping("{ID}")
+    public Parent delete(
+            @Parameter(
+                    description = ID_PARENT,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
 
         return service.delete(id);
     }

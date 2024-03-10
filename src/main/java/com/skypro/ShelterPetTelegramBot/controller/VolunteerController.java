@@ -16,7 +16,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Collection;
 
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.Codes.*;
-import static com.skypro.ShelterPetTelegramBot.utils.documentation.ShelterControllerDoc.EXAMPLE_GET_BY_ID_SHELTER_CODE_404;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.ShelterControllerDoc.*;
 import static com.skypro.ShelterPetTelegramBot.utils.documentation.VolunteerControllerDoc.*;
 
 /**
@@ -36,7 +36,7 @@ public class VolunteerController {
     }
 
     @Operation(
-            summary = "Добавление нового волонтера",
+            summary = ADD_VOLUNTEER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -50,14 +50,14 @@ public class VolunteerController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_ADD_VOLUNTEER_CODE_400)
+                                    examples = @ExampleObject(ADD_VOLUNTEER_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_SHELTER_CODE_404)
+                                    examples = @ExampleObject(GET_SHELTER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -71,23 +71,32 @@ public class VolunteerController {
     )
 
     @PostMapping
-    public Volunteer add(@Parameter(description = "Имя волонтера")
-                         @RequestParam(name = "Имя") String firstName,
+    public Volunteer add(
+            @Parameter(
+                    description = FIRST_NAME_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_FIRST_NAME)))
+            @RequestParam(name = ARG_FIRST_NAME) String firstName,
 
-                         @Parameter(description = "Фамилия волонтера")
-                         @RequestParam(name = "Фамилия") String lastName,
+            @Parameter(
+                    description = LAST_NAME_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_LAST_NAME)))
+            @RequestParam(name = ARG_LAST_NAME) String lastName,
 
-                         @Parameter(description = "Номер телефона волонтера")
-                         @RequestParam(name = "Номер") String phoneNumber,
+            @Parameter(
+                    description = PHONE_NUMBER_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_PHONE_NUMBER)))
+            @RequestParam(name = ARG_PHONE_NUMBER) String phoneNumber,
 
-                         @Parameter(description = "id приюта для животных")
-                         @RequestParam(name = "Приют") Long shelterId) {
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @RequestParam(name = ARG_SHELTER) Long shelterId) {
 
         return service.add(firstName, lastName, phoneNumber, shelterId);
     }
 
     @Operation(
-            summary = "Получение волонтера по id",
+            summary = GET_VOLUNTEER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -101,14 +110,14 @@ public class VolunteerController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_VOLUNTEER_CODE_400)
+                                    examples = @ExampleObject(GET_VOLUNTEER_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_VOLUNTEER_CODE_404)
+                                    examples = @ExampleObject(GET_VOLUNTEER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -121,15 +130,18 @@ public class VolunteerController {
             }
     )
 
-    @GetMapping("{id}")
-    public Volunteer getById(@Parameter(description = "id волонтера")
-                             @PathVariable(name = "id") Long id) {
+    @GetMapping("{ID}")
+    public Volunteer getById(
+            @Parameter(
+                    description = ID_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
 
         return service.getById(id);
     }
 
     @Operation(
-            summary = "Получение списка волонтеров по имени, фамилии, номеру телефона или id приюта для животных",
+            summary = GET_ALL_VOLUNTEERS_BY_PARAMETERS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -143,7 +155,7 @@ public class VolunteerController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_ALL_VOLUNTEERS_BY_PARAMETERS_CODE_400)
+                                    examples = @ExampleObject(GET_ALL_VOLUNTEERS_BY_PARAMETERS_CODE_400)
                             )
                     ),
                     @ApiResponse(
@@ -157,23 +169,32 @@ public class VolunteerController {
     )
 
     @GetMapping
-    public Collection<Volunteer> getAllByParameters(@Parameter(description = "Имя волонтера")
-                                                    @RequestParam(required = false, name = "Имя") String firstName,
+    public Collection<Volunteer> getAllByParameters(
+            @Parameter(
+                    description = FIRST_NAME_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_FIRST_NAME)))
+            @RequestParam(required = false, name = ARG_FIRST_NAME) String firstName,
 
-                                                    @Parameter(description = "Фамилия волонтера")
-                                                    @RequestParam(required = false, name = "Фамилия") String lastName,
+            @Parameter(
+                    description = LAST_NAME_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_LAST_NAME)))
+            @RequestParam(required = false, name = ARG_LAST_NAME) String lastName,
 
-                                                    @Parameter(description = "Номер телефона волонтера")
-                                                    @RequestParam(required = false, name = "Номер") String phoneNumber,
+            @Parameter(
+                    description = PHONE_NUMBER_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_SEARCH_PHONE_NUMBER)))
+            @RequestParam(required = false, name = ARG_PHONE_NUMBER) String phoneNumber,
 
-                                                    @Parameter(description = "id приюта для животных")
-                                                    @RequestParam(required = false, name = "Приют") Long shelterId) {
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @RequestParam(required = false, name = ARG_SHELTER) Long shelterId) {
 
         return service.getAllByParameters(firstName, lastName, phoneNumber, shelterId);
     }
 
     @Operation(
-            summary = "Получение списка всех волонтеров",
+            summary = GET_ALL_VOLUNTEERS,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -199,7 +220,7 @@ public class VolunteerController {
     }
 
     @Operation(
-            summary = "Изменение данных волонтера по id",
+            summary = EDIT_VOLUNTEER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -213,14 +234,14 @@ public class VolunteerController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_EDIT_VOLUNTEER_CODE_400)
+                                    examples = @ExampleObject(EDIT_VOLUNTEER_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_EDIT_VOLUNTEER_CODE_404)
+                                    examples = @ExampleObject(EDIT_VOLUNTEER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -233,27 +254,38 @@ public class VolunteerController {
             }
     )
 
-    @PutMapping("{id}")
-    public Volunteer edit(@Parameter(description = "id волонтера")
-                          @PathVariable(name = "id") Long id,
+    @PutMapping("{ID}")
+    public Volunteer edit(
+            @Parameter(
+                    description = ID_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id,
 
-                          @Parameter(description = "Имя волонтера")
-                          @RequestParam(required = false, name = "Имя") String firstName,
+            @Parameter(
+                    description = FIRST_NAME_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_FIRST_NAME)))
+            @RequestParam(required = false, name = ARG_FIRST_NAME) String firstName,
 
-                          @Parameter(description = "Фамилия волонтера")
-                          @RequestParam(required = false, name = "Фамилия") String lastName,
+            @Parameter(
+                    description = LAST_NAME_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_LAST_NAME)))
+            @RequestParam(required = false, name = ARG_LAST_NAME) String lastName,
 
-                          @Parameter(description = "Номер телефона волонтера")
-                          @RequestParam(required = false, name = "Номер") String phoneNumber,
+            @Parameter(
+                    description = PHONE_NUMBER_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_PHONE_NUMBER)))
+            @RequestParam(required = false, name = ARG_PHONE_NUMBER) String phoneNumber,
 
-                          @Parameter(description = "id приюта для животных")
-                          @RequestParam(required = false, name = "Приют") Long shelterId) {
+            @Parameter(
+                    description = ID_SHELTER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @RequestParam(required = false, name = ARG_SHELTER) Long shelterId) {
 
         return service.edit(id, firstName, lastName, phoneNumber, shelterId);
     }
 
     @Operation(
-            summary = "Удаление волонтера по id",
+            summary = DELETE_VOLUNTEER,
             responses = {
                     @ApiResponse(
                             responseCode = CODE_200,
@@ -267,14 +299,14 @@ public class VolunteerController {
                             responseCode = CODE_400,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_VOLUNTEER_CODE_400)
+                                    examples = @ExampleObject(GET_VOLUNTEER_CODE_400)
                             )
                     ),
                     @ApiResponse(
                             responseCode = CODE_404,
                             description = ERROR,
                             content = @Content(
-                                    examples = @ExampleObject(EXAMPLE_GET_BY_ID_VOLUNTEER_CODE_404)
+                                    examples = @ExampleObject(GET_VOLUNTEER_CODE_404)
                             )
                     ),
                     @ApiResponse(
@@ -287,9 +319,12 @@ public class VolunteerController {
             }
     )
 
-    @DeleteMapping("{id}")
-    public Volunteer delete(@Parameter(description = "id волонтера")
-                            @PathVariable(name = "id") Long id) {
+    @DeleteMapping("{ID}")
+    public Volunteer delete(
+            @Parameter(
+                    description = ID_VOLUNTEER,
+                    content = @Content(examples = @ExampleObject(EXAMPLE_ID)))
+            @PathVariable(name = ARG_ID) Long id) {
 
         return service.delete(id);
     }
