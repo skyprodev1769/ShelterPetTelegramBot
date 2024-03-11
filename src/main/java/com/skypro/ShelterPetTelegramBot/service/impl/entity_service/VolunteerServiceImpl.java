@@ -19,7 +19,7 @@ import java.util.Collection;
  */
 @Slf4j
 @Service
-public class VolunteerServiceImpl implements VolunteerService {
+public final class VolunteerServiceImpl implements VolunteerService {
 
     private final VolunteerRepository repository;
     private final CheckService checkService;

@@ -26,7 +26,7 @@ public interface CreatingKeyBoards {
     SendMessage createKeyBoardForChoiceShelter(Long chatId, String answer);
 
     /**
-     * Метод создает интерактивную клавиатуру для выбора основных шагов запросов информации о приюте
+     * Метод создает интерактивную клавиатуру для выбора общих запросов информации
      *
      * @param chatId <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param answer <i> является текстом для отправки пользователю </i>

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * Класс {@link AppConfiguration}
- * является конфигурационным классом для сервисного класса {@link  TelegramBot}
+ * является конфигурационным классом для работы телеграм бота {@link TelegramBot}
  */
 @Data
 @Configuration

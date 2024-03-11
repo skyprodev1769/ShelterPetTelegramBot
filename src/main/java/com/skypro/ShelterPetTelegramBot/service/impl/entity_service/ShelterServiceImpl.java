@@ -18,7 +18,7 @@ import java.util.Collection;
  */
 @Slf4j
 @Service
-public class ShelterServiceImpl implements ShelterService {
+public final class ShelterServiceImpl implements ShelterService {
 
     private final ShelterRepository repository;
     private final CheckService checkService;

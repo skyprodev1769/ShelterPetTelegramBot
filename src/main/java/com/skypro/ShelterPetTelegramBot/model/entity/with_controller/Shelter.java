@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Collection;
 
@@ -12,6 +13,7 @@ import java.util.Collection;
  * является сущностью для хранения приютов для животных в БД
  */
 @Data
+@NoArgsConstructor
 @Entity(name = "shelter")
 public class Shelter {
 
@@ -34,9 +36,6 @@ public class Shelter {
     @JsonIgnore
     @OneToMany(mappedBy = "shelter")
     private Collection<Pet> pets;
-
-    public Shelter() {
-    }
 
     public Shelter(PetType type, String address) {
         this.type = type;

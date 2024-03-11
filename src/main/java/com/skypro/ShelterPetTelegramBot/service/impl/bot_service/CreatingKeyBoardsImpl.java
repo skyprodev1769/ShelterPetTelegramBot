@@ -2,7 +2,7 @@ package com.skypro.ShelterPetTelegramBot.service.impl.bot_service;
 
 import com.skypro.ShelterPetTelegramBot.service.interfaces.bot_service.CreatingKeyBoards;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -17,11 +17,11 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
  * является сервисным классом для создания интерактивных клавиатур
  */
 @Slf4j
-@Component
-public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
+@Service
+public final class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
     @Override
-    public final SendMessage createKeyBoardForRegistration(Long chatId, String answer) {
+    public SendMessage createKeyBoardForRegistration(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -44,7 +44,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
     }
 
     @Override
-    public final SendMessage createKeyBoardForChoiceShelter(Long chatId, String answer) {
+    public SendMessage createKeyBoardForChoiceShelter(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -71,7 +71,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
     }
 
     @Override
-    public final SendMessage createKeyBoardForGeneralInfo(Long chatId, String answer) {
+    public SendMessage createKeyBoardForGeneralInfo(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -106,7 +106,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
     }
 
     @Override
-    public final SendMessage createKeyBoardForDetailedInfoAboutShelter(Long chatId, String answer) {
+    public SendMessage createKeyBoardForDetailedInfoAboutShelter(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);
@@ -161,7 +161,7 @@ public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
     }
 
     @Override
-    public final SendMessage createKeyBoardForDetailedInfoAboutProcessForDog(Long chatId, String answer) {
+    public SendMessage createKeyBoardForDetailedInfoAboutProcessForDog(Long chatId, String answer) {
         SendMessage message = new SendMessage();
 
         message.setChatId(chatId);

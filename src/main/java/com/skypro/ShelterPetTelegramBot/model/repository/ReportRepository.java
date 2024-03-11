@@ -16,6 +16,15 @@ import java.util.Optional;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
+    Report getByParentFirstNameContainsIgnoreCaseAndParentLastNameContainsIgnoreCaseAndParentPetNameContainsIgnoreCaseAndDate(String firstName,
+                                                                                                                              String lastName,
+                                                                                                                              String petName,
+                                                                                                                              LocalDate date);
+
+    Collection<Report> getByParentFirstNameContainsIgnoreCaseAndParentLastNameContainsIgnoreCaseAndParentPetNameContainsIgnoreCase(String firstName,
+                                                                                                                                   String lastName,
+                                                                                                                                   String petName);
+
     Optional<Report> getByDate(LocalDate date);
 
     Collection<Report> getAllByDate(LocalDate date);

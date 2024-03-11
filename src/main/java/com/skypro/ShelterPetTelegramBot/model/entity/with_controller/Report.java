@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
  * является сущностью для хранения отчетов о животных в БД
  */
 @Data
+@NoArgsConstructor
 @Entity(name = "report")
 public class Report {
 
@@ -38,9 +40,6 @@ public class Report {
     @JsonIgnore
     @JoinColumn(name = "parent_id")
     private Parent parent;
-
-    public Report() {
-    }
 
     public Report(String photo, String document, LocalDate date, ReportStatus status, Parent parent) {
         this.photo = photo;

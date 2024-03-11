@@ -4,12 +4,14 @@ import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
 import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Класс {@link Pet}
  * является сущностью для хранения животных в БД
  */
 @Data
+@NoArgsConstructor
 @Entity(name = "pet")
 public class Pet {
 
@@ -32,9 +34,6 @@ public class Pet {
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
-
-    public Pet() {
-    }
 
     public Pet(PetType type, PetStatus status, String name, Shelter shelter) {
         this.type = type;

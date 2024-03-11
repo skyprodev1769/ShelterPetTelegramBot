@@ -23,7 +23,7 @@ import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
  */
 @Slf4j
 @Service
-public class ParentServiceImpl implements ParentService {
+public final class ParentServiceImpl implements ParentService {
 
     private final ParentRepository parentRepository;
     private final PetRepository petRepository;

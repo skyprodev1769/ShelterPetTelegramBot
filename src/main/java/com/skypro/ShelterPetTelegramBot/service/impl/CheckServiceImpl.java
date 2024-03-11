@@ -28,7 +28,7 @@ import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
  */
 @Slf4j
 @Service
-public class CheckServiceImpl implements CheckService {
+public final class CheckServiceImpl implements CheckService {
 
     @Override
     public boolean checkStatus(PetStatus status) {

@@ -2,12 +2,14 @@ package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Класс {@link Volunteer}
  * является сущностью для хранения волонтеров в БД
  */
 @Data
+@NoArgsConstructor
 @Entity(name = "volunteer")
 public class Volunteer {
 
@@ -28,9 +30,6 @@ public class Volunteer {
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
-
-    public Volunteer() {
-    }
 
     public Volunteer(String firstName, String lastName, String phoneNumber, Shelter shelter) {
         this.firstName = firstName;

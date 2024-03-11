@@ -2,12 +2,14 @@ package com.skypro.ShelterPetTelegramBot.model.entity.with_controller;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Класс {@link Parent}
  * является сущностью для хранения усыновителей в БД
  */
 @Data
+@NoArgsConstructor
 @Entity(name = "parent")
 public class Parent {
 
@@ -28,9 +30,6 @@ public class Parent {
     @OneToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
-
-    public Parent() {
-    }
 
     public Parent(String firstName, String lastName, String phoneNumber, Pet pet) {
         this.firstName = firstName;

@@ -3,7 +3,9 @@ package com.skypro.ShelterPetTelegramBot.model.entity.without_controller;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
@@ -12,6 +14,8 @@ import java.sql.Timestamp;
  * является сущностью для хранения новых пользователей в БД
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "users")
 public class User {
 

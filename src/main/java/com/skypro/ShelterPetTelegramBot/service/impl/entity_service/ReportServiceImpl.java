@@ -30,7 +30,7 @@ import static com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus.VIEWED;
  */
 @Slf4j
 @Service
-public class ReportServiceImpl implements ReportService {
+public final class ReportServiceImpl implements ReportService {
 
     private final ReportRepository repository;
     private final CheckService checkService;

@@ -21,7 +21,7 @@ import java.util.Collection;
  */
 @Slf4j
 @Service
-public class PetServiceImpl implements PetService {
+public final class PetServiceImpl implements PetService {
 
     private final PetRepository repository;
     private final CheckService checkService;
