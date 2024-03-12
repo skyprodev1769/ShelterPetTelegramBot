@@ -25,7 +25,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.Reminders.*;
  */
 @Slf4j
 @Service
-public final class SendingNotificationsImpl implements SendingNotifications {
+public class SendingNotificationsImpl implements SendingNotifications {
 
     private final BasicMethods methods;
     private final PotentialParentRepository potentialParentRepository;

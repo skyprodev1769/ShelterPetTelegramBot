@@ -11,6 +11,7 @@ import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.Collection;
 
 import static com.skypro.ShelterPetTelegramBot.model.enums.FileType.PNG;
 import static com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus.VIEWED;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_REPORT;
 
 /**
  * Класс {@link ReportServiceImpl}
@@ -30,7 +32,7 @@ import static com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus.VIEWED;
  */
 @Slf4j
 @Service
-public final class ReportServiceImpl implements ReportService {
+public class ReportServiceImpl implements ReportService {
 
     private final ReportRepository repository;
     private final CheckService checkService;
@@ -41,6 +43,7 @@ public final class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Cacheable(value = CACHE_REPORT)
     public Report getById(Long id) {
         checkService.checkValue(id);
         log.info("ЗАПРОШЕН ОТЧЕТ ПО ID - {}", id);
@@ -48,14 +51,15 @@ public final class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Cacheable(value = CACHE_REPORT)
     public void getAttachmentByIdAndType(Long id, FileType type, HttpServletResponse response) {
         Report report = getById(id);
 
         if (type == PNG) {
-            getAttachment(id, response, report.getPhoto());
+            findAttachment(id, response, report.getPhoto());
 
         } else {
-            getAttachment(id, response, report.getDocument());
+            findAttachment(id, response, report.getDocument());
         }
 
         if (report.getPhoto() != null & report.getDocument() != null) {
@@ -66,6 +70,7 @@ public final class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Cacheable(value = CACHE_REPORT)
     public Collection<Report> getAllByParameters(LocalDate date, ReportStatus status) {
 
         if (date == null & status == null) {
@@ -89,6 +94,7 @@ public final class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Cacheable(value = CACHE_REPORT)
     public Collection<Report> getAll() {
         log.info("ЗАПРОШЕНЫ ВСЕ ОТЧЕТЫ О ЖИВОТНЫХ");
         return repository.findAll();
@@ -101,7 +107,7 @@ public final class ReportServiceImpl implements ReportService {
      * @param response   <i> является определителем ответа клиенту </i> <br>
      * @param attachment <i> является передаваемым вложением </i>
      */
-    private void getAttachment(Long id, HttpServletResponse response, String attachment) {
+    private void findAttachment(Long id, HttpServletResponse response, String attachment) {
 
         Path path;
 

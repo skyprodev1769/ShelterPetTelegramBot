@@ -18,7 +18,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
  */
 @Slf4j
 @Service
-public final class CreatingKeyBoardsImpl implements CreatingKeyBoards {
+public class CreatingKeyBoardsImpl implements CreatingKeyBoards {
 
     @Override
     public SendMessage createKeyBoardForRegistration(Long chatId, String answer) {

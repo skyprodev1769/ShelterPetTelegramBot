@@ -29,7 +29,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersFor
  */
 @Slf4j
 @Service
-public final class GetReactionsImpl implements GetReactions {
+public class GetReactionsImpl implements GetReactions {
 
 
     private final AppConfiguration configuration;

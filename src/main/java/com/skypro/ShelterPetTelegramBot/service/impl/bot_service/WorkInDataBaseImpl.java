@@ -45,7 +45,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.contacts.AnswersFor
  */
 @Slf4j
 @Service
-public final class WorkInDataBaseImpl implements WorkInDataBase {
+public class WorkInDataBaseImpl implements WorkInDataBase {
 
     private final AppConfiguration configuration;
     private final TelegramBot bot;

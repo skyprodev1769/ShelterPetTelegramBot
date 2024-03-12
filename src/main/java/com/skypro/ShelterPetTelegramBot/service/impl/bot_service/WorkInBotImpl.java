@@ -32,7 +32,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersFor
  */
 @Slf4j
 @Service
-public final class WorkInBotImpl implements WorkInBot {
+public class WorkInBotImpl implements WorkInBot {
 
     private final AppConfiguration configuration;
     private final BasicMethods methods;

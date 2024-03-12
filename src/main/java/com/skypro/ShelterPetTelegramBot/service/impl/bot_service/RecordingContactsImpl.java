@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
  */
 @Slf4j
 @Service
-public final class RecordingContactsImpl implements RecordingContacts {
+public class RecordingContactsImpl implements RecordingContacts {
 
     @Override
     public PotentialParent recordContact(Long chatId, Matcher matcher) {

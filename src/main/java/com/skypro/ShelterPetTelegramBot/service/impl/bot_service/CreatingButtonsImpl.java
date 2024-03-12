@@ -19,7 +19,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.Commands.*;
  */
 @Slf4j
 @Service
-public final class CreatingButtonsImpl implements CreatingButtons {
+public class CreatingButtonsImpl implements CreatingButtons {
 
     @Override
     public SendMessage createButtonsForChoiceRegistration(Long chatId, String answer) {

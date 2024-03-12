@@ -23,7 +23,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersFor
  */
 @Slf4j
 @Service
-public final class SendingListsImpl implements SendingLists {
+public class SendingListsImpl implements SendingLists {
 
     private final AppConfiguration configuration;
     private final ShelterRepository shelterRepository;

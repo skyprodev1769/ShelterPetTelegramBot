@@ -25,7 +25,7 @@ import static com.skypro.ShelterPetTelegramBot.utils.documentation.ReportControl
  */
 @Slf4j
 @Service
-public final class SendingMessageImpl implements SendingMessage {
+public class SendingMessageImpl implements SendingMessage {
 
     private final BasicMethods methods;
     private final PotentialParentRepository potentialParentRepository;

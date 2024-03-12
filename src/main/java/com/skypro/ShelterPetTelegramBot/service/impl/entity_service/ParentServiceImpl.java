@@ -10,12 +10,17 @@ import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ParentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.ADOPTED;
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID_PARENT;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_PARENT;
 
 /**
  * Класс {@link ParentServiceImpl}
@@ -23,7 +28,7 @@ import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
  */
 @Slf4j
 @Service
-public final class ParentServiceImpl implements ParentService {
+public class ParentServiceImpl implements ParentService {
 
     private final ParentRepository parentRepository;
     private final PetRepository petRepository;
@@ -63,6 +68,7 @@ public final class ParentServiceImpl implements ParentService {
     }
 
     @Override
+    @Cacheable(value = CACHE_PARENT)
     public Parent getById(Long id) {
         checkService.checkValue(id);
         log.info("ЗАПРОШЕН УСЫНОВИТЕЛЬ ПО ID - {}", id);
@@ -70,6 +76,7 @@ public final class ParentServiceImpl implements ParentService {
     }
 
     @Override
+    @Cacheable(value = CACHE_PARENT)
     public Collection<Parent> getAllByParameters(String firstName, String lastName, String phoneNumber) {
 
         if (firstName == null & lastName == null & phoneNumber == null) {
@@ -117,12 +124,14 @@ public final class ParentServiceImpl implements ParentService {
     }
 
     @Override
+    @Cacheable(value = CACHE_PARENT)
     public Collection<Parent> getAll() {
         log.info("ЗАПРОШЕНЫ ВСЕ УСЫНОВИТЕЛИ");
         return parentRepository.findAll();
     }
 
     @Override
+    @CachePut(value = CACHE_PARENT, key = CACHE_ID_PARENT)
     public Parent edit(Long id,
                        String firstName,
                        String lastName,
@@ -174,6 +183,7 @@ public final class ParentServiceImpl implements ParentService {
     }
 
     @Override
+    @CacheEvict(CACHE_PARENT)
     public Parent delete(Long id) {
         Parent parent = getById(id);
         parentRepository.delete(parent);

@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
  */
 @Slf4j
 @Service
-public final class BasicMethodsImpl implements BasicMethods {
+public class BasicMethodsImpl implements BasicMethods {
 
     private final TelegramBot bot;
 

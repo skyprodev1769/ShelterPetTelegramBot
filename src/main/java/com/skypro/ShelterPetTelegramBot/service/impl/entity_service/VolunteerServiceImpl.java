@@ -9,9 +9,15 @@ import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID_VOLUNTEER;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_VOLUNTEER;
 
 /**
  * Класс {@link VolunteerServiceImpl}
@@ -19,7 +25,7 @@ import java.util.Collection;
  */
 @Slf4j
 @Service
-public final class VolunteerServiceImpl implements VolunteerService {
+public class VolunteerServiceImpl implements VolunteerService {
 
     private final VolunteerRepository repository;
     private final CheckService checkService;
@@ -55,6 +61,7 @@ public final class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
+    @Cacheable(value = CACHE_VOLUNTEER)
     public Volunteer getById(Long id) {
         checkService.checkValue(id);
         log.info("ЗАПРОШЕН ВОЛОНТЕР ПО ID - {}", id);
@@ -62,6 +69,7 @@ public final class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
+    @Cacheable(value = CACHE_VOLUNTEER)
     public Collection<Volunteer> getAllByParameters(String firstName,
                                                     String lastName,
                                                     String phoneNumber,
@@ -160,12 +168,14 @@ public final class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
+    @Cacheable(value = CACHE_VOLUNTEER)
     public Collection<Volunteer> getAll() {
         log.info("ЗАПРОШЕНЫ ВСЕ ВОЛОНТЕРЫ");
         return repository.findAll();
     }
 
     @Override
+    @CachePut(value = CACHE_VOLUNTEER, key = CACHE_ID_VOLUNTEER)
     public Volunteer edit(Long id,
                           String firstName,
                           String lastName,
@@ -213,6 +223,7 @@ public final class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
+    @CacheEvict(CACHE_VOLUNTEER)
     public Volunteer delete(Long id) {
         Volunteer volunteer = getById(id);
         repository.delete(volunteer);

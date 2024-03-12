@@ -2,15 +2,21 @@ package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.exception.shelter.ShelterNotFoundException;
-import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.repository.ShelterRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_SHELTER;
 
 /**
  * Класс {@link ShelterServiceImpl}
@@ -18,7 +24,7 @@ import java.util.Collection;
  */
 @Slf4j
 @Service
-public final class ShelterServiceImpl implements ShelterService {
+public class ShelterServiceImpl implements ShelterService {
 
     private final ShelterRepository repository;
     private final CheckService checkService;
@@ -39,6 +45,7 @@ public final class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
+    @Cacheable(value = CACHE_SHELTER)
     public Shelter getById(Long id) {
         checkService.checkValue(id);
         log.info("ЗАПРОШЕН ПРИЮТ ПО ID - {}", id);
@@ -46,6 +53,7 @@ public final class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
+    @Cacheable(value = CACHE_SHELTER)
     public Collection<Shelter> getAllByParameters(PetType type, String address) {
 
         if (type == null & address == null) {
@@ -71,12 +79,14 @@ public final class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
+    @Cacheable(value = CACHE_SHELTER)
     public Collection<Shelter> getAll() {
         log.info("ЗАПРОШЕНЫ ВСЕ ПРИЮТЫ");
         return repository.findAll();
     }
 
     @Override
+    @CachePut(value = CACHE_SHELTER, key = CACHE_ID_SHELTER)
     public Shelter edit(Long id, PetType type, String address) {
 
         Shelter shelter = getById(id);
@@ -106,6 +116,7 @@ public final class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
+    @CacheEvict(CACHE_SHELTER)
     public Shelter delete(Long id) {
         Shelter shelter = getById(id);
         repository.delete(shelter);

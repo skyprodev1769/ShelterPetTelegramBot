@@ -2,18 +2,24 @@ package com.skypro.ShelterPetTelegramBot.service.impl.entity_service;
 
 import com.skypro.ShelterPetTelegramBot.controller.PetController;
 import com.skypro.ShelterPetTelegramBot.exception.pet.PetNotFoundException;
-import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
-import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetStatus;
+import com.skypro.ShelterPetTelegramBot.model.enums.PetType;
 import com.skypro.ShelterPetTelegramBot.model.repository.PetRepository;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.CheckService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.PetService;
 import com.skypro.ShelterPetTelegramBot.service.interfaces.entity_service.ShelterService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID_PET;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_PET;
 
 /**
  * Класс {@link PetServiceImpl}
@@ -21,7 +27,7 @@ import java.util.Collection;
  */
 @Slf4j
 @Service
-public final class PetServiceImpl implements PetService {
+public class PetServiceImpl implements PetService {
 
     private final PetRepository repository;
     private final CheckService checkService;
@@ -56,6 +62,7 @@ public final class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Cacheable(value = CACHE_PET)
     public Pet getById(Long id) {
         checkService.checkValue(id);
         log.info("ЗАПРОШЕНО ЖИВОТНОЕ ПО ID - {}", id);
@@ -63,6 +70,7 @@ public final class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Cacheable(value = CACHE_PET)
     public Collection<Pet> getAllByParameters(PetType type,
                                               PetStatus status,
                                               String name,
@@ -153,12 +161,14 @@ public final class PetServiceImpl implements PetService {
     }
 
     @Override
+    @Cacheable(value = CACHE_PET)
     public Collection<Pet> getAll() {
         log.info("ЗАПРОШЕНЫ ВСЕ ЖИВОТНЫЕ");
         return repository.findAll();
     }
 
     @Override
+    @CachePut(value = CACHE_PET, key = CACHE_ID_PET)
     public Pet edit(Long id, PetType type, PetStatus status, String name, Long shelterId) {
 
         Pet pet = getById(id);
@@ -205,6 +215,7 @@ public final class PetServiceImpl implements PetService {
     }
 
     @Override
+    @CacheEvict(value = CACHE_PET)
     public Pet delete(Long id) {
         Pet pet = getById(id);
         repository.delete(pet);
