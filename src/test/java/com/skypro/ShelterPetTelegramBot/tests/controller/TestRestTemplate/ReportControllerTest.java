@@ -5,6 +5,9 @@ import com.skypro.ShelterPetTelegramBot.controller.PetController;
 import com.skypro.ShelterPetTelegramBot.controller.ReportController;
 import com.skypro.ShelterPetTelegramBot.controller.ShelterController;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Report;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
+import com.skypro.ShelterPetTelegramBot.model.enums.MessageContent;
+import com.skypro.ShelterPetTelegramBot.model.repository.PotentialParentRepository;
 import com.skypro.ShelterPetTelegramBot.model.repository.ReportRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,12 +22,13 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
+import static com.skypro.ShelterPetTelegramBot.model.enums.MessageContent.*;
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.DOG;
 import static com.skypro.ShelterPetTelegramBot.model.enums.ReportStatus.NOT_VIEWED;
 import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
-import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.INVALIDE_INPUT;
-import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.REPORT_NOT_FOUND;
+import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
+import static com.skypro.ShelterPetTelegramBot.utils.documentation.ReportControllerDoc.EXAMPLE_SEND_MESSAGE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -37,7 +41,9 @@ public class ReportControllerTest {
     @Autowired
     private TestRestTemplate template;
     @Autowired
-    private ReportRepository repository;
+    private ReportRepository reportRepository;
+    @Autowired
+    private PotentialParentRepository potentialParentRepository;
     @Autowired
     private ShelterController shelterController;
     @Autowired
@@ -156,6 +162,133 @@ public class ReportControllerTest {
         assertTrueForCollection(actual);
     }
 
+    @ParameterizedTest
+    @MethodSource("provideParamsForMessage")
+    void sendAnswer_success(MessageContent content) {
+        addRecipient();
+        addShelter();
+        addPet();
+        addParent();
+
+        String actual = this.template.getForObject("http://localhost:" + port
+                        + "/report/answer"
+                        + "?Сообщение=" + content
+                        + "&Имя=" + PARENT.getFirstName()
+                        + "&Фамилия=" + PARENT.getLastName()
+                        + "&Номер=" + RECIPIENT.getPhoneNumber()
+                        + "&Животное=" + PET.getName(),
+                String.class);
+
+        deleteParent(PARENT.getId());
+        deletePet(PET.getId());
+        deleteShelter(SHELTER.getId());
+        deleteRecipient();
+
+        assertNotNull(actual);
+        assertEquals(EXAMPLE_SEND_MESSAGE, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForName")
+    void sendAnswer_InvalideInputException(String name) {
+        String actual_1 = this.template.getForObject("http://localhost:" + port
+                        + "/report/answer"
+                        + "?Сообщение=" + EXTENSION_14
+                        + "&Имя=" + name
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
+                        + "&Животное=" + NAME,
+                String.class);
+
+        String actual_2 = this.template.getForObject("http://localhost:" + port
+                        + "/report/answer"
+                        + "?Сообщение=" + EXTENSION_14
+                        + "&Имя=" + FIRST_NAME
+                        + "&Фамилия=" + name
+                        + "&Номер=" + PHONE_NUMBER
+                        + "&Животное=" + NAME,
+                String.class);
+
+        String actual_3 = this.template.getForObject("http://localhost:" + port
+                        + "/report/answer"
+                        + "?Сообщение=" + EXTENSION_14
+                        + "&Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + PHONE_NUMBER
+                        + "&Животное=" + name,
+                String.class);
+
+        assertNotNull(actual_1);
+        assertNotNull(actual_2);
+        assertNotNull(actual_3);
+
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_1);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_3);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParamsForPhoneNumber")
+    void sendAnswer_InvalideNumberException(String number) {
+        String actual = this.template.getForObject("http://localhost:" + port
+                        + "/report/answer"
+                        + "?Сообщение=" + EXTENSION_14
+                        + "&Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + number
+                        + "&Животное=" + NAME,
+                String.class);
+
+        assertNotNull(actual);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_NUMBER), actual);
+    }
+
+    @Test
+    void sendAnswer_ParentNotFoundException() {
+        addRecipient();
+        addShelter();
+        addPet();
+
+        String actual = this.template.getForObject("http://localhost:" + port
+                        + "/report/answer"
+                        + "?Сообщение=" + EXTENSION_14
+                        + "&Имя=" + FIRST_NAME
+                        + "&Фамилия=" + LAST_NAME
+                        + "&Номер=" + RECIPIENT.getPhoneNumber()
+                        + "&Животное=" + PET.getName(),
+                String.class);
+
+        deletePet(PET.getId());
+        deleteShelter(SHELTER.getId());
+        deleteRecipient();
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, PARENT_NOT_FOUND), actual);
+    }
+
+    @Test
+    void sendAnswer_RecipientNotFoundException() {
+        addShelter();
+        addPet();
+        addParent();
+
+        String actual = this.template.getForObject("http://localhost:" + port
+                        + "/report/answer"
+                        + "?Сообщение=" + EXTENSION_14
+                        + "&Имя=" + PARENT.getFirstName()
+                        + "&Фамилия=" + PARENT.getLastName()
+                        + "&Номер=" + PHONE_NUMBER
+                        + "&Животное=" + PET.getName(),
+                String.class);
+
+        deleteParent(PARENT.getId());
+        deletePet(PET.getId());
+        deleteShelter(SHELTER.getId());
+
+        assertNotNull(actual);
+        assertEquals(exception(NOT_FOUND, RECIPIENT_NOT_FOUND), actual);
+    }
+
     private void addShelter() {
         Long id = shelterController.add(DOG, ADDRESS).getId();
         SHELTER.setId(id);
@@ -174,8 +307,12 @@ public class ReportControllerTest {
     }
 
     private void addReport() {
-        Long id = repository.save(REPORT).getId();
+        Long id = reportRepository.save(REPORT).getId();
         REPORT.setId(id);
+    }
+
+    private void addRecipient() {
+        potentialParentRepository.save(RECIPIENT);
     }
 
     private void deleteShelter(Long id) {
@@ -191,7 +328,12 @@ public class ReportControllerTest {
     }
 
     private void deleteReport() {
-        repository.delete(reportController.getById(REPORT.getId()));
+        reportRepository.delete(reportController.getById(REPORT.getId()));
+    }
+
+    private void deleteRecipient() {
+        PotentialParent recipient = potentialParentRepository.getByPhoneNumber(RECIPIENT.getPhoneNumber());
+        potentialParentRepository.delete(recipient);
     }
 
     private void assertTrueForCollection(String actual) {
@@ -205,6 +347,33 @@ public class ReportControllerTest {
         return Stream.of(
                 Arguments.of(ZERO),
                 Arguments.of(INCORRECT_ID)
+        );
+    }
+
+    private static Stream<Arguments> provideParamsForPhoneNumber() {
+        return Stream.of(
+                Arguments.of((Object) null),
+                Arguments.of(EMPTY),
+                Arguments.of(SHORT_PHONE_NUMBER),
+                Arguments.of(LONG_PHONE_NUMBER),
+                Arguments.of(INCORRECT_STRING)
+        );
+    }
+
+    private static Stream<Arguments> provideParamsForName() {
+        return Stream.of(
+                Arguments.of((Object) null),
+                Arguments.of(EMPTY),
+                Arguments.of(INCORRECT_STRING)
+        );
+    }
+
+    private static Stream<Arguments> provideParamsForMessage() {
+        return Stream.of(
+                Arguments.of(EXTENSION_14),
+                Arguments.of(EXTENSION_30),
+                Arguments.of(CONGRATULATION),
+                Arguments.of(REFUSAL)
         );
     }
 }

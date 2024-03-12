@@ -1,6 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.tests;
 
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.*;
+import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.PotentialParent;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
@@ -62,6 +63,7 @@ public class Utils {
     public static final Volunteer VOLUNTEER = new Volunteer(FIRST_NAME, LAST_NAME, VALID_PHONE_NUMBER, SHELTER);
     public static final Parent PARENT = new Parent(FIRST_NAME, LAST_NAME, VALID_PHONE_NUMBER, PET);
     public static final Report REPORT = new Report(PHOTO, DOCUMENT, LocalDate.now(), NOT_VIEWED, PARENT);
+    public static final PotentialParent RECIPIENT = new PotentialParent(PHONE_NUMBER, ID, FIRST_NAME, LAST_NAME);
 
     /*
     КОЛЛЕКЦИИ
@@ -77,6 +79,7 @@ public class Utils {
     public static final List<Volunteer> VOLUNTEERS = List.of(VOLUNTEER);
     public static final List<Parent> PARENTS = List.of(PARENT);
     public static final List<Report> REPORTS = List.of(REPORT);
+    public static final List<PotentialParent> RECIPIENTS = List.of(RECIPIENT);
 
     /*
     ДОПОЛНИТЕЛЬНЫЕ МЕТОДЫ

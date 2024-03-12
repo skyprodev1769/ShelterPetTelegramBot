@@ -109,7 +109,7 @@ class ParentControllerTest {
 
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_1);
         assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
-        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_2);
+        assertEquals(exception(BAD_REQUEST, INVALIDE_INPUT), actual_3);
     }
 
     @ParameterizedTest

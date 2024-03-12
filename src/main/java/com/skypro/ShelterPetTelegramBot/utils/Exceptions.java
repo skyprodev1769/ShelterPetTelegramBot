@@ -15,4 +15,5 @@ public class Exceptions {
     public static final String VOLUNTEER_NOT_FOUND = "Волонтер не найден!";
     public static final String REPORT_NOT_FOUND = "Отчет не найден!";
     public static final String ATTACHMENT_NOT_FOUND = "Вложение не найдено!";
+    public static final String RECIPIENT_NOT_FOUND = "Получатель не найден!";
 }

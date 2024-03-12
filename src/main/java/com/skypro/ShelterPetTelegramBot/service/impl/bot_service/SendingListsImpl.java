@@ -88,7 +88,7 @@ public final class SendingListsImpl implements SendingLists {
     }
 
     @Override
-    public StringBuilder sendAddressShelter(Long chatId, String userFirstName) {
+    public StringBuilder sendListShelters(Long chatId, String userFirstName) {
 
         StringBuilder shelterDog = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
         StringBuilder shelterCat = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");

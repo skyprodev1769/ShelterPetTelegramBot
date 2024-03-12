@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Интерфейс {@link ParentRepository}
@@ -14,6 +15,10 @@ import java.util.Collection;
 public interface ParentRepository extends JpaRepository<Parent, Long> {
 
     Parent getByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(String firstName, String lastName);
+
+    Optional<Parent> getByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCaseAndPetNameContainsIgnoreCase(String firstName,
+                                                                                                              String lastName,
+                                                                                                              String petName);
 
     Collection<Parent> getAllByFirstNameContainsIgnoreCase(String firstName);
 

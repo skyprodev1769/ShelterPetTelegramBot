@@ -30,5 +30,5 @@ public interface SendingLists {
      * @param chatId        <i> является идентификатором пользователя (его id в telegram) </i> <br>
      * @param userFirstName <i> является именем пользователя </i>
      */
-    StringBuilder sendAddressShelter(Long chatId, String userFirstName);
+    StringBuilder sendListShelters(Long chatId, String userFirstName);
 }

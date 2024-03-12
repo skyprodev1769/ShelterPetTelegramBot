@@ -158,7 +158,7 @@ public final class GetReactionsImpl implements GetReactions {
 
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА", chatId, userFirstName);
-                answer = String.valueOf(lists.sendAddressShelter(chatId, userFirstName));
+                answer = String.valueOf(lists.sendListShelters(chatId, userFirstName));
                 message = buttons.createButtonForSchemeDrivingToShelter(chatId, answer);
                 methods.sendText(message);
             }

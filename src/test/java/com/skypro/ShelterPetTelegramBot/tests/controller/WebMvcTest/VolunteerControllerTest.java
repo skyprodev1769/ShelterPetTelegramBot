@@ -1,10 +1,14 @@
 package com.skypro.ShelterPetTelegramBot.tests.controller.WebMvcTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.skypro.ShelterPetTelegramBot.configuration.BotConfiguration;
 import com.skypro.ShelterPetTelegramBot.controller.VolunteerController;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
 import com.skypro.ShelterPetTelegramBot.model.repository.*;
+import com.skypro.ShelterPetTelegramBot.service.TelegramBot;
 import com.skypro.ShelterPetTelegramBot.service.impl.CheckServiceImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.BasicMethodsImpl;
+import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.SendingMessageImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.entity_service.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,6 +39,8 @@ class VolunteerControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
+    private PotentialParentRepository potentialParentRepository;
+    @MockBean
     private ShelterRepository shelterRepository;
     @MockBean
     private VolunteerRepository volunteerRepository;
@@ -56,6 +62,14 @@ class VolunteerControllerTest {
     private ReportServiceImpl reportService;
     @SpyBean
     private CheckServiceImpl checkService;
+    @SpyBean
+    private TelegramBot bot;
+    @SpyBean
+    private BasicMethodsImpl methods;
+    @SpyBean
+    private SendingMessageImpl message;
+    @SpyBean
+    private BotConfiguration configuration;
     @InjectMocks
     private VolunteerController controller;
 

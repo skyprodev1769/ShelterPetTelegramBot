@@ -13,5 +13,7 @@ import java.util.List;
 @Repository
 public interface PotentialParentRepository extends JpaRepository<PotentialParent, Long> {
 
+    PotentialParent getByPhoneNumber(String phoneNumber);
+
     List<PotentialParent> getAllByChatId(Long chatId);
 }

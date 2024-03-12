@@ -17,14 +17,14 @@ public class AnswersForReportPet {
 
     public static String REACTION_TO_SAVE_ONLY_PHOTO(String userFirstName) {
         return String.format("""
-                %s, Ваше фото успешно сохранено!
+                %s, фото животного успешно сохранено в Ваш отчет!
                                 
                 Не забудьте приложить документ с описательной частью, если Вы не сделали этого ранее.""", userFirstName);
     }
 
     public static String REACTION_TO_SAVE_ONLY_DOCUMENT(String userFirstName) {
         return String.format("""
-                %s, Ваш документ успешно сохранен!
+                %s, документ с описательной частью успешно сохранен в Ваш отчет!
                                 
                 Не забудьте приложить фото, если Вы не сделали этого ранее.""", userFirstName);
     }
