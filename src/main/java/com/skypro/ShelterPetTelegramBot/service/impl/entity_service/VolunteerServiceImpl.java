@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID_VOLUNTEER;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID;
 import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_VOLUNTEER;
 
 /**
@@ -175,7 +175,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
-    @CachePut(value = CACHE_VOLUNTEER, key = CACHE_ID_VOLUNTEER)
+    @CachePut(value = CACHE_VOLUNTEER, key = CACHE_ID)
     public Volunteer edit(Long id,
                           String firstName,
                           String lastName,

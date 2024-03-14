@@ -32,7 +32,9 @@ public interface WorkInDataBase {
      * @param userFirstName <i> является именем пользователя </i> <br>
      * @param matcher       <i> является объектом класса {@link Matcher} </i>
      */
-    void savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher);
+    void savePotentialParentToDB(Long chatId,
+                                 String userFirstName,
+                                 Matcher matcher);
 
     /**
      * Метод удаляет все ранее переданные контакты усыновителя {@link PotentialParent} из БД
@@ -49,5 +51,8 @@ public interface WorkInDataBase {
      * @param photos   <i> являются фото, отправляемыми усыновителем </i> <br>
      * @param document <i> является документом, отправляемым усыновителем </i>
      */
-    void saveReport(Parent parent, List<PhotoSize> photos, Document document);
+    void saveReport(Parent parent,
+                    List<PhotoSize> photos,
+                    Document document,
+                    String photosDir);
 }

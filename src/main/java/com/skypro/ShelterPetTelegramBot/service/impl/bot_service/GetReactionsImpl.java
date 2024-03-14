@@ -158,7 +158,7 @@ public class GetReactionsImpl implements GetReactions {
 
             case INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS -> {
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА", chatId, userFirstName);
-                answer = String.valueOf(lists.sendListShelters(chatId, userFirstName));
+                answer = String.valueOf(lists.sendListShelters(chatId, userFirstName, configuration.getIsDogShelter()));
                 message = buttons.createButtonForSchemeDrivingToShelter(chatId, answer);
                 methods.sendText(message);
             }
@@ -201,7 +201,7 @@ public class GetReactionsImpl implements GetReactions {
             }
 
             case LIST_PETS -> {
-                answer = String.valueOf(lists.sendListPets(chatId, userFirstName));
+                answer = String.valueOf(lists.sendListPets(chatId, userFirstName, configuration.getIsDogShelter()));
                 methods.reaction(chatId, answer);
                 log.info("ПОЛЬЗОВАТЕЛЬ {} {} ПОЛУЧИЛ СПИСОК ЖИВОТНЫХ ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
             }

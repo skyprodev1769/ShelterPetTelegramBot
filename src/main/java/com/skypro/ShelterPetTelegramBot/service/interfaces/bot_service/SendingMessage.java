@@ -10,9 +10,9 @@ import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.SendingMessageI
 public interface SendingMessage {
 
     /**
-     * Метод отправляет сообщение усыновителю в телеграм бот
+     * Метод отправляет ответ волонтера усыновителю
      *
-     * @param content        <i> является определителем содержания сообщения </i>
+     * @param content     <i> является определителем содержания сообщения </i>
      * @param firstName   <i> является именем получателя </i> <br>
      * @param lastName    <i> является фамилией получателя </i> <br>
      * @param phoneNumber <i> является номером телефона получателя </i> <br>

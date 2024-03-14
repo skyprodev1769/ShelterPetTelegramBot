@@ -181,12 +181,14 @@ public class WorkInBotImpl implements WorkInBot {
      * @param parent        <i> является именем пользователя </i> <br>
      */
     private void workWithReports(Long chatId, String userFirstName, Message message, Parent parent) {
+
         String answer;
+        String photosDir = configuration.getPhotosDir();
 
         if (message.hasPhoto()) { // ЕСЛИ ПРИХОДИТ ФОТО
 
             List<PhotoSize> photos = message.getPhoto();
-            base.saveReport(parent, photos, null);
+            base.saveReport(parent, photos, null, photosDir);
 
             answer = REACTION_TO_SAVE_ONLY_PHOTO(userFirstName);
             methods.reaction(chatId, answer);
@@ -194,7 +196,7 @@ public class WorkInBotImpl implements WorkInBot {
         } else if (message.hasDocument()) { // ЕСЛИ ПРИХОДИТ ДОКУМЕНТ
 
             Document document = message.getDocument();
-            base.saveReport(parent, null, document);
+            base.saveReport(parent, null, document, photosDir);
 
             answer = REACTION_TO_SAVE_ONLY_DOCUMENT(userFirstName);
             methods.reaction(chatId, answer);

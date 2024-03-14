@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID_SHELTER;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID;
 import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_SHELTER;
 
 /**
@@ -86,7 +86,7 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    @CachePut(value = CACHE_SHELTER, key = CACHE_ID_SHELTER)
+    @CachePut(value = CACHE_SHELTER, key = CACHE_ID)
     public Shelter edit(Long id, PetType type, String address) {
 
         Shelter shelter = getById(id);

@@ -1,6 +1,5 @@
 package com.skypro.ShelterPetTelegramBot.service.impl.bot_service;
 
-import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Pet;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Shelter;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Volunteer;
@@ -25,24 +24,23 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.shelters.AnswersFor
 @Service
 public class SendingListsImpl implements SendingLists {
 
-    private final AppConfiguration configuration;
     private final ShelterRepository shelterRepository;
     private final VolunteerRepository volunteerRepository;
     private final PetRepository petRepository;
 
-    public SendingListsImpl(AppConfiguration configuration,
-                            ShelterRepository shelterRepository,
+    public SendingListsImpl(ShelterRepository shelterRepository,
                             VolunteerRepository volunteerRepository,
                             PetRepository petRepository) {
 
-        this.configuration = configuration;
         this.shelterRepository = shelterRepository;
         this.volunteerRepository = volunteerRepository;
         this.petRepository = petRepository;
     }
 
     @Override
-    public StringBuilder sendListPets(Long chatId, String userFirstName) {
+    public StringBuilder sendListPets(Long chatId,
+                                      String userFirstName,
+                                      Boolean isDogShelter) {
 
         StringBuilder dogs = new StringBuilder(REACTION_TO_LIST_PETS(userFirstName) + "\n\n");
         StringBuilder cats = new StringBuilder(REACTION_TO_LIST_PETS(userFirstName) + "\n\n");
@@ -62,7 +60,7 @@ public class SendingListsImpl implements SendingLists {
             }
         }
 
-        if (configuration.getIsDogShelter()) {
+        if (isDogShelter) {
             log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ СПИСОК СОБАК ДЛЯ УСЫНОВЛЕНИЯ", chatId, userFirstName);
             return dogs;
 
@@ -88,7 +86,9 @@ public class SendingListsImpl implements SendingLists {
     }
 
     @Override
-    public StringBuilder sendListShelters(Long chatId, String userFirstName) {
+    public StringBuilder sendListShelters(Long chatId,
+                                          String userFirstName,
+                                          Boolean isDogShelter) {
 
         StringBuilder shelterDog = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
         StringBuilder shelterCat = new StringBuilder(REACTION_TO_INFO_ABOUT_WORK_SCHEDULE_AND_ADDRESS(userFirstName) + "\n\n");
@@ -103,7 +103,7 @@ public class SendingListsImpl implements SendingLists {
             }
         }
 
-        if (configuration.getIsDogShelter()) {
+        if (isDogShelter) {
             log.info("ПОЛЬЗОВАТЕЛЬ {} {} ЗАПРОСИЛ АДРЕС И РЕЖИМ РАБОТЫ ПРИЮТА ДЛЯ СОБАК", chatId, userFirstName);
             return shelterDog;
 

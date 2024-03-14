@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.ADOPTED;
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetStatus.FREE;
-import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID_PARENT;
+import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_ID;
 import static com.skypro.ShelterPetTelegramBot.utils.Cache.CACHE_PARENT;
 
 /**
@@ -131,7 +131,7 @@ public class ParentServiceImpl implements ParentService {
     }
 
     @Override
-    @CachePut(value = CACHE_PARENT, key = CACHE_ID_PARENT)
+    @CachePut(value = CACHE_PARENT, key = CACHE_ID)
     public Parent edit(Long id,
                        String firstName,
                        String lastName,

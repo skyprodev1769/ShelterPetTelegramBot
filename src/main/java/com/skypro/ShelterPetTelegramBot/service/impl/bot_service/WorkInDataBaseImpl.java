@@ -1,6 +1,5 @@
 package com.skypro.ShelterPetTelegramBot.service.impl.bot_service;
 
-import com.skypro.ShelterPetTelegramBot.configuration.AppConfiguration;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Parent;
 import com.skypro.ShelterPetTelegramBot.model.entity.with_controller.Report;
 import com.skypro.ShelterPetTelegramBot.model.entity.without_controller.Attachment;
@@ -47,7 +46,6 @@ import static com.skypro.ShelterPetTelegramBot.utils.answers.contacts.AnswersFor
 @Service
 public class WorkInDataBaseImpl implements WorkInDataBase {
 
-    private final AppConfiguration configuration;
     private final TelegramBot bot;
     private final BasicMethods methods;
     private final UserRepository userRepository;
@@ -57,8 +55,7 @@ public class WorkInDataBaseImpl implements WorkInDataBase {
     private final RecordingContacts contacts;
     private final CreatingKeyBoards keyBoards;
 
-    public WorkInDataBaseImpl(AppConfiguration configuration,
-                              TelegramBot bot,
+    public WorkInDataBaseImpl(TelegramBot bot,
                               BasicMethods methods,
                               UserRepository userRepository,
                               PotentialParentRepository parentRepository,
@@ -69,7 +66,6 @@ public class WorkInDataBaseImpl implements WorkInDataBase {
 
         this.bot = bot;
         this.methods = methods;
-        this.configuration = configuration;
         this.userRepository = userRepository;
         this.parentRepository = parentRepository;
         this.reportRepository = reportRepository;
@@ -93,7 +89,9 @@ public class WorkInDataBaseImpl implements WorkInDataBase {
     }
 
     @Override
-    public void savePotentialParentToDB(Long chatId, String userFirstName, Matcher matcher) {
+    public void savePotentialParentToDB(Long chatId,
+                                        String userFirstName,
+                                        Matcher matcher) {
         String answer;
 
         PotentialParent parent = contacts.recordContact(chatId, matcher);
@@ -138,13 +136,16 @@ public class WorkInDataBaseImpl implements WorkInDataBase {
     }
 
     @Override
-    public void saveReport(Parent parent, List<PhotoSize> photos, Document document) {
+    public void saveReport(Parent parent,
+                           List<PhotoSize> photos,
+                           Document document,
+                           String photosDir) {
 
         String firstName = parent.getFirstName();
         String lastName = parent.getLastName();
 
         String firstPartFileName = firstName + "_" + lastName + "_" + LocalDate.now();
-        String parentDir = configuration.getPhotosDir() + "/" + firstName + "_" + lastName + "_" + parent.getPet().getName();
+        String parentDir = photosDir + "/" + firstName + "_" + lastName + "_" + parent.getPet().getName();
 
         Report report = reportRepository.getByDate(LocalDate.now()).orElseGet(Report::new);
 

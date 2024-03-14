@@ -44,7 +44,11 @@ public class SendingMessageImpl implements SendingMessage {
     }
 
     @Override
-    public String sendAnswer(MessageContent content, String firstName, String lastName, String phoneNumber, String petName) {
+    public String sendAnswer(MessageContent content,
+                             String firstName,
+                             String lastName,
+                             String phoneNumber,
+                             String petName) {
 
         service.checkName(firstName);
         service.checkName(lastName);
@@ -57,10 +61,16 @@ public class SendingMessageImpl implements SendingMessage {
         PotentialParent recipient = getRecipient(phoneNumber, parent);
         Long chatId = recipient.getChatId();
 
-        REACTIONS_VOLUNTEERS(chatId, content, firstName, lastName, phoneNumber, petName);
+        sendMessage(chatId, content, firstName, lastName, phoneNumber, petName);
         return EXAMPLE_SEND_MESSAGE;
     }
 
+    /**
+     * Метод находит получателя сообщения по данным усыновителя и номеру телефона
+     *
+     * @param phoneNumber <i> является номером телефона получателя </i> <br>
+     * @param parent      <i> является усыновителем, получающим сообщение </i>
+     */
     private PotentialParent getRecipient(String phoneNumber, Parent parent) {
 
         List<PotentialParent> recipients = potentialParentRepository.findAll();
@@ -79,17 +89,27 @@ public class SendingMessageImpl implements SendingMessage {
         throw new RecipientNotFoundException();
     }
 
-    private void REACTIONS_VOLUNTEERS(Long chatId,
-                                      MessageContent type,
-                                      String firstName,
-                                      String lastName,
-                                      String phoneNumber,
-                                      String petName) {
+    /**
+     * Метод отправляет сообщение по id чата в телеграм
+     *
+     * @param chatId      <i> является id чата (его идентификатор в телеграм) </i> <br>
+     * @param content     <i> является определителем содержания сообщения </i> <br>
+     * @param firstName   <i> является именем получателя </i> <br>
+     * @param lastName    <i> является фамилией получателя </i> <br>
+     * @param phoneNumber <i> является номером телефона получателя </i> <br>
+     * @param petName     <i> является именем усыновленного животного получателя </i>
+     */
+    private void sendMessage(Long chatId,
+                             MessageContent content,
+                             String firstName,
+                             String lastName,
+                             String phoneNumber,
+                             String petName) {
 
         SendMessage message;
         String answer;
 
-        switch (type) {
+        switch (content) {
 
             case EXTENSION_14 -> {
                 answer = REACTION_TO_EXTENSION_14_DAYS(firstName, lastName, phoneNumber, petName);

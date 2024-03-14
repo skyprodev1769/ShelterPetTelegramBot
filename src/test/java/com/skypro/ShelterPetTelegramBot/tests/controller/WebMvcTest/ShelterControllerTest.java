@@ -11,7 +11,6 @@ import com.skypro.ShelterPetTelegramBot.service.impl.CheckServiceImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.BasicMethodsImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.bot_service.SendingMessageImpl;
 import com.skypro.ShelterPetTelegramBot.service.impl.entity_service.*;
-import com.skypro.ShelterPetTelegramBot.tests.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,12 +22,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.CAT;
 import static com.skypro.ShelterPetTelegramBot.model.enums.PetType.DOG;
+import static com.skypro.ShelterPetTelegramBot.tests.Utils.*;
 import static com.skypro.ShelterPetTelegramBot.utils.Exceptions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -37,6 +38,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
+@EnableTransactionManagement(proxyTargetClass = true)
 class ShelterControllerTest {
 
     @Autowired
@@ -80,19 +82,19 @@ class ShelterControllerTest {
 
     @Test
     void add_success() throws Exception {
-        when(shelterService.add(DOG, Utils.ADDRESS))
-                .thenReturn(Utils.SHELTER);
+        when(shelterService.add(DOG, ADDRESS))
+                .thenReturn(SHELTER);
 
-        Utils.SHELTER.setId(Utils.ID);
+        SHELTER.setId(ID);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/shelter"
                                 + "?Тип=" + DOG
-                                + "&Адрес=" + Utils.ADDRESS))
+                                + "&Адрес=" + ADDRESS))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(Utils.SHELTER.getId()))
-                .andExpect(jsonPath("$.type").value(Utils.SHELTER.getType().toString()))
-                .andExpect(jsonPath("$.address").value(Utils.SHELTER.getAddress()));
+                .andExpect(jsonPath("$.id").value(SHELTER.getId()))
+                .andExpect(jsonPath("$.type").value(SHELTER.getType().toString()))
+                .andExpect(jsonPath("$.address").value(SHELTER.getAddress()));
     }
 
     @ParameterizedTest
@@ -103,7 +105,7 @@ class ShelterControllerTest {
                                 + "?Тип=" + DOG
                                 + "&Адрес=" + address))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, INVALIDE_INPUT)));
+                .andExpect(content().string(exception(BAD_REQUEST, INVALIDE_INPUT)));
     }
 
     @Test
@@ -113,24 +115,24 @@ class ShelterControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/shelter"
                                 + "?Тип=" + DOG
-                                + "&Адрес=" + Utils.ADDRESS))
+                                + "&Адрес=" + ADDRESS))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, SHELTER_ALREADY_ADDED)));
+                .andExpect(content().string(exception(BAD_REQUEST, SHELTER_ALREADY_ADDED)));
     }
 
     @Test
     void getById_success() throws Exception {
         when(shelterRepository.findById(anyLong()))
-                .thenReturn(Optional.of(Utils.SHELTER));
+                .thenReturn(Optional.of(SHELTER));
 
-        Utils.SHELTER.setId(Utils.ID);
+        SHELTER.setId(ID);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/shelter/" + Utils.SHELTER.getId()))
+                        .get("/shelter/" + SHELTER.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(Utils.SHELTER.getId()))
-                .andExpect(jsonPath("$.type").value(Utils.SHELTER.getType().toString()))
-                .andExpect(jsonPath("$.address").value(Utils.SHELTER.getAddress()));
+                .andExpect(jsonPath("$.id").value(SHELTER.getId()))
+                .andExpect(jsonPath("$.type").value(SHELTER.getType().toString()))
+                .andExpect(jsonPath("$.address").value(SHELTER.getAddress()));
     }
 
     @ParameterizedTest
@@ -139,46 +141,46 @@ class ShelterControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/shelter/" + id))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, INVALIDE_INPUT)));
+                .andExpect(content().string(exception(BAD_REQUEST, INVALIDE_INPUT)));
     }
 
     @Test
     void getById_ShelterNotFoundException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/shelter/" + Utils.ID))
+                        .get("/shelter/" + ID))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(NOT_FOUND, SHELTER_NOT_FOUND)));
+                .andExpect(content().string(exception(NOT_FOUND, SHELTER_NOT_FOUND)));
     }
 
     @Test
     void getAllByParameters_success() throws Exception {
         when(shelterRepository.getAllByType(any(PetType.class)))
-                .thenReturn(Utils.SHELTERS);
+                .thenReturn(SHELTERS);
 
         when(shelterRepository.getAllByAddressContainsIgnoreCase(anyString()))
-                .thenReturn(Utils.SHELTERS);
+                .thenReturn(SHELTERS);
 
         when(shelterRepository.getAllByTypeAndAddressContainsIgnoreCase(any(PetType.class), anyString()))
-                .thenReturn(Utils.SHELTERS);
+                .thenReturn(SHELTERS);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/shelter"
                                 + "?Тип=" + DOG))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(Utils.SHELTERS)));
+                .andExpect(content().json(objectMapper.writeValueAsString(SHELTERS)));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/shelter"
-                                + "?Адрес=" + Utils.ADDRESS))
+                                + "?Адрес=" + ADDRESS))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(Utils.SHELTERS)));
+                .andExpect(content().json(objectMapper.writeValueAsString(SHELTERS)));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/shelter"
                                 + "?Тип=" + DOG
-                                + "&Адрес=" + Utils.ADDRESS))
+                                + "&Адрес=" + ADDRESS))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(Utils.SHELTERS)));
+                .andExpect(content().json(objectMapper.writeValueAsString(SHELTERS)));
     }
 
     @ParameterizedTest
@@ -188,41 +190,41 @@ class ShelterControllerTest {
                         .get("/shelter"
                                 + "?Адрес=" + address))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, INVALIDE_INPUT)));
+                .andExpect(content().string(exception(BAD_REQUEST, INVALIDE_INPUT)));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/shelter"
                                 + "?Тип=" + DOG
                                 + "&Адрес=" + address))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, INVALIDE_INPUT)));
+                .andExpect(content().string(exception(BAD_REQUEST, INVALIDE_INPUT)));
     }
 
     @Test
     void getAll_success() throws Exception {
         when(shelterService.getAll())
-                .thenReturn(Utils.SHELTERS);
+                .thenReturn(SHELTERS);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/shelter/all"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(Utils.SHELTERS)));
+                .andExpect(content().json(objectMapper.writeValueAsString(SHELTERS)));
     }
 
     @Test
     void edit_success() throws Exception {
         getById_success();
 
-        Shelter expected = new Shelter(CAT, Utils.NEW_ADDRESS);
-        expected.setId(Utils.SHELTER.getId());
+        Shelter expected = new Shelter(CAT, NEW_ADDRESS);
+        expected.setId(SHELTER.getId());
 
         when(shelterRepository.save(any(Shelter.class)))
                 .thenReturn(expected);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/shelter/" + Utils.SHELTER.getId()
+                        .put("/shelter/" + SHELTER.getId()
                                 + "?Тип=" + CAT
-                                + "&Адрес=" + Utils.NEW_ADDRESS))
+                                + "&Адрес=" + NEW_ADDRESS))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(expected.getId()))
                 .andExpect(jsonPath("$.type").value(expected.getType().toString()))
@@ -235,18 +237,18 @@ class ShelterControllerTest {
         getById_success();
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/shelter/" + Utils.SHELTER.getId()
+                        .put("/shelter/" + SHELTER.getId()
                                 + "?Адрес=" + address))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, INVALIDE_INPUT)));
+                .andExpect(content().string(exception(BAD_REQUEST, INVALIDE_INPUT)));
     }
 
     @Test
     void edit_ShelterNotFoundException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/shelter/" + Utils.ID))
+                        .put("/shelter/" + ID))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(NOT_FOUND, SHELTER_NOT_FOUND)));
+                .andExpect(content().string(exception(NOT_FOUND, SHELTER_NOT_FOUND)));
     }
 
     @Test
@@ -255,10 +257,10 @@ class ShelterControllerTest {
         getAll_success();
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/shelter/" + Utils.SHELTER.getId()
-                                + "?Адрес=" + Utils.SHELTER.getAddress()))
+                        .put("/shelter/" + SHELTER.getId()
+                                + "?Адрес=" + SHELTER.getAddress()))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, SHELTER_ALREADY_ADDED)));
+                .andExpect(content().string(exception(BAD_REQUEST, SHELTER_ALREADY_ADDED)));
     }
 
     @Test
@@ -266,11 +268,11 @@ class ShelterControllerTest {
         getById_success();
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/shelter/" + Utils.SHELTER.getId()))
+                        .delete("/shelter/" + SHELTER.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(Utils.SHELTER.getId()))
-                .andExpect(jsonPath("$.type").value(Utils.SHELTER.getType().toString()))
-                .andExpect(jsonPath("$.address").value(Utils.SHELTER.getAddress()));
+                .andExpect(jsonPath("$.id").value(SHELTER.getId()))
+                .andExpect(jsonPath("$.type").value(SHELTER.getType().toString()))
+                .andExpect(jsonPath("$.address").value(SHELTER.getAddress()));
     }
 
     @ParameterizedTest
@@ -279,29 +281,29 @@ class ShelterControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/shelter/" + id))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(BAD_REQUEST, INVALIDE_INPUT)));
+                .andExpect(content().string(exception(BAD_REQUEST, INVALIDE_INPUT)));
     }
 
     @Test
     void delete_ShelterNotFoundException() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/shelter/" + Utils.ID))
+                        .delete("/shelter/" + ID))
                 .andExpect(status().isOk())
-                .andExpect(content().string(Utils.exception(NOT_FOUND, SHELTER_NOT_FOUND)));
+                .andExpect(content().string(exception(NOT_FOUND, SHELTER_NOT_FOUND)));
     }
 
     private static Stream<Arguments> provideParamsForAddress() {
         return Stream.of(
                 null,
-                Arguments.of(Utils.EMPTY),
-                Arguments.of(Utils.INCORRECT_STRING)
+                Arguments.of(EMPTY),
+                Arguments.of(INCORRECT_STRING)
         );
     }
 
     private static Stream<Arguments> provideParamsForId() {
         return Stream.of(
-                Arguments.of(Utils.ZERO),
-                Arguments.of(Utils.INCORRECT_ID)
+                Arguments.of(ZERO),
+                Arguments.of(INCORRECT_ID)
         );
     }
 }
