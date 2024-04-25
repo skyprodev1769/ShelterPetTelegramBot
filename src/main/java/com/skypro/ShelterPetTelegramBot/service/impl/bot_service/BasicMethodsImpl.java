@@ -33,6 +33,7 @@ public class BasicMethodsImpl implements BasicMethods {
         message.setChatId(chatId);
         message.setText(answer);
         sendText(message);
+
     }
 
     @Override
@@ -40,8 +41,9 @@ public class BasicMethodsImpl implements BasicMethods {
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {
-            log.error("ОШИБКА ОТПРАВКИ ТЕКСТОВОГО СООБЩЕНИЯ: {}", e.getMessage());
+            log.error("ОШИБКА ОТПРАВКИ: {}", e.getMessage());
         }
+
     }
 
     @Override
