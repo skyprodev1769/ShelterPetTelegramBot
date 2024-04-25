@@ -1,5 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.utils.answers.contacts;
 
+import com.vdurmont.emoji.EmojiParser;
+
 /**
  * РЕАКЦИИ НА КОМАНДЫ ЗАПИСИ КОНТАКТНЫХ ДАННЫХ
  */
@@ -17,10 +19,10 @@ public class AnswersForRecordContactsCommands {
     }
 
     public static String REACTION_TO_SUCCESSFUL_RECORD_CONTACT(String userFirstName) {
-        return String.format("%s, переданные данные успешно записаны!", userFirstName);
+        return EmojiParser.parseToUnicode(String.format(":white_check_mark: %s, переданные данные успешно записаны!", userFirstName));
     }
 
     public static String REACTION_TO_REPEAT_RECORD_CONTACT(String userFirstName) {
-        return String.format("%s, Данный номер телефона уже был записан ранее!", userFirstName);
+        return EmojiParser.parseToUnicode(String.format(":grey_exclamation: %s, Данный номер телефона уже был записан ранее!", userFirstName));
     }
 }

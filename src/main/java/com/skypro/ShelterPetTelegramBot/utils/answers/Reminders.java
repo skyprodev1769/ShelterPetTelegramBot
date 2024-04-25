@@ -1,5 +1,7 @@
 package com.skypro.ShelterPetTelegramBot.utils.answers;
 
+import com.vdurmont.emoji.EmojiParser;
+
 import java.time.LocalDate;
 
 /**
@@ -23,12 +25,12 @@ public class Reminders {
                                                   String lastName,
                                                   String phoneNumber,
                                                   String petName) {
-        return String.format("""
+        return EmojiParser.parseToUnicode(String.format("""
                 %s %s,
-                Ваш номер телефона - %s
-                Вы взяли опеку над животным - %s
+                :iphone:Ваш номер телефона - %s
+                :dog:Вы взяли опеку над животным - %s
                                 
-                Отправленный Вами сегодняшний отчет не полон!""", firstName, lastName, phoneNumber, petName);
+                Отправленный Вами сегодняшний отчет не полон!""", firstName, lastName, phoneNumber, petName));
     }
 
     public static String WARNING(String firstName,
@@ -36,16 +38,16 @@ public class Reminders {
                                  String phoneNumber,
                                  String petName,
                                  LocalDate date) {
-        return String.format("""
+        return EmojiParser.parseToUnicode(String.format("""
                 Дорогой усыновитель,
                                 
                 %s %s,
-                Ваш номер телефона - %s
-                Вы взяли опеку над животным - %s
+                :iphone:Ваш номер телефона - %s
+                :dog:Вы взяли опеку над животным - %s
                 Последний отправленный отчет от %s
                                 
                 мы заметили, что Вы заполняете отчет не так подробно, как необходимо.
                 Пожалуйста, подойдите ответственнее к этому занятию.
-                В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного""", firstName, lastName, phoneNumber, petName, date);
+                В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного""", firstName, lastName, phoneNumber, petName, date));
     }
 }
