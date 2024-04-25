@@ -23,8 +23,7 @@ public class AnswerForParents {
         return String.format("""
                 %s %s,
                 Ваш номер телефона - %s
-                Вы взяли опеку над животным - %s
-                                
+                Вы взяли опеку над животным - %s                               
                 Было принято решение продлить Ваш испытательный срок на 30 дней!""", firstName, lastName, phoneNumber, petName);
     }
 
