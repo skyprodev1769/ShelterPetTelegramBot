@@ -10,6 +10,10 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+/**
+ * Класс {@link BotInitializer}
+ * является конфигурационным классом для регистрации телеграм бота {@link TelegramBot}
+ */
 @Slf4j
 @Component
 public class BotInitializer {
@@ -17,6 +21,9 @@ public class BotInitializer {
     @Autowired
     TelegramBot telegramBot;
 
+    /**
+     * Метод регистрирует нового телеграм бота {@link TelegramBot}
+     */
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {
 
@@ -25,7 +32,7 @@ public class BotInitializer {
         try {
             telegramBotsApi.registerBot(telegramBot);
         } catch (TelegramApiException e) {
-            log.error("ERROR: {}", e.getMessage());
+            log.error("ОШИБКА РЕГИСТРАЦИИ БОТА: {}", e.getMessage());
         }
     }
 }
